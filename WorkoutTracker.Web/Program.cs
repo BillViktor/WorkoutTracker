@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using WorkoutTracker.Web.Clients;
-using WorkoutTracker.Web.ViewModels;
+using WorkoutTracker.Web.Clients.ExerciseClient;
+using WorkoutTracker.Web.Clients.Muscle;
+using WorkoutTracker.Web.ViewModels.ExerciseViewModel;
+using WorkoutTracker.Web.ViewModels.Muscle;
 
 namespace WorkoutTracker.Web
 {
@@ -15,6 +17,7 @@ namespace WorkoutTracker.Web
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
+
             #region Clients
             builder.Services.AddScoped(sp => new HttpClient
             {
@@ -22,11 +25,16 @@ namespace WorkoutTracker.Web
             });
 
             builder.Services.AddScoped<IExerciseClient, ExerciseClient>();
+            builder.Services.AddScoped<IMuscleClient, MuscleClient>();
+
             #endregion
+
 
             #region ViewModels
             builder.Services.AddScoped<IExerciseViewModel, ExerciseViewModel>();
+            builder.Services.AddScoped<IMuscleViewModel, MuscleViewModel>();
             #endregion
+
 
             await builder.Build().RunAsync();
         }

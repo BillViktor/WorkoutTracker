@@ -1,55 +1,59 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using WorkoutTracker.Data.Models;
-using WorkoutTracker.Shared.Dto;
+using WorkoutTracker.Shared.Models;
+using WorkoutTracker.Shared.Models.Pagination;
 
 namespace WorkoutTracker.Data.Repository
 {
     public class WorkoutTrackerRepository : IWorkoutTrackerRepository
     {
-        private readonly WorkoutTrackerDbContext mWorkoutTrackerDbContext;
+        private readonly WorkoutTrackerDbContext workoutTrackerDbContext;
 
-        public WorkoutTrackerRepository(WorkoutTrackerDbContext aWorkoutTrackerDbContext)
+        public WorkoutTrackerRepository(WorkoutTrackerDbContext workoutTrackerDbContext)
         {
-            mWorkoutTrackerDbContext = aWorkoutTrackerDbContext;
+            this.workoutTrackerDbContext = workoutTrackerDbContext;
         }
 
         #region Generic
-        public async Task<T> AddAsync<T>(T aEntity, CancellationToken aCancellationToken)
+        public async Task<EntityResult<T>> GetEntities<T>(EntityParameters entityParameters, CancellationToken cancellationToken) where T : class
         {
-            await mWorkoutTrackerDbContext.AddAsync(aEntity, aCancellationToken);
-            await mWorkoutTrackerDbContext.SaveChangesAsync();
-            return aEntity;
-        }
+            var count = await workoutTrackerDbContext.Set<T>().CountAsync(cancellationToken);
 
-        public async Task<T> UpdateAsync<T>(T aEntity, CancellationToken aCancellationToken)
-        {
-            mWorkoutTrackerDbContext.Update(aEntity);
-            await mWorkoutTrackerDbContext.SaveChangesAsync();
-            return aEntity;
-        }
-
-        public async Task<T> DeleteAsync<T>(T aEntity, CancellationToken aCancellationToken)
-        {
-            mWorkoutTrackerDbContext.Remove(aEntity);
-            await mWorkoutTrackerDbContext.SaveChangesAsync();
-            return aEntity;
-        }
-        #endregion
-
-
-        #region Muscle
-        public async Task<List<MuscleDto>> GetMuscles()
-        {
-            return await mWorkoutTrackerDbContext.Muscles
-                .OrderBy(x => x.Name)
+            var list = await workoutTrackerDbContext.Set<T>()
+                .Skip(entityParameters.Page * entityParameters.PageCount)
+                .Take(entityParameters.PageCount)
                 .AsNoTracking()
-                .Select(x => new MuscleDto
-                {
-                    Name = x.Name,
-                    Description = x.Description,
-                    ImageUrl = x.ImageUrl
-                }).
-                ToListAsync();
+                .ToListAsync(cancellationToken);
+
+            return new EntityResult<T>
+            {
+                Count = count,
+                List = list
+            };
+        }
+
+        public async Task<T> GetEntity<T>(long id, CancellationToken cancellationToken)  where T : BaseEntity
+        {
+            return await workoutTrackerDbContext.Set<T>().FirstAsync(x => x.Id == id, cancellationToken);
+        }
+
+        public async Task<T> AddAsync<T>(T entity, CancellationToken cancellationToken)
+        {
+            await workoutTrackerDbContext.AddAsync(entity, cancellationToken);
+            await workoutTrackerDbContext.SaveChangesAsync();
+            return entity;
+        }
+
+        public async Task<T> UpdateAsync<T>(T entity, CancellationToken cancellationToken)
+        {
+            workoutTrackerDbContext.Update(entity);
+            await workoutTrackerDbContext.SaveChangesAsync();
+            return entity;
+        }
+
+        public async Task DeleteAsync<T>(T entity, CancellationToken cancellationToken)
+        {
+            workoutTrackerDbContext.Remove(entity);
+            await workoutTrackerDbContext.SaveChangesAsync();
         }
         #endregion
     }

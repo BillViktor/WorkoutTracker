@@ -11,8 +11,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkoutTracker.Web", "Worko
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkoutTracker.Business", "WorkoutTracker.Business\WorkoutTracker.Business.csproj", "{E7B2CC1B-A340-4D91-AD31-59E787BD8517}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkoutTracker.Test", "WorkoutTracker.Test\WorkoutTracker.Test.csproj", "{EB7ED0D5-AE2C-444D-9CF2-E692B1C75146}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkoutTracker.API", "WorkoutTracker.API\WorkoutTracker.API.csproj", "{7DF5D23A-3EEF-4903-A254-6FDAB202BD8B}"
 EndProject
 Global
@@ -37,10 +35,6 @@ Global
 		{E7B2CC1B-A340-4D91-AD31-59E787BD8517}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E7B2CC1B-A340-4D91-AD31-59E787BD8517}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E7B2CC1B-A340-4D91-AD31-59E787BD8517}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EB7ED0D5-AE2C-444D-9CF2-E692B1C75146}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EB7ED0D5-AE2C-444D-9CF2-E692B1C75146}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EB7ED0D5-AE2C-444D-9CF2-E692B1C75146}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EB7ED0D5-AE2C-444D-9CF2-E692B1C75146}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7DF5D23A-3EEF-4903-A254-6FDAB202BD8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7DF5D23A-3EEF-4903-A254-6FDAB202BD8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7DF5D23A-3EEF-4903-A254-6FDAB202BD8B}.Release|Any CPU.ActiveCfg = Release|Any CPU

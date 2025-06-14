@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using WorkoutTracker.Business.Services;
-using WorkoutTracker.Data.Models;
-using WorkoutTracker.Shared.Dto;
+using WorkoutTracker.Business.Services.MuscleService;
+using WorkoutTracker.Shared.Models;
+using WorkoutTracker.Shared.Models.Pagination;
 
 namespace WorkoutTracker.API.Controllers
 {
@@ -9,37 +9,19 @@ namespace WorkoutTracker.API.Controllers
     [Route("[controller]")]
     public class MuscleController : ControllerBase
     {
-        private readonly ILogger<MuscleController> mLogger;
-        private readonly IMuscleService mMuscleService;
+        private readonly ILogger<MuscleController> logger;
+        private readonly IMuscleService muscleService;
 
-        public MuscleController(ILogger<MuscleController> aLogger, IMuscleService aMuscleService)
+        public MuscleController(ILogger<MuscleController> logger, IMuscleService muscleService)
         {
-            mLogger = aLogger;
-            mMuscleService = aMuscleService;
-        }
-
-        [HttpGet]
-        public async Task<List<MuscleDto>> GetMuscles()
-        {
-            return await mMuscleService.GetMuscles();
+            this.logger = logger;
+            this.muscleService = muscleService;
         }
 
         [HttpPost]
-        public string AddMuscle()
+        public async Task<EntityResult<Muscle>> GetMuscles(EntityParameters entityParameters, CancellationToken cancellationToken)
         {
-            return "Muscle added";
-        }
-
-        [HttpPut("{aId}")]
-        public string UpdateMuscle(long aId)
-        {
-            return "Muscle updated";
-        }
-
-        [HttpDelete("{aId}")]
-        public string DeleteMuscle(long aId)
-        {
-            return "Muscle deleted";
+            return await muscleService.GetMuscles(entityParameters, cancellationToken);
         }
     }
 }

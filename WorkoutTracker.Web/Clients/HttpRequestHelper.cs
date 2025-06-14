@@ -5,9 +5,9 @@ namespace WorkoutTracker.Web.Clients
     public static class HttpRequestHelper
     {
         #region Get
-        public static async Task<T> GetAsync<T>(this HttpClient aHttpClient, string aUrl)
+        public static async Task<T> GetAsync<T>(this HttpClient httpClient, string url)
         {
-            var response = await aHttpClient.GetAsync(aUrl);
+            var response = await httpClient.GetAsync(url);
             if (!response.IsSuccessStatusCode) return default;
             return await response.Content.ReadFromJsonAsync<T>();
         }
@@ -15,16 +15,16 @@ namespace WorkoutTracker.Web.Clients
 
 
         #region Post
-        public static async Task<T> PostAsync<T>(this HttpClient aHttpCleint, string aUrl)
+        public static async Task<T> PostAsync<T>(this HttpClient httpClient, string url)
         {
-            var response = await aHttpCleint.PostAsync(aUrl, null);
+            var response = await httpClient.PostAsync(url, null);
             if (!response.IsSuccessStatusCode) return default;
             return await response.Content.ReadFromJsonAsync<T>();
         }
 
-        public static async Task<T> PostAsJsonAsync<T, U>(this HttpClient aHttpCleint, string aUrl, U aContent)
+        public static async Task<T> PostAsJsonAsync<T, U>(this HttpClient httpClient, string url, U aContent)
         {
-            var response = await aHttpCleint.PostAsJsonAsync(aUrl, aContent);
+            var response = await httpClient.PostAsJsonAsync(url, aContent);
             if (!response.IsSuccessStatusCode) return default;
             return await response.Content.ReadFromJsonAsync<T>();
         }
@@ -32,16 +32,16 @@ namespace WorkoutTracker.Web.Clients
 
 
         #region Put
-        public static async Task<T> PutAsync<T>(this HttpClient aHttpCleint, string aUrl)
+        public static async Task<T> PutAsync<T>(this HttpClient httpClient, string url)
         {
-            var response = await aHttpCleint.PutAsync(aUrl, null);
+            var response = await httpClient.PutAsync(url, null);
             if (!response.IsSuccessStatusCode) return default;
             return await response.Content.ReadFromJsonAsync<T>();
         }
 
-        public static async Task<T> PutAsJsonAsync<T, U>(this HttpClient aHttpCleint, string aUrl, U aContent)
+        public static async Task<T> PutAsJsonAsync<T, U>(this HttpClient httpClient, string url, U aContent)
         {
-            var response = await aHttpCleint.PutAsJsonAsync(aUrl, aContent);
+            var response = await httpClient.PutAsJsonAsync(url, aContent);
             if (!response.IsSuccessStatusCode) return default;
             return await response.Content.ReadFromJsonAsync<T>();
         }
@@ -49,11 +49,11 @@ namespace WorkoutTracker.Web.Clients
 
 
         #region Delete
-        public static async Task<T> DeleteAsync<T>(this HttpClient aHttpCleint, string aUrl)
+        public static async Task<bool> DeleteAsync(this HttpClient httpClient, string url)
         {
-            var response = await aHttpCleint.DeleteAsync(aUrl);
-            if (!response.IsSuccessStatusCode) return default;
-            return await response.Content.ReadFromJsonAsync<T>();
+            var response = await httpClient.DeleteAsync(url);
+            if (!response.IsSuccessStatusCode) return false;
+            return true;
         }
         #endregion
     }

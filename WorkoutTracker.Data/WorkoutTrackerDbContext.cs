@@ -1,24 +1,25 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using WorkoutTracker.Data.Models;
+using WorkoutTracker.Shared.Models;
 
 namespace WorkoutTracker.Data
 {
     public class WorkoutTrackerDbContext : DbContext
     {
         public DbSet<Muscle> Muscles { get; set; }
+        public DbSet<Exercise> Exercise { get; set; }
 
         public WorkoutTrackerDbContext(DbContextOptions<WorkoutTrackerDbContext> aOptions) : base(aOptions) { }
 
-        protected override void OnModelCreating(ModelBuilder aModelBuilder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            aModelBuilder.Entity<ExerciseMuscle>(e =>
+            modelBuilder.Entity<ExerciseMuscle>(e =>
             {
                 e.Property(p => p.CreateDate).HasDefaultValueSql("getdate()");
 
                 e.HasIndex(e => new { e.ExerciseId, e.MuscleId }).IsUnique();
             });
 
-            aModelBuilder.Entity<Muscle>(e =>
+            modelBuilder.Entity<Muscle>(e =>
             {
                 e.Property(p => p.Name).HasMaxLength(128);
                 e.Property(p => p.Description).HasMaxLength(2048);
@@ -34,7 +35,7 @@ namespace WorkoutTracker.Data
                             .OnDelete(DeleteBehavior.Cascade);
             });
 
-            aModelBuilder.Entity<Exercise>(e =>
+            modelBuilder.Entity<Exercise>(e =>
             {
                 e.Property(p => p.Name).HasMaxLength(128);
                 e.Property(p => p.Description).HasMaxLength(2048);
@@ -51,7 +52,7 @@ namespace WorkoutTracker.Data
 
             });
 
-            base.OnModelCreating(aModelBuilder);
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

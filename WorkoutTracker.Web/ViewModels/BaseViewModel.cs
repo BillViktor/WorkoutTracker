@@ -3,9 +3,9 @@
     public class BaseViewModel : IBaseViewModel
     {
         //Fields
-        private bool mIsBusy = false;
+        private bool isBusy = false;
 
         //Properties
-        public bool IsBusy { get { return mIsBusy; } set { mIsBusy = value; } }
+        public bool IsBusy { get { return isBusy; } set { isBusy = value; } }
     }
 }

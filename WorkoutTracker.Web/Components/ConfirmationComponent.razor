@@ -1,0 +1,31 @@
+﻿@if(IsVisible) 
+{
+    <div class="backdrop">
+        <div class="dialog">
+            @if (!string.IsNullOrWhiteSpace(Title))
+            {
+                <p class="font-bold">
+                    @Title
+                </p>
+            }
+
+            <p>
+                @Message
+            </p>
+
+            <hr />
+
+            <div class="row justify-content-end">
+                <button @onclick="async () => await OnConfirm.InvokeAsync(true)" class="button-success">Confirm</button>
+                <button @onclick="async () => await OnConfirm.InvokeAsync(false)" class="button-warning">Cancel</button>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public string Title { get; set; }
+    [Parameter] public string Message { get; set; }
+    [Parameter] public bool IsVisible { get; set; } = false;
+    [Parameter] public EventCallback<bool> OnConfirm { get; set; }
+}

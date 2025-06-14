@@ -15,4 +15,10 @@
     <ProjectReference Include="..\WorkoutTracker.Shared\WorkoutTracker.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Pages\MusclePage.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+  </ItemGroup>
+
 </Project>

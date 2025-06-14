@@ -1,0 +1,41 @@
+﻿@page "/Muscles"
+@using WorkoutTracker.Web.ViewModels.Muscle
+
+<PageTitle>Muscles</PageTitle>
+
+<h1>Muscles</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (MuscleViewModel.Muscles != null)
+        {
+            @foreach (MuscleDto muscle in MuscleViewModel.Muscles)
+            {
+                <tr>
+                    <td>@muscle.Name</td>
+                    <td>@muscle.Description</td>
+                    <td>
+                        <img alt="Picture showing the anatomy of the human body with the @muscle.Name.ToLower() highlighted." src="@muscle.ImageUrl" />
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+
+@code {
+    [Inject] IMuscleViewModel MuscleViewModel { get; set; }
+
+    protected override async Task OnInitializedAsync() 
+    {
+        await MuscleViewModel.GetMuscles();
+    }
+}

@@ -1,4 +1,4 @@
-﻿namespace WorkoutTracker.Data.Models
+﻿namespace WorkoutTracker.Shared.Models
 {
     public class ExerciseMuscle : BaseEntity
     {

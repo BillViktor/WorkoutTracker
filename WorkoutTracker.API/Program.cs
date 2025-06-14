@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.SwaggerUI;
-using WorkoutTracker.Business.Services;
+using WorkoutTracker.Business.Services.ExerciseService;
+using WorkoutTracker.Business.Services.MuscleService;
 using WorkoutTracker.Data;
 using WorkoutTracker.Data.Repository;
 
@@ -30,7 +31,8 @@ namespace WorkoutTracker.API
             builder.Services.AddScoped<IWorkoutTrackerRepository, WorkoutTrackerRepository>();
             #endregion
 
-            #region Services
+            #region 
+            builder.Services.AddScoped<IExerciseService, ExerciseService>();
             builder.Services.AddScoped<IMuscleService, MuscleService>();
             #endregion
 
