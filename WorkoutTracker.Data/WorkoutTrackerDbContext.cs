@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using WorkoutTracker.Data.Models;
 using WorkoutTracker.Shared.Models;
 
 namespace WorkoutTracker.Data
 {
-    public class WorkoutTrackerDbContext : DbContext
+    public class WorkoutTrackerDbContext : IdentityDbContext<WorkoutTrackerUserModel>
     {
         public DbSet<Muscle> Muscles { get; set; }
         public DbSet<Exercise> Exercise { get; set; }

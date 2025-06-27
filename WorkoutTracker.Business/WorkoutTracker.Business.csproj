@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.3.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\WorkoutTracker.Data\WorkoutTracker.Data.csproj" />
     <ProjectReference Include="..\WorkoutTracker.Shared\WorkoutTracker.Shared.csproj" />
   </ItemGroup>

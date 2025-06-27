@@ -1,11 +1,12 @@
 ﻿using WorkoutTracker.Shared.Models;
 using WorkoutTracker.Shared.Models.Pagination;
+using WorkoutTracker.Shared.Models.Result;
 
 namespace WorkoutTracker.Web.Clients.ExerciseClient
 {
     public interface IExerciseClient
     {
-        Task<bool> DeleteExercise(long id);
-        Task<EntityResult<Exercise>> GetExercises(EntityParameters entityParameters);
+        Task<ResultModel> DeleteExercise(long id);
+        Task<ResultModel<EntityResult<Exercise>>> GetExercises(EntityParameters entityParameters);
     }
 }

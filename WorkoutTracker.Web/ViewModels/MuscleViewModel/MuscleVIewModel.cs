@@ -22,7 +22,12 @@ namespace WorkoutTracker.Web.ViewModels.Muscle
         #region Methods
         public async Task GetMuscles()
         {
-            muscles = await muscleClient.GetMuscles();
+            var result = await muscleClient.GetMuscles();
+
+            if (result.Success)
+            {
+                muscles = result.ResultObject;
+            }
         }
         #endregion
     }

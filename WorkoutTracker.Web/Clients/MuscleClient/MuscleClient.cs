@@ -1,19 +1,20 @@
 ﻿using WorkoutTracker.Shared.Dto;
+using WorkoutTracker.Shared.Models.Result;
 
 namespace WorkoutTracker.Web.Clients.Muscle
 {
     public class MuscleClient : IMuscleClient
     {
-        private readonly HttpClient mHttpClient;
+        private readonly HttpClient httpClient;
 
         public MuscleClient(HttpClient httpClient)
         {
-            mHttpClient = httpClient;
+            this.httpClient = httpClient;
         }
 
-        public async Task<List<MuscleDto>> GetMuscles()
+        public async Task<ResultModel<List<MuscleDto>>> GetMuscles()
         {
-            return await mHttpClient.GetAsync<List<MuscleDto>>("Muscle");
+            return await HttpRequestHelper.GetAsync<List<MuscleDto>>(httpClient, "");
         }
     }
 }

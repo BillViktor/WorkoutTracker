@@ -1,0 +1,121 @@
+﻿@using WorkoutTracker.Shared.Models.Result
+
+<div class="toast-container">
+    @foreach (var toast in toasts)
+    {
+        <div class="toast @toast.CssClass"
+        @onmouseover="() => PauseToast(toast)"
+        @onmouseout="() => ResumeToast(toast)">
+            <span>@toast.Message</span>
+            <button class="dismiss-btn" @onclick="() => DismissToast(toast)">X</button>
+        </div>
+    }
+</div>
+
+@if (IsBusy)
+{
+    <div class="spinner-wrapper">
+        <div class="spinner"></div>
+    </div>
+}
+
+@code {
+    [Parameter] public List<ErrorModel> Errors { get; set; } = new();
+    [Parameter] public List<string> SuccessMessages { get; set; } = new();
+    [Parameter] public bool IsBusy { get; set; } = false;
+
+    private List<ToastItem> toasts = new List<ToastItem>();
+
+    /// <summary>
+    /// When the component parameters are set, process the errors and success messages
+    /// </summary>
+    protected override void OnParametersSet()
+    {
+        foreach (var error in Errors)
+        {
+            AddToast(error.ErrorText, "toast-error", 5000);
+        }
+
+        foreach (var message in SuccessMessages)
+        {
+            AddToast(message, "toast-success", 2000);
+        }
+
+        Errors.Clear();
+        SuccessMessages.Clear();
+    }
+
+    /// <summary>
+    /// Add the toast and start the timer
+    /// </summary>
+    private void AddToast(string message, string cssClass, int duration)
+    {
+        var toast = new ToastItem
+        {
+            Message = message,
+            CssClass = cssClass,
+            Duration = duration,
+        };
+
+        toasts.Add(toast);
+        StartDismissTimer(toast);
+    }
+
+    /// <summary>
+    /// Starts the timer on the toast
+    /// </summary>
+    private void StartDismissTimer(ToastItem toast)
+    {
+        toast.CancellationTokenSource = new CancellationTokenSource();
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                await Task.Delay(toast.Duration, toast.CancellationTokenSource.Token);
+                await InvokeAsync(() => DismissToast(toast));
+            }
+            catch (TaskCanceledException) { /* hover paused */ }
+        });
+    }
+
+    /// <summary>
+    /// Pauses the timer on the toast
+    /// </summary>
+    private void PauseToast(ToastItem toast)
+    {
+        toast.CancellationTokenSource?.Cancel();
+    }
+
+    /// <summary>
+    /// Resumes the timer on the toast
+    /// </summary>
+    private void ResumeToast(ToastItem toast)
+    {
+        // Restart only if still present
+        if (toasts.Contains(toast))
+        {
+            StartDismissTimer(toast);
+        }
+    }
+
+    /// <summary>
+    /// Removes the toast
+    /// </summary>
+    private void DismissToast(ToastItem toast)
+    {
+        toast.CancellationTokenSource?.Cancel();
+        toasts.Remove(toast);
+        StateHasChanged();
+    }
+
+    /// <summary>
+    /// Lightweight class to represent a toast item
+    /// </summary>
+    private class ToastItem
+    {
+        public string Message { get; set; }
+        public string CssClass { get; set; }
+        public int Duration { get; set; } = 5000; //Default duration
+        public CancellationTokenSource CancellationTokenSource { get; set; }
+    }
+}

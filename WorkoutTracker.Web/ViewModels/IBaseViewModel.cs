@@ -1,7 +1,18 @@
-﻿namespace WorkoutTracker.Web.ViewModels
+﻿using System.ComponentModel;
+using WorkoutTracker.Shared.Models.Result;
+
+namespace WorkoutTracker.Web.ViewModels
 {
     public interface IBaseViewModel
     {
         bool IsBusy { get; set; }
+        List<ErrorModel> Errors { get; set; }
+        List<string> SuccessMessages { get; set; }
+
+        event PropertyChangedEventHandler PropertyChanged;
+
+        void AddError(string error);
+        void AddSuccessMessage(string message);
+        void AppendErrorList(List<ErrorModel> errorList);
     }
 }

@@ -1,0 +1,93 @@
+﻿@page "/login"
+@using WorkoutTracker.Shared.Models.Auth
+@using WorkoutTracker.Web.Components
+@using WorkoutTracker.Web.ViewModels.AuthViewModel
+@layout EmptyLayout
+
+<PageTitle>WorkoutTracker - Login</PageTitle>
+
+<MessageComponent IsBusy="AuthViewModel.IsBusy" Errors="AuthViewModel.Errors" SuccessMessages="AuthViewModel.SuccessMessages"/>
+
+<div class="center box">
+    <h2>Login</h2>
+
+    <EditForm Model="loginModel" OnValidSubmit="LoginUser">
+        <DataAnnotationsValidator />
+
+        <p>
+            <ValidationSummary />
+        </p>
+
+        <p>
+            <label for="userName">Username</label>
+            <input @bind="loginModel.UserName" id="userName" class="w-100" />
+        </p>
+
+        <p>
+            <label for="password">Password</label>
+            <input type="password" @bind="loginModel.Password" id="password" class="w-100" />
+        </p>
+
+        <p class="row justify-content-between align-items-center">
+            <div>
+                <input class="checkbox" @bind="loginModel.RememberMe" id="rememberMe" type="checkbox" />
+                <label style="display: inline" for="rememberMe">Remember me</label>
+            </div>
+
+            <a href="forgotpassword">Forgot your password?</a>
+        </p>
+
+
+
+        <button class="button-primary w-100" type="submit">Login</button>
+    </EditForm>
+
+    <p class="text-center">
+        Not registered? <a href="register">Register now!</a>
+    </p>
+</div>
+
+@code {
+    [Inject] 
+    IAuthViewModel AuthViewModel { get; set; }
+
+    [Inject] 
+    NavigationManager NavigationManager { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string? ReturnUrl { get; set; }
+
+    private LoginRequestModel loginModel = new LoginRequestModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        AuthViewModel.PropertyChanged += ViewModelPropertyChanged;
+
+        base.OnInitialized();
+    }
+
+    public void Dispose() {
+        AuthViewModel.PropertyChanged -= ViewModelPropertyChanged;
+    }
+
+    private async void ViewModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) => await InvokeAsync(() => { StateHasChanged(); });
+
+    /// <summary>
+    /// Login and navigate to the return url (if exists)
+    /// </summary>
+    private async Task LoginUser()
+    {
+        if (await AuthViewModel.Login(loginModel))
+        {
+            if (!string.IsNullOrEmpty(ReturnUrl))
+            {
+                NavigationManager.NavigateTo(ReturnUrl);
+            }
+            else 
+            {
+                NavigationManager.NavigateTo("");
+            }
+        }
+    }
+}

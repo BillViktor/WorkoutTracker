@@ -2,6 +2,7 @@
 using WorkoutTracker.Data.Repository;
 using WorkoutTracker.Shared.Models;
 using WorkoutTracker.Shared.Models.Pagination;
+using WorkoutTracker.Shared.Models.Result;
 
 namespace WorkoutTracker.Business.Services.ExerciseService
 {
@@ -16,9 +17,12 @@ namespace WorkoutTracker.Business.Services.ExerciseService
             this.configuration = configuration;
         }
 
+        /// <summary>
+        /// Returns a paginated, sorted and filtered list of exercises
+        /// </summary>
         public async Task<EntityResult<Exercise>> GetExercises(EntityParameters entityParameters, CancellationToken cancellationToken)
         {
-            var exercises = await workoutTrackerRepository.GetEntities<Exercise>(entityParameters, cancellationToken);
+            var exercises = await workoutTrackerRepository.GetEntitiesPaginated<Exercise>(entityParameters, cancellationToken);
 
             string sBaseUrl = configuration["WorkoutTrackerApiBaseUrl"];
 
@@ -27,6 +31,9 @@ namespace WorkoutTracker.Business.Services.ExerciseService
             return exercises;
         }
 
+        /// <summary>
+        /// Deletes the exercise with the given id
+        /// </summary>
         public async Task DeleteExercise(long id, CancellationToken cancellationToken)
         {
             //Get exercise

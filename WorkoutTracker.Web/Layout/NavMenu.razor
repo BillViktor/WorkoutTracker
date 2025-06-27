@@ -5,23 +5,26 @@
         </NavLink>
 
         <nav>
-            <ul>
+            <ul class="nav-list">
                 <li>
-                    <NavLink href="Muscles" Match="NavLinkMatch.All">
-                        Muscles
-                    </NavLink>
+                    <NavLink href="Muscles" Match="NavLinkMatch.All">Muscles</NavLink>
+                </li>
+                <li>
+                    <NavLink href="Exercises" Match="NavLinkMatch.All">Exercises</NavLink>
+                </li>
+                <li>
+                    <NavLink href="Routines" Match="NavLinkMatch.All">Routines</NavLink>
                 </li>
 
-                <li>
-                    <NavLink href="Exercises" Match="NavLinkMatch.All">
-                        Exercises
-                    </NavLink>
-                </li>
-
-                <li>
-                    <NavLink href="Routines" Match="NavLinkMatch.All">
-                        Routines
-                    </NavLink>
+                <li class="nav-auth-link">
+                    <AuthorizeView>
+                        <Authorized>
+                            <NavLink href="Logout" Match="NavLinkMatch.All">Logout</NavLink>
+                        </Authorized>
+                        <NotAuthorized>
+                            <NavLink href="Login" Match="NavLinkMatch.All">Login</NavLink>
+                        </NotAuthorized>
+                    </AuthorizeView>
                 </li>
             </ul>
         </nav>

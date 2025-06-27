@@ -16,7 +16,12 @@ namespace WorkoutTracker.Web.ViewModels.ExerciseViewModel
         #region Methods
         public override async Task GetEntities()
         {
-            Entities = await exerciseClient.GetExercises(EntityParameters);
+            var result = await exerciseClient.GetExercises(EntityParameters);
+
+            if(result.Success)
+            {
+                Entities = result.ResultObject;
+            }
         }
 
         public override async Task<bool> Add(Exercise exercise)
@@ -26,7 +31,9 @@ namespace WorkoutTracker.Web.ViewModels.ExerciseViewModel
 
         public override async Task<bool> Delete(Exercise exercise)
         {
-            return await exerciseClient.DeleteExercise(exercise.Id);
+            var result = await exerciseClient.DeleteExercise(exercise.Id);
+
+            return result.Success;
         }
 
         public override async Task<bool> Update(Exercise exercise)

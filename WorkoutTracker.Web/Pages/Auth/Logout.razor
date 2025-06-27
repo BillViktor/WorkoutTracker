@@ -1,0 +1,18 @@
+﻿@page "/logout"
+@using WorkoutTracker.Web.ViewModels.AuthViewModel
+
+@code {
+    [Inject]
+    IAuthViewModel AuthViewModel { get; set; }
+
+    [Inject]
+    NavigationManager NavigationManager { get; set; }
+
+    protected override async Task OnInitializedAsync() 
+    {
+        if(await AuthViewModel.Logout()) 
+        {
+            NavigationManager.NavigateTo("/login", true);
+        }
+    }
+}

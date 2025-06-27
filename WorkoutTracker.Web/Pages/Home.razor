@@ -1,0 +1,27 @@
+﻿@page "/"
+@using WorkoutTracker.Shared.Models.Result
+
+<PageTitle>Home</PageTitle>
+
+<h1>Hello, world!</h1>
+
+<p>
+    This home page currently demos the error messages and the loading spinner. <br/>
+    To be continued
+</p>
+
+<MessageComponent IsBusy="true" Errors="errors" SuccessMessages="successMessages" />
+
+@code {
+    private List<ErrorModel> errors = new();
+    private List<string> successMessages = new();
+
+    protected override async Task OnInitializedAsync() 
+    {
+        errors.Add(new ErrorModel("This is test error #1!"));
+        errors.Add(new ErrorModel("This is test error #2!"));
+        await Task.Delay(1000);
+        errors.Add(new ErrorModel("This is test error #3 after a small delay!"));
+        successMessages.Add("This is a test success message #1!");
+    }
+}

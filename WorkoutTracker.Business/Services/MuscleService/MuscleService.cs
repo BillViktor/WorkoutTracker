@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using WorkoutTracker.Data.Repository;
 using WorkoutTracker.Shared.Models;
-using WorkoutTracker.Shared.Models.Pagination;
 
 namespace WorkoutTracker.Business.Services.MuscleService
 {
@@ -15,13 +14,17 @@ namespace WorkoutTracker.Business.Services.MuscleService
             this.workoutTrackerRepository = workoutTrackerRepository;
             this.configuration = configuration;
         }
-        public async Task<EntityResult<Muscle>> GetMuscles(EntityParameters entityParameters, CancellationToken cancellationToken)
+
+        /// <summary>
+        /// Returns a list of all muscles wrapped in a ResultModel.
+        /// </summary>
+        public async Task<List<Muscle>> GetMuscles(CancellationToken cancellationToken)
         {
-            var muscles = await workoutTrackerRepository.GetEntities<Muscle>(entityParameters, cancellationToken);
+            var muscles = await workoutTrackerRepository.GetEntities<Muscle>(cancellationToken);
 
             string sBaseUrl = configuration["WorkoutTrackerApiBaseUrl"];
 
-            muscles.List.ForEach(x => x.ImageUrl = $"{sBaseUrl}{x.ImageUrl}");
+            muscles.ForEach(x => x.ImageUrl = $"{sBaseUrl}{x.ImageUrl}");
 
             return muscles;
         }
