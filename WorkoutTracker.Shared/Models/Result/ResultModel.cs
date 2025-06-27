@@ -20,6 +20,12 @@
             Success = false;
             AppendErrors(errors);
         }
+
+        public ResultModel(Exception ex)
+        {
+            Success = false;
+            AddExceptionError(ex);
+        }
         #endregion
 
         #region Errors
@@ -33,7 +39,12 @@
 
         public void AddExceptionError(Exception ex)
         {
-
+            Errors.Add(new ErrorModel
+            {
+                ErrorText = ex.Message,
+                ExceptionDetails = ex.Source ?? "No source available",
+                ExceptionStackTrace = ex.StackTrace ?? "No stack trace available"
+            });
         }
 
         /// <summary>
@@ -83,6 +94,12 @@
         {
             Success = false;
             AppendErrors(errors);
+        }
+
+        public ResultModel(Exception ex)
+        {
+            Success = false;
+            AddExceptionError(ex);
         }
         #endregion
     }

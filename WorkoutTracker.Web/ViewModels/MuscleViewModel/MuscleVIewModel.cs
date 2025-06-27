@@ -1,9 +1,10 @@
 ﻿using WorkoutTracker.Shared.Dto;
 using WorkoutTracker.Web.Clients.Muscle;
+using WorkoutTracker.Web.ViewModels.Base;
 
 namespace WorkoutTracker.Web.ViewModels.Muscle
 {
-    public class MuscleViewModel : IMuscleViewModel
+    public class MuscleViewModel : BaseViewModel, IMuscleViewModel
     {
         private readonly IMuscleClient muscleClient;
 
@@ -22,12 +23,9 @@ namespace WorkoutTracker.Web.ViewModels.Muscle
         #region Methods
         public async Task GetMuscles()
         {
-            var result = await muscleClient.GetMuscles();
-
-            if (result.Success)
-            {
-                muscles = result.ResultObject;
-            }
+            muscles = await ResultHandler.HandleAsync(
+                muscleClient.GetMuscles(),
+                AppendErrorList);
         }
         #endregion
     }

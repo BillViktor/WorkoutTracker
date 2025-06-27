@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using WorkoutTracker.Shared.Models.Result;
 
-namespace WorkoutTracker.Web.ViewModels
+namespace WorkoutTracker.Web.ViewModels.Base
 {
     public class BaseViewModel : INotifyPropertyChanged, IBaseViewModel
     {

@@ -26,7 +26,7 @@ namespace WorkoutTracker.Business.Services.MuscleService
 
             muscles.ForEach(x => x.ImageUrl = $"{sBaseUrl}{x.ImageUrl}");
 
-            return muscles;
+            return muscles.OrderBy(x => x.Name).ToList();
         }
     }
 }

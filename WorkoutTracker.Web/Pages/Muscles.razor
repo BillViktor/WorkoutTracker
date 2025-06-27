@@ -6,37 +6,45 @@
 
 <h1>Muscles</h1>
 
-<table>
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (MuscleViewModel.Muscles != null)
-        {
-            @foreach (MuscleDto muscle in MuscleViewModel.Muscles)
-            {
-                <tr>
-                    <td>@muscle.Name</td>
-                    <td>@muscle.Description</td>
-                    <td>
-                        <img alt="Picture showing the anatomy of the human body with the @muscle.Name.ToLower() highlighted." src="@muscle.ImageUrl" />
-                    </td>
-                </tr>
-            }
-        }
-    </tbody>
-</table>
+<div class="card-grid">
+    @foreach (var muscle in MuscleViewModel.Muscles ?? new List<MuscleDto>())
+    {
+        <div class="muscle-card">
+            <a href="@($"exercises?muscle={muscle.Name}")">
+                <img src="@muscle.ImageUrl" alt="@muscle.Name" />
+                <div class="muscle-info">
+                    <h5>@muscle.Name</h5>
+                    <p>@muscle.Description</p>
+                </div>
+            </a>
+        </div>
+    }
+</div>
 
 
 @code {
-    [Inject] IMuscleViewModel MuscleViewModel { get; set; }
+    [Inject] 
+    IMuscleViewModel MuscleViewModel { get; set; }
+
+    [Inject]
+    NavigationManager NavigationManager { get; set; }
 
     protected override async Task OnInitializedAsync() 
     {
+        MuscleViewModel.PropertyChanged += ViewModelPropertyChanged;
+
         await MuscleViewModel.GetMuscles();
+    }
+
+    public void Dispose() => MuscleViewModel.PropertyChanged -= ViewModelPropertyChanged;
+
+    private async void ViewModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) => await InvokeAsync(() => { StateHasChanged(); });
+
+    /// <summary>
+    /// Navigate to the exercise page to show all exercises for the specified muscle.
+    /// </summary>
+    private void NavigateToExercises(string muscleName) 
+    {
+        NavigationManager.NavigateTo($"exercises?muscle={muscleName}");
     }
 }

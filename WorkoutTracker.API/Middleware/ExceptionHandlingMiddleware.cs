@@ -31,24 +31,24 @@ namespace WorkoutTracker.API.Middleware
             catch (EntityNotFoundException ex)
             {
                 logger.LogWarning(ex, "Entity not found.");
-                await HandleExceptionAsync(context, ex.Message, StatusCodes.Status404NotFound);
+                await HandleExceptionAsync(context, ex, StatusCodes.Status404NotFound);
             }
             catch (Exception ex)
             {
                 logger.LogError(ex, "Unhandled exception.");
-                await HandleExceptionAsync(context, "An unexpected error occurred.", StatusCodes.Status500InternalServerError);
+                await HandleExceptionAsync(context, ex, StatusCodes.Status500InternalServerError);
             }
         }
 
         /// <summary>
         /// Converts the exception into a structured HTTP response.
         /// </summary>
-        private static async Task HandleExceptionAsync(HttpContext context, string message, int statusCode)
+        private static async Task HandleExceptionAsync(HttpContext context, Exception ex, int statusCode)
         {
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = statusCode;
 
-            var result = new ResultModel(new List<string> { message });
+            var result = new ResultModel(ex);
 
             await context.Response.WriteAsJsonAsync(result);
         }

@@ -88,6 +88,7 @@ main {
 /* Headers */
 h1, h2, h3, h4, h5, h6 {
     font-weight: bold;
+    margin-bottom: 0.5rem;
 }
 
 h1 {
@@ -357,4 +358,54 @@ label {
     to {
         transform: rotate(360deg);
     }
+}
+
+/* Cards */
+.card-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 1rem 0;
+    justify-content: center;
+}
+
+.muscle-card {
+    width: 220px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background-color: var(--background-color);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.muscle-card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.muscle-card a {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+}
+
+.muscle-card img {
+    width: 100%;
+    object-fit: cover;
+    display: block;
+    padding: 0.5rem;
+}
+
+.muscle-info {
+    padding: 0.5rem;
+}
+
+.muscle-info h5 {
+    margin: 0 0 0.5rem;
+    font-size: 1.1rem;
+}
+
+.muscle-info p {
+    margin: 0;
+    font-size: 1rem;
 }

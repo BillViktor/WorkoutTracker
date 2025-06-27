@@ -1,6 +1,9 @@
 ﻿@using WorkoutTracker.Shared.Models
+@using WorkoutTracker.Web.ViewModels.EntityViewModel
 
 @typeparam T where T : BaseEntity
+
+<MessageComponent IsBusy="EntityViewModel.IsBusy" Errors="EntityViewModel.Errors" SuccessMessages="EntityViewModel.SuccessMessages" />
 
 <!-- Allow creation of new entities? -->
 <div class="row align-content-center justify-content-between">
@@ -83,11 +86,20 @@
 <ConfirmationComponent Title="Confirm" Message="Are you sure you want to permanently delete this entity?" IsVisible="DeleteEntity" OnConfirm="OnDelete" />
 
 @code {
-    [Parameter] public bool CanAdd { get; set; } = true;
-    [Parameter] public bool CanEdit { get; set; } = true;
-    [Parameter] public bool CanDelete { get; set; } = true;
-    [Parameter] public IEntityViewModel<T> EntityViewModel { get; set; }
-    [Parameter] public string Title { get; set; }
+    [Parameter] 
+    public bool CanAdd { get; set; } = true;
+
+    [Parameter] 
+    public bool CanEdit { get; set; } = true;
+
+    [Parameter] 
+    public bool CanDelete { get; set; } = true;
+
+    [Parameter] 
+    public IEntityViewModel<T> EntityViewModel { get; set; }
+
+    [Parameter] 
+    public string Title { get; set; }
 
     private int TotalCount => EntityViewModel.Entities?.Count ?? 0;
     private int Page => EntityViewModel.EntityParameters.Page;
@@ -103,29 +115,56 @@
     private bool DeleteEntity = false;
     private object SelectedEntity = null;
 
+    protected override void OnInitialized()
+    {
+        EntityViewModel.PropertyChanged += ViewModelPropertyChanged;
+
+        base.OnInitialized();
+    }
+
+    public void Dispose() => EntityViewModel.PropertyChanged -= ViewModelPropertyChanged;
+
+    private async void ViewModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) => await InvokeAsync(() => { StateHasChanged(); });
+
+    /// <summary>
+    /// 
+    /// </summary>
     private async Task PaginationPageCountChanged()
     {
         EntityViewModel.EntityParameters.Page = 0;
         await EntityViewModel.GetEntities();
     }
 
+    /// <summary>
+    /// Set the page for the pagination
+    /// </summary>
     private async Task SetPage(int page)
     {
         EntityViewModel.EntityParameters.Page = page;
         await EntityViewModel.GetEntities();
     }
 
+    //// <summary>
+    /// Create a new entity
+    /// </summary>
     private async Task Create() 
     {
         await Task.Delay(0);
+        EntityViewModel.AddError("Create not implemented yet.");
     }
 
+    /// <summary>
+    /// Delete an entity
+    /// </summary>
     private void Delete(object entity) 
     {
         SelectedEntity = entity;
         DeleteEntity = true;
     }
 
+    /// <summary>
+    /// Delete an entity
+    /// </summary>
     private async Task OnDelete(bool delete) 
     {
         if(delete) 
@@ -154,8 +193,12 @@
         }
     }
 
+    /// <summary>
+    /// Edit an entity
+    /// </summary>
     private async Task Edit(object entity)
     {
         await Task.Delay(0);
+        EntityViewModel.AddError("Edit not implemented yet.");
     }
 }

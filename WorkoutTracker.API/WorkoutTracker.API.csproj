@@ -24,8 +24,4 @@
     <Folder Include="wwwroot\images\exercises\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Include="wwwroot\images\muscles\back.jpg" />
-  </ItemGroup>
-
 </Project>

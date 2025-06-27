@@ -1,4 +1,5 @@
 ﻿using WorkoutTracker.Shared.Models;
+using WorkoutTracker.Web.ViewModels.EntityViewModel;
 
 namespace WorkoutTracker.Web.ViewModels.ExerciseViewModel
 {

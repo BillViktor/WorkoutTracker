@@ -1,8 +1,9 @@
 ﻿using WorkoutTracker.Shared.Models.Pagination;
+using WorkoutTracker.Web.ViewModels.Base;
 
-namespace WorkoutTracker.Web.ViewModels
+namespace WorkoutTracker.Web.ViewModels.EntityViewModel
 {
-    public interface IEntityViewModel<T> where T : class
+    public interface IEntityViewModel<T> : IBaseViewModel where T : class
     {
         EntityResult<T> Entities { get; set; }
         EntityParameters EntityParameters { get; set; }

@@ -1,6 +1,7 @@
 ﻿using WorkoutTracker.Shared.Models.Auth;
 using WorkoutTracker.Web.Clients.AuthClient;
 using WorkoutTracker.Web.Identity;
+using WorkoutTracker.Web.ViewModels.Base;
 
 namespace WorkoutTracker.Web.ViewModels.AuthViewModel
 {

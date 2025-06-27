@@ -1,5 +1,7 @@
 ﻿using WorkoutTracker.Shared.Models;
 using WorkoutTracker.Web.Clients.ExerciseClient;
+using WorkoutTracker.Web.Clients.Muscle;
+using WorkoutTracker.Web.ViewModels.EntityViewModel;
 
 namespace WorkoutTracker.Web.ViewModels.ExerciseViewModel
 {
@@ -14,28 +16,37 @@ namespace WorkoutTracker.Web.ViewModels.ExerciseViewModel
         }
 
         #region Methods
+        /// <summary>
+        /// Retrieves a list of exercises from the database based on the provided parameters.
+        /// </summary>
         public override async Task GetEntities()
         {
-            var result = await exerciseClient.GetExercises(EntityParameters);
-
-            if(result.Success)
-            {
-                Entities = result.ResultObject;
-            }
+            Entities = await ResultHandler.HandleAsync(
+                exerciseClient.GetExercises(EntityParameters),
+                AppendErrorList);
         }
 
+        /// <summary>
+        /// Adds a new exercise to the database.
+        /// </summary>
         public override async Task<bool> Add(Exercise exercise)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Deletes an exercise.
+        /// </summary>
         public override async Task<bool> Delete(Exercise exercise)
         {
-            var result = await exerciseClient.DeleteExercise(exercise.Id);
-
-            return result.Success;
+            return await ResultHandler.HandleAsync(
+                exerciseClient.DeleteExercise(exercise.Id),
+                AppendErrorList);
         }
 
+        /// <summary>
+        /// Updates an existing exercise.
+        /// </summary>
         public override async Task<bool> Update(Exercise exercise)
         {
             throw new NotImplementedException();

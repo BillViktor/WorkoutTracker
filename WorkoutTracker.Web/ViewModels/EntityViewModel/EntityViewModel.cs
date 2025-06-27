@@ -1,6 +1,7 @@
 ﻿using WorkoutTracker.Shared.Models.Pagination;
+using WorkoutTracker.Web.ViewModels.Base;
 
-namespace WorkoutTracker.Web.ViewModels
+namespace WorkoutTracker.Web.ViewModels.EntityViewModel
 {
     public abstract class EntityViewModel<T> : BaseViewModel, IEntityViewModel<T> where T : class
     {

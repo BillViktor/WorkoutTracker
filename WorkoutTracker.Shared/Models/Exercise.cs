@@ -1,6 +1,9 @@
 ﻿namespace WorkoutTracker.Shared.Models
 {
-    public class Exercise :  BaseEntity
+    /// <summary>
+    /// Represents an exercise.
+    /// </summary>
+    public class Exercise : BaseEntity
     {
         public string Name { get; set; }
         public string Description { get; set; }

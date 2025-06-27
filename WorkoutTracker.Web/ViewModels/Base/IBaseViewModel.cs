@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using WorkoutTracker.Shared.Models.Result;
 
-namespace WorkoutTracker.Web.ViewModels
+namespace WorkoutTracker.Web.ViewModels.Base
 {
     public interface IBaseViewModel
     {

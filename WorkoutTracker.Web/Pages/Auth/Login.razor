@@ -60,16 +60,14 @@
 
     private LoginRequestModel loginModel = new LoginRequestModel();
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         AuthViewModel.PropertyChanged += ViewModelPropertyChanged;
 
         base.OnInitialized();
     }
 
-    public void Dispose() {
-        AuthViewModel.PropertyChanged -= ViewModelPropertyChanged;
-    }
+    public void Dispose() => AuthViewModel.PropertyChanged -= ViewModelPropertyChanged;
 
     private async void ViewModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) => await InvokeAsync(() => { StateHasChanged(); });
 
