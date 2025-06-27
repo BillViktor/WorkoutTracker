@@ -14,8 +14,8 @@
     @if (CanAdd)
     {
         <div>
-            <button @onclick="Create" class="button-primary">
-                Create
+            <button @onclick="Add" class="button-primary">
+                Add Entity
                 <i class="fa fa-plus"></i>
             </button>
         </div>
@@ -47,7 +47,7 @@
                         <div class="row align-items-center">
                             @if (CanEdit)
                             {
-                                <button title="Edit entity" @onclick="async () => await Edit(entity)" class="icon-button text-warning"><i class="fa fa-pencil" /></button>
+                                <button title="Edit entity" @onclick="() => Edit(entity)" class="icon-button text-warning"><i class="fa fa-pencil" /></button>
                             }
                             @if (CanDelete)
                             {
@@ -101,6 +101,8 @@
 
 <!-- Actions -->
 <ConfirmationComponent Title="Confirm" Message="Are you sure you want to permanently delete this entity?" IsVisible="DeleteEntity" OnConfirm="OnDelete" />
+<EditEntityComponent IsVisible="EditEntity" OnConfirm="OnEdit" />
+<AddEntityComponent IsVisible="AddEntity" Entity="NewEntity" Type="NewEntity.GetType()" OnConfirm="OnAdd" />
 
 @code {
     [Parameter] 
@@ -130,7 +132,10 @@
     private int EndItemIndex => Math.Min((Page + 1) * PageCount, TotalCount);
 
     private bool DeleteEntity = false;
+    private bool EditEntity = false;
+    private bool AddEntity = false;
     private object SelectedEntity = null;
+    private object NewEntity = Activator.CreateInstance(typeof(T));
 
     //Pagination buttons
     private const int range = 2;
@@ -167,16 +172,35 @@
     }
 
     //// <summary>
-    /// Create a new entity
+    /// Start the creation of a new entity
     /// </summary>
-    private async Task Create() 
+    private void Add()
     {
-        await Task.Delay(0);
-        EntityViewModel.AddError("Create not implemented yet.");
+        AddEntity = true;
     }
 
     /// <summary>
-    /// Delete an entity
+    /// Add an entity
+    /// </summary>
+    private async Task OnAdd(bool add)
+    {
+        if (add)
+        {
+            var entity = await EntityViewModel.Add(NewEntity as T);
+
+            if (entity != null)
+            {
+                //TODO...
+            }
+        }
+        else
+        {
+            AddEntity = false;
+        }
+    }
+
+    /// <summary>
+    /// Start the deletion of an entity
     /// </summary>
     private void Delete(object entity) 
     {
@@ -213,14 +237,36 @@
             DeleteEntity = false;
             SelectedEntity = null;
         }
-    }
+    } 
 
     /// <summary>
-    /// Edit an entity
+    /// Start the editing of an entity
     /// </summary>
-    private async Task Edit(object entity)
+    private void Edit(object entity)
     {
-        await Task.Delay(0);
-        EntityViewModel.AddError("Edit not implemented yet.");
+        SelectedEntity = entity;
+        EditEntity = true;
+    }
+
+
+    /// <summary>
+    /// Update an entity
+    /// </summary>
+    private async Task OnEdit(bool edit)
+    {
+        if (edit)
+        {
+            var entity = await EntityViewModel.Update(SelectedEntity as T);
+
+            if(entity != null ) 
+            {
+                //TODO...
+            }
+        }
+        else
+        {
+            EditEntity = false;
+            SelectedEntity = null;
+        }
     }
 }

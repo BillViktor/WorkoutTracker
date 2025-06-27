@@ -1,0 +1,22 @@
+﻿@if (IsVisible)
+{
+    <div class="backdrop">
+        <div class="dialog">
+            <p class="font-bold">
+                Edit Entity
+            </p>
+
+            <hr />
+
+            <div class="row justify-content-end">
+                <button @onclick="async () => await OnConfirm.InvokeAsync(true)" class="button-success"><i class="fa fa-save"/> Update Entity</button>
+                <button @onclick="async () => await OnConfirm.InvokeAsync(false)" class="button-warning"><i class="fa fa-ban" />Cancel</button>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public bool IsVisible { get; set; } = false;
+    [Parameter] public EventCallback<bool> OnConfirm { get; set; }
+}

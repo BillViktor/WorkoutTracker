@@ -84,6 +84,7 @@ namespace WorkoutTracker.API
                     if (app.Environment.IsDevelopment())
                     {
                         await SeedData.SeedUsersAndRolesAsync(services);
+                        await SeedData.SeedMusclesAsync(services);
                     }
                 }
             }

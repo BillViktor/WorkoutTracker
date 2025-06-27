@@ -1,6 +1,5 @@
 ﻿using WorkoutTracker.Shared.Models;
 using WorkoutTracker.Web.Clients.ExerciseClient;
-using WorkoutTracker.Web.Clients.Muscle;
 using WorkoutTracker.Web.ViewModels.EntityViewModel;
 
 namespace WorkoutTracker.Web.ViewModels.ExerciseViewModel
@@ -29,9 +28,11 @@ namespace WorkoutTracker.Web.ViewModels.ExerciseViewModel
         /// <summary>
         /// Adds a new exercise to the database.
         /// </summary>
-        public override async Task<bool> Add(Exercise exercise)
+        public override async Task<Exercise> Add(Exercise exercise)
         {
-            throw new NotImplementedException();
+            return await ResultHandler.HandleAsync(
+                exerciseClient.AddExercise(exercise),
+                AppendErrorList);
         }
 
         /// <summary>
@@ -47,9 +48,11 @@ namespace WorkoutTracker.Web.ViewModels.ExerciseViewModel
         /// <summary>
         /// Updates an existing exercise.
         /// </summary>
-        public override async Task<bool> Update(Exercise exercise)
+        public override async Task<Exercise> Update(Exercise exercise)
         {
-            throw new NotImplementedException();
+            return await ResultHandler.HandleAsync(
+                exerciseClient.UpdateExercise(exercise),
+                AppendErrorList);
         }
         #endregion
     }

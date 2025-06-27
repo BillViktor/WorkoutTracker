@@ -74,6 +74,21 @@ namespace WorkoutTracker.Data.Repository
         }
 
         /// <summary>
+        /// Adds the specified entity
+        /// </summary>
+        public async Task<List<T>> AddRangeAsync<T>(List<T> entity, CancellationToken cancellationToken)
+        {
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity));
+            }
+
+            await workoutTrackerDbContext.AddRangeAsync(entity, cancellationToken);
+            await workoutTrackerDbContext.SaveChangesAsync(cancellationToken);
+            return entity;
+        }
+
+        /// <summary>
         /// Updates the specified entity
         /// </summary>
         public async Task<T> UpdateAsync<T>(T entity, CancellationToken cancellationToken)

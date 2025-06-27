@@ -1,4 +1,5 @@
-﻿using WorkoutTracker.Shared.Models;
+﻿using WorkoutTracker.Shared.Dto;
+using WorkoutTracker.Shared.Models;
 using WorkoutTracker.Shared.Models.Pagination;
 using WorkoutTracker.Shared.Models.Result;
 
@@ -6,6 +7,6 @@ namespace WorkoutTracker.Business.Services.MuscleService
 {
     public interface IMuscleService
     {
-        Task<List<Muscle>> GetMuscles(CancellationToken cancellationToken);
+        Task<List<MuscleDto>> GetMuscles(CancellationToken cancellationToken);
     }
 }

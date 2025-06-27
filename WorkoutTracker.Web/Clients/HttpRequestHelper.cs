@@ -14,7 +14,7 @@ namespace WorkoutTracker.Web.Clients
 
             if (!response.IsSuccessStatusCode)
             {
-                if(result == null)
+                if (result == null)
                 {
                     return new ResultModel<T>($"Non-success status code: {response.StatusCode}");
                 }
@@ -86,6 +86,36 @@ namespace WorkoutTracker.Web.Clients
             return result;
         }
         #endregion
+
+
+        #region Put
+        public static async Task<ResultModel<T>> PutAsJsonAsync<T, U>(this HttpClient httpClient, string url, U aContent)
+        {
+            var response = await httpClient.PutAsJsonAsync(url, aContent);
+
+            var result = await response.Content.ReadFromJsonAsync<ResultModel<T>>();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                if (result == null)
+                {
+                    return new ResultModel<T>($"Non-success status code: {response.StatusCode}");
+                }
+
+                // If the result is not null, it may contain errors
+                return new ResultModel<T>
+                {
+                    Errors = result.Errors,
+                    Message = result.Message,
+                    ResultObject = result.ResultObject,
+                    Success = false
+                };
+            }
+
+            return result;
+        }
+        #endregion
+
 
         #region Delete
         public static async Task<ResultModel> DeleteAsync(this HttpClient httpClient, string url)

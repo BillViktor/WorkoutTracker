@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using WorkoutTracker.Data.Repository;
+using WorkoutTracker.Shared.Dto;
 using WorkoutTracker.Shared.Models;
 
 namespace WorkoutTracker.Business.Services.MuscleService
@@ -18,7 +19,7 @@ namespace WorkoutTracker.Business.Services.MuscleService
         /// <summary>
         /// Returns a list of all muscles wrapped in a ResultModel.
         /// </summary>
-        public async Task<List<Muscle>> GetMuscles(CancellationToken cancellationToken)
+        public async Task<List<MuscleDto>> GetMuscles(CancellationToken cancellationToken)
         {
             var muscles = await workoutTrackerRepository.GetEntities<Muscle>(cancellationToken);
 
@@ -26,7 +27,12 @@ namespace WorkoutTracker.Business.Services.MuscleService
 
             muscles.ForEach(x => x.ImageUrl = $"{sBaseUrl}{x.ImageUrl}");
 
-            return muscles.OrderBy(x => x.Name).ToList();
+            return muscles.Select(x => new MuscleDto
+            {
+                Name = x.Name,
+                Description = x.Description,
+                ImageUrl = x.ImageUrl
+            }).OrderBy(x => x.Name).ToList();
         }
     }
 }

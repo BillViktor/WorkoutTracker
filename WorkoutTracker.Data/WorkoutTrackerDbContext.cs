@@ -47,6 +47,11 @@ namespace WorkoutTracker.Data
 
                 e.HasIndex(e => e.Name).IsUnique();
 
+                e.HasOne(p => p.PrimaryMuscle)
+                    .WithMany()
+                        .HasForeignKey(e => e.PrimaryMuscleId)
+                            .OnDelete(DeleteBehavior.Restrict);
+
                 e.HasMany(p => p.Muscles)
                     .WithOne(e => e.Exercise)
                         .HasForeignKey(e => e.ExerciseId)

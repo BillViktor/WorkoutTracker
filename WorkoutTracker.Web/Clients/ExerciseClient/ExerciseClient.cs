@@ -1,4 +1,5 @@
-﻿using WorkoutTracker.Shared.Models;
+﻿using Microsoft.AspNetCore.Authorization;
+using WorkoutTracker.Shared.Models;
 using WorkoutTracker.Shared.Models.Pagination;
 using WorkoutTracker.Shared.Models.Result;
 
@@ -21,7 +22,24 @@ namespace WorkoutTracker.Web.Clients.ExerciseClient
         /// </summary>
         public async Task<ResultModel<EntityResult<Exercise>>> GetExercises(EntityParameters entityParameters)
         {
-            return await HttpRequestHelper.PostAsJsonAsync<EntityResult<Exercise>, EntityParameters>(httpClient, "", entityParameters);
+            return await HttpRequestHelper.PostAsJsonAsync<EntityResult<Exercise>, EntityParameters>(httpClient, "exercise/list", entityParameters);
+        }
+
+        /// <summary>
+        /// Add a new exercise to the database.
+        /// </summary>
+        public async Task<ResultModel<Exercise>> AddExercise(Exercise exercise)
+        {
+            return await HttpRequestHelper.PostAsJsonAsync<Exercise, Exercise>(httpClient, "", exercise);
+        }
+
+        /// <summary>
+        /// Update an existing exercise in the database.
+        /// </summary>
+        public async Task<ResultModel<Exercise>> UpdateExercise(Exercise exercise)
+        {
+            return await HttpRequestHelper.PutAsJsonAsync<Exercise, Exercise>(httpClient, "", exercise);
+
         }
 
         /// <summary>

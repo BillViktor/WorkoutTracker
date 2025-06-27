@@ -5,9 +5,9 @@ namespace WorkoutTracker.Web.ViewModels.ExerciseViewModel
 {
     public interface IExerciseViewModel : IEntityViewModel<Exercise>
     {
-        Task<bool> Add(Exercise exercise);
+        Task<Exercise> Add(Exercise exercise);
         Task<bool> Delete(Exercise exercise);
         Task GetEntities();
-        Task<bool> Update(Exercise exercise);
+        Task<Exercise> Update(Exercise exercise);
     }
 }

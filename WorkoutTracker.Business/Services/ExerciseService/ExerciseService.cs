@@ -2,7 +2,6 @@
 using WorkoutTracker.Data.Repository;
 using WorkoutTracker.Shared.Models;
 using WorkoutTracker.Shared.Models.Pagination;
-using WorkoutTracker.Shared.Models.Result;
 
 namespace WorkoutTracker.Business.Services.ExerciseService
 {
@@ -29,6 +28,35 @@ namespace WorkoutTracker.Business.Services.ExerciseService
             exercises.List.ForEach(x => x.ImageUrl = $"{sBaseUrl}{x.ImageUrl}");
 
             return exercises;
+        }
+
+        /// <summary>
+        /// Adds a new exercise to the database
+        /// </summary>
+        public async Task<Exercise> AddExercise(Exercise exercise, CancellationToken cancellationToken)
+        {
+            var exerciseToReturn = await workoutTrackerRepository.AddAsync(exercise, cancellationToken);
+
+            string sBaseUrl = configuration["WorkoutTrackerApiBaseUrl"];
+
+            exerciseToReturn.ImageUrl = $"{sBaseUrl}{exerciseToReturn.ImageUrl}";
+
+            return exerciseToReturn;
+        }
+
+        /// <summary>
+        /// Updates an existing exercise in the database
+        /// </summary>
+        public async Task<Exercise> UpdateExercise(Exercise exercise, CancellationToken cancellationToken)
+        {
+            var exerciseToReturn = await workoutTrackerRepository.UpdateAsync(exercise, cancellationToken);
+
+            string sBaseUrl = configuration["WorkoutTrackerApiBaseUrl"];
+
+            exerciseToReturn.ImageUrl = $"{sBaseUrl}{exerciseToReturn.ImageUrl}";
+
+            return exerciseToReturn;
+
         }
 
         /// <summary>

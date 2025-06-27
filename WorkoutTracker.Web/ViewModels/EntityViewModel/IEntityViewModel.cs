@@ -8,9 +8,9 @@ namespace WorkoutTracker.Web.ViewModels.EntityViewModel
         EntityResult<T> Entities { get; set; }
         EntityParameters EntityParameters { get; set; }
 
-        Task<bool> Add(T entity);
+        Task<T> Add(T entity);
         Task<bool> Delete(T entity);
         Task GetEntities();
-        Task<bool> Update(T entity);
+        Task<T> Update(T entity);
     }
 }
