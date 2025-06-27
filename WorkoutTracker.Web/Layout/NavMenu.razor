@@ -7,22 +7,47 @@
         <nav>
             <ul class="nav-list">
                 <li>
-                    <NavLink href="Muscles" Match="NavLinkMatch.All">Muscles</NavLink>
+                    <NavLink href="muscles" Match="NavLinkMatch.All">Muscles</NavLink>
                 </li>
                 <li>
-                    <NavLink href="Exercises" Match="NavLinkMatch.All">Exercises</NavLink>
+                    <NavLink href="exercises" Match="NavLinkMatch.All">Exercises</NavLink>
                 </li>
                 <li>
-                    <NavLink href="Routines" Match="NavLinkMatch.All">Routines</NavLink>
+                    <NavLink href="routines" Match="NavLinkMatch.All">Routines</NavLink>
+                </li>
+
+                <!-- Admin Menu Dropdown -->
+                <li>
+                    <div class="dropdown">
+                        <button class="dropdown-button @(IsAdminRoute ? "text-primary" : "")">
+                            Admin
+                            <i class="fa fa-caret-down"></i>
+                        </button>
+
+                        <div class="dropdown-content">
+                            <NavLink href="admin/exercises" Match="NavLinkMatch.All">Exercises</NavLink>
+                        </div>
+                    </div>
                 </li>
 
                 <li class="nav-auth-link">
                     <AuthorizeView>
                         <Authorized>
-                            <NavLink href="Logout" Match="NavLinkMatch.All">Logout</NavLink>
+                            <div class="dropdown">
+                                <button class="dropdown-button @(NavigationManager.Uri.Contains("profile") ? "text-primary" : "")">
+                                    @context.User.Identity.Name
+                                    <i class="fa fa-caret-down"></i>
+                                </button>
+
+                                <div class="dropdown-content">
+                                    <NavLink href="profile" Match="NavLinkMatch.All">Profile</NavLink>
+                                    <NavLink href="logout" Match="NavLinkMatch.All">Logout</NavLink>
+                                </div>
+                            </div>
+
                         </Authorized>
                         <NotAuthorized>
-                            <NavLink href="Login" Match="NavLinkMatch.All">Login</NavLink>
+                            <NavLink href="login" Match="NavLinkMatch.All">Login</NavLink>
                         </NotAuthorized>
                     </AuthorizeView>
                 </li>
@@ -31,4 +56,25 @@
     </div>
 </header>
 
+@code {
+    private bool IsAdminRoute => NavigationManager.Uri.Contains("admin", StringComparison.OrdinalIgnoreCase);
 
+    [Inject]
+    NavigationManager NavigationManager { get; set; }
+
+    protected override void OnInitialized()
+    {
+        NavigationManager.LocationChanged += OnLocationChanged;
+        base.OnInitialized();
+    }
+
+    private void OnLocationChanged(object? sender, Microsoft.AspNetCore.Components.Routing.LocationChangedEventArgs e)
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose() 
+    {
+        NavigationManager.LocationChanged -= OnLocationChanged;
+    }
+}

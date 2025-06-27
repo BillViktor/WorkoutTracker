@@ -1,0 +1,14 @@
+﻿@page "/profile"
+
+@attribute [Authorize]
+
+<h1>Profile</h1>
+
+<AuthorizeView>
+    <Authorized>
+        <p>
+            Welcome, @context.User.Identity.Name! <br/>
+            This page is currently under construction.
+        </p>
+    </Authorized>
+</AuthorizeView>

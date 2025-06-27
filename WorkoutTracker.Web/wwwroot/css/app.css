@@ -20,6 +20,12 @@ body {
     color: var(--font-color);
 }
 
+#app {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
 /* Nav */
 header {
     background-color: var(--foreground-color);
@@ -50,6 +56,7 @@ nav {
 
 nav ul {
     display: flex;
+    align-items: center;
 }
 
 nav ul li a {
@@ -58,6 +65,10 @@ nav ul li a {
     font-weight: bold;
     text-decoration: none;
     color: var(--font-color);
+}
+
+nav ul li a:hover, nav ul li button .dropdown:hover {
+    color: var(--primary-color);
 }
 
 .nav-auth-link {
@@ -70,10 +81,9 @@ nav ul li a {
 
 /* Main */
 main {
-    max-width: var(--website-width);
+    width: var(--website-width);
     margin: 1rem auto;
     padding: 1rem;
-    background-color: var(--foreground-color);
 }
 
 .empty-layout {
@@ -83,6 +93,12 @@ main {
     position: relative;
     max-width: var(--website-width);
     background-color: transparent;
+}
+
+/* Footer */
+footer {
+    background-color: var(--foreground-color);
+    border-top: 0.25rem solid #000;
 }
 
 /* Headers */
@@ -103,6 +119,7 @@ h2 {
 p {
     font-size: 1.25rem;
     margin: 1rem 0;
+    line-height: 1.5rem;
 }
 
 .font-bold {
@@ -111,6 +128,22 @@ p {
 
 .text-center {
     text-align: center;
+}
+
+.text-primary {
+    color: var(--primary-color) !important;
+}
+
+.text-danger {
+    color: var(--danger-color) !important;
+}
+
+.text-warning {
+    color: var(--warning-color) !important;
+}
+
+.text-success {
+    color: var(--success-color) !important;
 }
 
 a {
@@ -168,6 +201,42 @@ button {
 .button-warning {
     background-color: var(--warning-color);
     color: #000;
+}
+
+.icon-button {
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0.25rem 0.5rem;
+    font-size: 1.25rem;
+    color: var(--font-color);
+}
+
+.pagination-button {
+    background: transparent;
+    color: white;
+    border: none;
+    border-radius: 1rem;
+    font-size: 1.25rem;
+}
+
+.pagination-button:hover:not(:disabled) {
+    background-color: var(--primary-color);
+}
+
+.pagination-button.active {
+    background-color: var(--primary-color);
+}
+
+.pagination-button:disabled {
+    color: gray;
+}
+
+.pagination-select {
+    border-radius: 1rem;
+    font-size: 1.25rem;
+    color: var(--font-color);
+    background-color: var(--foreground-color);
 }
 
 /* Rows */
@@ -374,7 +443,7 @@ label {
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    background-color: var(--background-color);
+    background-color: var(--foreground-color);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -408,4 +477,57 @@ label {
 .muscle-info p {
     margin: 0;
     font-size: 1rem;
+}
+
+/* Drop Down */
+.dropdown {
+    float: left;
+    overflow: hidden;
+}
+
+.dropdown-button {
+    font-size: 1.5rem;
+    border: none;
+    outline: none;
+    color: white;
+    background-color: inherit;
+    font-family: inherit; /* Important for vertical align on mobile phones */
+    margin: 0 1rem; /* Important for vertical align on mobile phones */
+    padding: 0;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: var(--background-color);
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+    float: none;
+    padding: 0.5rem 0;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Misc */
+.gap-1 {
+    gap: 1rem;
+}
+
+.m-0 {
+    margin: 0;
+}
+
+.mt-1 {
+    margin-top: 1rem;
 }

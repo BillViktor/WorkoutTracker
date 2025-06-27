@@ -14,7 +14,10 @@
     @if (CanAdd)
     {
         <div>
-            <button @onclick="Create" class="button-primary">Add New</button>
+            <button @onclick="Create" class="button-primary">
+                Create
+                <i class="fa fa-plus"></i>
+            </button>
         </div>
     }
 </div>
@@ -44,11 +47,11 @@
                         <div class="row align-items-center">
                             @if (CanEdit)
                             {
-                                <button @onclick="async () => await Edit(entity)" class="button-warning">Edit</button>
+                                <button title="Edit entity" @onclick="async () => await Edit(entity)" class="icon-button text-warning"><i class="fa fa-pencil" /></button>
                             }
                             @if (CanDelete)
                             {
-                                <button @onclick="() => Delete(entity)" class="button-danger">Delete</button>
+                                <button title="Delete entity" @onclick="() => Delete(entity)" class="icon-button text-danger"><i class="fa fa-trash" /></button>
                             }
                         </div>
 
@@ -62,24 +65,38 @@
 @if (EntityViewModel.Entities != null)
 {
     <!-- Pagination Controls -->
-    <p>
-        Rows per page:
-        <select @bind="EntityViewModel.EntityParameters.PageCount" @bind:after="PaginationPageCountChanged">
-            <option value="5">5</option>
-            <option value="20">20</option>
-            <option value="50">50</option>
-            <option value="100">100</option>
-        </select>
-    </p>
+    <div class="row align-content-center justify-content-between mt-1 pagination-controls">
+        <div>
+            <button class="pagination-button" disabled="@(Page == 0)" @onclick="async () => await SetPage(0)"><i class="fa fa-step-backward" /></button>
+            <button class="pagination-button" disabled="@(!HasPrevious)" @onclick="async () => await SetPage(Page - 1)"><i class="fa fa-caret-left" /></button>
 
-    <p>
-        @StartItemIndex–@EndItemIndex of @EntityViewModel.Entities.Count
-    </p>
+            @for (int i = start; i <= end; i++)
+            {
+                int page = i;
+                <button class="pagination-button @(i == Page ? "active" : "")" @onclick="() => SetPage(page)">
+                    @(page + 1)
+                </button>
+            }
 
-    <button disabled="@(Page == 0)" @onclick="async () => await SetPage(0)">First</button>
-    <button disabled="@(!HasPrevious)" @onclick="async () => await SetPage(Page - 1)">Previous</button>
-    <button disabled="@(!HasNext)" @onclick="async () => await SetPage(Page + 1)">Next</button>
-    <button disabled="@(Page == LastPage)" @onclick="async () => await SetPage(LastPage)">Last</button>
+            <button class="pagination-button" disabled="@(!HasNext)" @onclick="async () => await SetPage(Page + 1)"><i class="fa fa-caret-right" /></button>
+            <button class="pagination-button" disabled="@(Page == LastPage)" @onclick="async () => await SetPage(LastPage)"><i class="fa fa-step-forward" /></button>
+        </div>
+
+        <div class="row align-content-center gap-1">
+            <p class="m-0">
+                @StartItemIndex–@EndItemIndex of @EntityViewModel.Entities.Count
+            </p>
+
+            <p class="m-0"> 
+                <select class="pagination-select" @bind="EntityViewModel.EntityParameters.PageCount" @bind:after="PaginationPageCountChanged">
+                    <option value="5">5</option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+            </p>
+        </div>
+    </div>
 }
 
 <!-- Actions -->
@@ -114,6 +131,11 @@
 
     private bool DeleteEntity = false;
     private object SelectedEntity = null;
+
+    //Pagination buttons
+    private const int range = 2;
+    private int start { get { return Math.Max(Page - range, 0); } }
+    private int end { get { return Math.Min(Page + range, LastPage); } }
 
     protected override void OnInitialized()
     {

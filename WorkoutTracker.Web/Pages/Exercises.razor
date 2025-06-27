@@ -1,17 +1,8 @@
-﻿@page "/Exercises"
+﻿@page "/exercises"
 @using WorkoutTracker.Shared.Models
 @using WorkoutTracker.Web.ViewModels.ExerciseViewModel
 @attribute [Authorize]
 
 <PageTitle>Exercises</PageTitle>
 
-<EntityListComponent Title="Exercises" EntityViewModel="ExerciseViewModel" T="Exercise" />
-
-@code {
-    [Inject] IExerciseViewModel ExerciseViewModel { get; set; }
-
-    protected override async Task OnInitializedAsync() 
-    {
-        await ExerciseViewModel.GetEntities();
-    }
-}
+<h1>Under construction...</h1>
