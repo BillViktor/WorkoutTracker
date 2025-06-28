@@ -1,5 +1,8 @@
 ﻿namespace WorkoutTracker.Shared.Dto.Pagination
 {
+    /// <summary>
+    /// Represents parameters for paginated entity queries.
+    /// </summary>
     public class EntityParameters
     {
         public int Page { get; set; } = 0;

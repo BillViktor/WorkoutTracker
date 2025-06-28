@@ -5,8 +5,14 @@ using WorkoutTracker.Data.Repository;
 
 namespace WorkoutTracker.Data
 {
+    /// <summary>
+    /// SeedData class to initialize the database with default users, roles, and muscle data.
+    /// </summary>
     public static class SeedData
     {
+        /// <summary>
+        /// Seeds the database with default users and roles if they don't already exist.
+        /// </summary>
         public static async Task SeedUsersAndRolesAsync(IServiceProvider serviceProvider)
         {
             var userManager = serviceProvider.GetRequiredService<UserManager<WorkoutTrackerUserModel>>();

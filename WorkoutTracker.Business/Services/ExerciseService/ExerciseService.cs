@@ -6,6 +6,9 @@ using WorkoutTracker.Shared.Dto.Pagination;
 
 namespace WorkoutTracker.Business.Services.ExerciseService
 {
+    /// <summary>
+    /// Service for managing exercises in the workout tracker application.
+    /// </summary>
     public class ExerciseService : IExerciseService
     {
         private readonly IWorkoutTrackerRepository workoutTrackerRepository;

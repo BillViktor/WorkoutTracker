@@ -1,5 +1,8 @@
 ﻿namespace WorkoutTracker.Shared.Dto.Auth
 {
+    /// <summary>
+    /// Represents a role claim in the authentication system.
+    /// </summary>
     public class RoleClaimDto
     {
         public string? Issuer { get; set; }

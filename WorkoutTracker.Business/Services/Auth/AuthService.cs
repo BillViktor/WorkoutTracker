@@ -13,6 +13,9 @@ using WorkoutTracker.Shared.Dto.Auth.Password;
 
 namespace WorkoutTracker.Business.Services.Auth
 {
+    /// <summary>
+    /// Service for handling authentication-related operations such as registration, login, email verification, password management, and user information retrieval.
+    /// </summary>
     public class AuthService : IAuthService
     {
         private readonly UserManager<WorkoutTrackerUserModel> userManager;

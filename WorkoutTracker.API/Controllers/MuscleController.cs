@@ -1,12 +1,14 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WorkoutTracker.Business.Services.MuscleService;
-using WorkoutTracker.Data.Models;
 using WorkoutTracker.Shared.Dto;
 using WorkoutTracker.Shared.Dto.Result;
 
 namespace WorkoutTracker.API.Controllers
 {
+    /// <summary>
+    /// Controller for managing muscles in the workout tracker application.
+    /// </summary>
     [ApiController]
     [Route("muscle")]
     public class MuscleController : ControllerBase

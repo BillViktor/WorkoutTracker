@@ -2,6 +2,9 @@
 
 namespace WorkoutTracker.Business.Services.MuscleService
 {
+    /// <summary>
+    /// Interface for muscle service operations.
+    /// </summary>
     public interface IMuscleService
     {
         Task<List<MuscleDto>> GetMuscles(CancellationToken cancellationToken);

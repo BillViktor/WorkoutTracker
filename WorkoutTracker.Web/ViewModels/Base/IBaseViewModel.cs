@@ -3,6 +3,9 @@ using WorkoutTracker.Shared.Dto.Result;
 
 namespace WorkoutTracker.Web.ViewModels.Base
 {
+    /// <summary>
+    /// IBaseViewModel defines the basic contract for view models in the application.
+    /// </summary>
     public interface IBaseViewModel
     {
         bool IsBusy { get; set; }

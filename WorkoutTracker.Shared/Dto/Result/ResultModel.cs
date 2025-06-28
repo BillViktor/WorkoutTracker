@@ -1,5 +1,8 @@
 ﻿namespace WorkoutTracker.Shared.Dto.Result
 {
+    /// <summary>
+    /// Represents a result model used to encapsulate the outcome of an operation, including success status, messages, and errors.
+    /// </summary>
     public class ResultModel
     {
         public string? Message { get; set; } = null;

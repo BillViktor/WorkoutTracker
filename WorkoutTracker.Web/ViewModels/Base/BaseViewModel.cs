@@ -4,6 +4,9 @@ using WorkoutTracker.Shared.Dto.Result;
 
 namespace WorkoutTracker.Web.ViewModels.Base
 {
+    /// <summary>
+    /// BaseViewModel serves as a foundational class for view models in the application.
+    /// </summary>
     public class BaseViewModel : INotifyPropertyChanged, IBaseViewModel
     {
         //Fields

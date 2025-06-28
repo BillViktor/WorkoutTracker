@@ -5,6 +5,9 @@ using WorkoutTracker.Shared.Dto;
 
 namespace WorkoutTracker.Business.Services.MuscleService
 {
+    /// <summary>
+    /// Service for managing muscle-related operations.
+    /// </summary>
     public class MuscleService : IMuscleService
     {
         private readonly IWorkoutTrackerRepository workoutTrackerRepository;

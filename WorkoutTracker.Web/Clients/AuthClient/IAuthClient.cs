@@ -5,6 +5,9 @@ using WorkoutTracker.Shared.Dto.Result;
 
 namespace WorkoutTracker.Web.Clients.AuthClient
 {
+    /// <summary>
+    /// Interface for authentication-related operations in the Workout Tracker application.
+    /// </summary>
     public interface IAuthClient
     {
         Task<ResultModel> ChangeEmail(ChangeEmailRequestDto request);

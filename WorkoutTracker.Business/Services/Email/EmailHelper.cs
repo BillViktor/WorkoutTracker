@@ -5,6 +5,9 @@
     /// </summary>
     public static class EmailHelper
     {
+        /// <summary>
+        /// Generates a confirmation email template with the provided confirmation link.
+        /// </summary>
         public static string GetConfirmationEmail(string confirmationLink)
         {
             string body = $@"
@@ -25,6 +28,9 @@
             return GetEmailTemplate(body);
         }
 
+        /// <summary>
+        /// Generates an email template for account deletion confirmation.
+        /// </summary>
         public static string GetAccountDeletedConfirmation()
         {
             string body = $@"
@@ -41,6 +47,9 @@
             return GetEmailTemplate(body);
         }
 
+        /// <summary>
+        /// Generates an email template for changing the email address.
+        /// </summary>
         public static string GetChangeEmailEmail(string confirmationLink)
         {
             string body = $@"
@@ -61,6 +70,9 @@
             return GetEmailTemplate(body);
         }
 
+        /// <summary>
+        /// Generates an email template for resetting the password with the provided change password link.
+        /// </summary>
         public static string GetResetPasswordEmail(string changePasswordLink)
         {
             string body = $@"

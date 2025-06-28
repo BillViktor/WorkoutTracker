@@ -1,5 +1,8 @@
 ﻿namespace WorkoutTracker.Data.Models.Routine
 {
+    /// <summary>
+    /// Represents an exercise in a workout routine day.
+    /// </summary>
     public class WorkoutRoutineDayExercise : BaseEntity
     {
         public int Sets { get; set; }

@@ -4,6 +4,9 @@ using WorkoutTracker.Web.ViewModels.Base;
 
 namespace WorkoutTracker.Web.ViewModels.MuscleViewModel
 {
+    /// <summary>
+    /// ViewModel for managing muscle data, including retrieval and updates.
+    /// </summary>
     public class MuscleViewModel : BaseViewModel, IMuscleViewModel
     {
         private readonly IMuscleClient muscleClient;

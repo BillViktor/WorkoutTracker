@@ -5,6 +5,9 @@ using System.Net.Mail;
 
 namespace WorkoutTracker.Business.Services.Email
 {
+    /// <summary>
+    /// Service for sending emails using SMTP.
+    /// </summary>
     public class EmailService : IEmailService
     {
         private readonly ILogger<EmailService> logger;

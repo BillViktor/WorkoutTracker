@@ -2,6 +2,9 @@
 
 namespace WorkoutTracker.Shared.Dto.Auth
 {
+    /// <summary>
+    /// Data Transfer Object for user login requests.
+    /// </summary>
     public class LoginRequestDto
     {
         [Required(ErrorMessage = "You must enter your username!")]

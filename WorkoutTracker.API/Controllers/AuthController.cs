@@ -1,7 +1,4 @@
-using Azure.Core;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using WorkoutTracker.Business.Services.Auth;
 using WorkoutTracker.Shared.Dto.Auth;
@@ -11,6 +8,9 @@ using WorkoutTracker.Shared.Dto.Result;
 
 namespace WorkoutTracker.API.Controllers
 {
+    /// <summary>
+    /// Controller for handling user authentication and management operations.
+    /// </summary>
     [ApiController]
     [Route("auth")]
     public class AuthController : ControllerBase

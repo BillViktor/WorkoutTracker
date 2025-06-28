@@ -7,6 +7,9 @@ using WorkoutTracker.Shared.Dto.Pagination;
 
 namespace WorkoutTracker.Data.Repository
 {
+    /// <summary>
+    /// Repository for managing workout tracker entities.
+    /// </summary>
     public class WorkoutTrackerRepository : IWorkoutTrackerRepository
     {
         private readonly WorkoutTrackerDbContext workoutTrackerDbContext;

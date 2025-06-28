@@ -2,6 +2,9 @@
 
 namespace WorkoutTracker.Shared.Dto.Auth.Password
 {
+    /// <summary>
+    /// Represents a request to change a user's password.
+    /// </summary>
     public class ChangePasswordRequestDto
     {
         [Required(ErrorMessage = "You must confirm your current password!")]

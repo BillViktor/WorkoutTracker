@@ -2,6 +2,9 @@
 
 namespace WorkoutTracker.Shared.Dto.Auth
 {
+    /// <summary>
+    /// Data Transfer Object for user registration requests.
+    /// </summary>
     public class RegisterRequestDto
     {
         [Required(ErrorMessage = "Username is mandatory!")]

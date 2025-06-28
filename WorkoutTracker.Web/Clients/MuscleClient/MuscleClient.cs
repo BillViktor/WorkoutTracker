@@ -3,6 +3,9 @@ using WorkoutTracker.Shared.Dto.Result;
 
 namespace WorkoutTracker.Web.Clients.MuscleClient
 {
+    /// <summary>
+    /// Client for interacting with the Muscle API.
+    /// </summary>
     public class MuscleClient : IMuscleClient
     {
         private readonly HttpClient httpClient;

@@ -1,5 +1,8 @@
 ﻿namespace WorkoutTracker.Shared.Dto
 {
+    /// <summary>
+    /// Data Transfer Object for an exercise.
+    /// </summary>
     public class ExerciseDto
     {
         public long Id { get; set; }

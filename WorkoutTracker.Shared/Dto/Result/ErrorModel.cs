@@ -1,5 +1,8 @@
 ﻿namespace WorkoutTracker.Shared.Dto.Result
 {
+    /// <summary>
+    /// Represents an error model used to encapsulate error information.
+    /// </summary>
     public class ErrorModel
     {
         public string ErrorText { get; set; }

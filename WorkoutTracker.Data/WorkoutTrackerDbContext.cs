@@ -4,6 +4,9 @@ using WorkoutTracker.Data.Models;
 
 namespace WorkoutTracker.Data
 {
+    /// <summary>
+    /// Represents the database context for the Workout Tracker application.
+    /// </summary>
     public class WorkoutTrackerDbContext : IdentityDbContext<WorkoutTrackerUserModel>
     {
         public DbSet<Muscle> Muscles { get; set; }

@@ -4,6 +4,9 @@ using WorkoutTracker.Shared.Dto.Pagination;
 
 namespace WorkoutTracker.Business.Services.ExerciseService
 {
+    /// <summary>
+    /// Interface for exercise service operations.
+    /// </summary>
     public interface IExerciseService
     {
         Task<Exercise> AddExercise(Exercise exercise, CancellationToken cancellationToken);

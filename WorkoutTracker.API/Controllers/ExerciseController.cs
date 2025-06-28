@@ -8,6 +8,9 @@ using WorkoutTracker.Shared.Dto.Result;
 
 namespace WorkoutTracker.API.Controllers
 {
+    /// <summary>
+    /// Controller for managing exercises in the workout tracker application.
+    /// </summary>
     [ApiController]
     [Route("exercise")]
     public class ExerciseController : ControllerBase

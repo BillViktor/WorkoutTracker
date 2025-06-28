@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Logging;
 using WorkoutTracker.Shared.Dto.Auth;
 using WorkoutTracker.Shared.Dto.Auth.Email;
 using WorkoutTracker.Shared.Dto.Auth.Password;

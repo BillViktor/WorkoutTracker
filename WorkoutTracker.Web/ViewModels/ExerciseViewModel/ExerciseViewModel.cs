@@ -4,11 +4,13 @@ using WorkoutTracker.Web.ViewModels.EntityViewModel;
 
 namespace WorkoutTracker.Web.ViewModels.ExerciseViewModel
 {
+    /// <summary>
+    /// ViewModel for managing exercises in the Workout Tracker application.
+    /// </summary>
     public class ExerciseViewModel : EntityViewModel<ExerciseDto>, IExerciseViewModel
     {
         private readonly IExerciseClient exerciseClient;
 
-        //Constructor
         public ExerciseViewModel(IExerciseClient exerciseClient)
         {
             this.exerciseClient = exerciseClient;

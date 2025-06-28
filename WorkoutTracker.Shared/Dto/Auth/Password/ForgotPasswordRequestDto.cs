@@ -2,6 +2,9 @@
 
 namespace WorkoutTracker.Shared.Dto.Auth.Password
 {
+    /// <summary>
+    /// Represents a request to initiate a password reset process.
+    /// </summary>
     public class ForgotPasswordRequestDto
     {
         [Required(ErrorMessage = "Email is mandatory!")]

@@ -4,6 +4,9 @@ using WorkoutTracker.Shared.Dto.Pagination;
 
 namespace WorkoutTracker.Data.Repository
 {
+    /// <summary>
+    /// Interface for the Workout Tracker repository.
+    /// </summary>
     public interface IWorkoutTrackerRepository
     {
         Task<T> AddAsync<T>(T entity, CancellationToken cancellationToken);

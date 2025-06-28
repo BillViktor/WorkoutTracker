@@ -76,6 +76,5 @@ namespace WorkoutTracker.Web.ViewModels
                 setBusy?.Invoke(false);
             }
         }
-
     }
 }

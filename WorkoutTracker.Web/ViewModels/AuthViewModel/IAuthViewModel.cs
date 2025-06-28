@@ -5,6 +5,9 @@ using WorkoutTracker.Web.ViewModels.Base;
 
 namespace WorkoutTracker.Web.ViewModels.AuthViewModel
 {
+    /// <summary>
+    /// Interface for the authentication view model, defining methods for user authentication and management.
+    /// </summary>
     public interface IAuthViewModel : IBaseViewModel
     {
         WorkoutTrackerUserDto UserInfo { get; }

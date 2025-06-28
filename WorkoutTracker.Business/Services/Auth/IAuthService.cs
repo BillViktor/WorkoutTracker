@@ -6,6 +6,9 @@ using WorkoutTracker.Shared.Dto.Auth.Password;
 
 namespace WorkoutTracker.Business.Services.Auth
 {
+    /// <summary>
+    /// Interface for authentication services.
+    /// </summary>
     public interface IAuthService
     {
         Task ChangeEmail(ChangeEmailRequestDto request, ClaimsPrincipal claimsPrincipal);
