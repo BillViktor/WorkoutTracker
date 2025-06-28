@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
+using WorkoutTracker.Data.Models;
 using WorkoutTracker.Data.Repository;
 using WorkoutTracker.Shared.Dto;
-using WorkoutTracker.Shared.Models;
-using WorkoutTracker.Shared.Models.Pagination;
+using WorkoutTracker.Shared.Dto.Pagination;
 
 namespace WorkoutTracker.Business.Services.ExerciseService
 {
@@ -20,42 +20,51 @@ namespace WorkoutTracker.Business.Services.ExerciseService
         /// <summary>
         /// Returns a paginated, sorted and filtered list of exercises
         /// </summary>
-        public async Task<EntityResult<Exercise>> GetExercises(EntityParameters entityParameters, CancellationToken cancellationToken)
+        public async Task<EntityResult<ExerciseDto>> GetExercises(EntityParameters entityParameters, CancellationToken cancellationToken)
         {
-            var exercises = await workoutTrackerRepository.GetEntitiesPaginated<Exercise>(entityParameters, cancellationToken);
+            entityParameters.SortBy = "Name asc";
+            entityParameters.SearchString = $"Name.Contains(\"{entityParameters.SearchString}\")";
+
+            var exercises = await workoutTrackerRepository.GetEntitiesPaginated<Exercise>(entityParameters, cancellationToken, e => e.PrimaryMuscle);
 
             string sBaseUrl = configuration["WorkoutTrackerApiBaseUrl"];
-
-            exercises.List.ForEach(x => x.ImageUrl = $"{sBaseUrl}{x.ImageUrl}");
-
-            return exercises;
-        }
-
-        /// <summary>
-        /// Returns a paginated, sorted and filtered list of exercises as DTOs
-        /// </summary>
-        public async Task<EntityResult<ExerciseDto>> GetExercisesDto(EntityParameters entityParameters, CancellationToken cancellationToken)
-        {
-            var exercises = await workoutTrackerRepository.GetEntitiesPaginated<Exercise>(entityParameters, CancellationToken.None);
-            string sBaseUrl = configuration["WorkoutTrackerApiBaseUrl"];
-
-            var exerciseDtos = exercises.List.Select(x => new ExerciseDto
-            {
-                Name = x.Name,
-                Description = x.Description,
-                ImageUrl = $"{sBaseUrl}{x.ImageUrl}",
-                PrimaryMuscle = new MuscleDto
-                {
-                    Name = x.PrimaryMuscle.Name,
-                    Description = x.PrimaryMuscle.Description,
-                    ImageUrl = $"{sBaseUrl}{x.PrimaryMuscle.ImageUrl}"
-                },
-            }).ToList();
 
             return new EntityResult<ExerciseDto>
             {
-                Count = exerciseDtos.Count,
-                List = exerciseDtos,
+                Count = exercises.Count,
+                List = exercises.List.Select(x => new ExerciseDto
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Description = x.Description,
+                    ImageUrl = $"{sBaseUrl}images/exercises/{x.ImageUrl}",
+                    PrimaryMuscle = new MuscleDto
+                    {
+                        Name = x.PrimaryMuscle.Name,
+                        Description = x.PrimaryMuscle.Description,
+                    },
+                }).ToList(),
+            };
+        }
+
+        /// <summary>
+        /// Returns the exercise with the specified id
+        /// </summary>
+        public async Task<ExerciseDto> GetExercise(long id, CancellationToken cancellationToken)
+        {
+            var exercise = await workoutTrackerRepository.GetEntity<Exercise>(id, cancellationToken);
+
+            return new ExerciseDto
+            {
+                Id = exercise.Id,
+                Description = exercise.Description,
+                Name = exercise.Name,
+                ImageUrl = $"{configuration["WorkoutTrackerApiBaseUrl"]}images/exercises/{exercise.ImageUrl}",
+                PrimaryMuscle = new MuscleDto
+                {
+                    Name = exercise.PrimaryMuscle.Name,
+                    Description = exercise.PrimaryMuscle.Description,
+                }
             };
         }
 
@@ -64,13 +73,8 @@ namespace WorkoutTracker.Business.Services.ExerciseService
         /// </summary>
         public async Task<Exercise> AddExercise(Exercise exercise, CancellationToken cancellationToken)
         {
-            var exerciseToReturn = await workoutTrackerRepository.AddAsync(exercise, cancellationToken);
-
-            string sBaseUrl = configuration["WorkoutTrackerApiBaseUrl"];
-
-            exerciseToReturn.ImageUrl = $"{sBaseUrl}{exerciseToReturn.ImageUrl}";
-
-            return exerciseToReturn;
+            await Task.Delay(0);
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -78,13 +82,8 @@ namespace WorkoutTracker.Business.Services.ExerciseService
         /// </summary>
         public async Task<Exercise> UpdateExercise(Exercise exercise, CancellationToken cancellationToken)
         {
-            var exerciseToReturn = await workoutTrackerRepository.UpdateAsync(exercise, cancellationToken);
-
-            string sBaseUrl = configuration["WorkoutTrackerApiBaseUrl"];
-
-            exerciseToReturn.ImageUrl = $"{sBaseUrl}{exerciseToReturn.ImageUrl}";
-
-            return exerciseToReturn;
+            await Task.Delay(0);
+            throw new NotImplementedException();
 
         }
 

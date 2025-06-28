@@ -3,6 +3,8 @@
 
 <PageTitle>Muscles</PageTitle>
 
+<MessageComponent Errors="MuscleViewModel.Errors" SuccessMessages="MuscleViewModel.SuccessMessages" IsBusy="MuscleViewModel.IsBusy" />
+
 <h1>Muscles</h1>
 
 <div class="card-grid">
@@ -11,7 +13,7 @@
         <div class="muscle-card">
             <a href="@($"exercises?muscle={muscle.Name}")">
                 <img src="@muscle.ImageUrl" alt="@muscle.Name" />
-                <div class="muscle-info">
+                <div class="card-info">
                     <h5>@muscle.Name</h5>
                     <p>@muscle.Description</p>
                 </div>

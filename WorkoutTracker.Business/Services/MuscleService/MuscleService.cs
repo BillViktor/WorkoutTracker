@@ -1,8 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
+using WorkoutTracker.Data.Models;
 using WorkoutTracker.Data.Repository;
 using WorkoutTracker.Shared.Dto;
-using WorkoutTracker.Shared.Models;
-using WorkoutTracker.Shared.Models.Pagination;
 
 namespace WorkoutTracker.Business.Services.MuscleService
 {
@@ -18,20 +17,6 @@ namespace WorkoutTracker.Business.Services.MuscleService
         }
 
         /// <summary>
-        /// Returns a paginated, sorted and filtered list of muscles
-        /// </summary>
-        public async Task<EntityResult<Muscle>> GetMuscles(EntityParameters entityParameters, CancellationToken cancellationToken)
-        {
-            var exercises = await workoutTrackerRepository.GetEntitiesPaginated<Muscle>(entityParameters, cancellationToken);
-
-            string sBaseUrl = configuration["WorkoutTrackerApiBaseUrl"];
-
-            exercises.List.ForEach(x => x.ImageUrl = $"{sBaseUrl}{x.ImageUrl}");
-
-            return exercises;
-        }
-
-        /// <summary>
         /// Returns a list of all muscles wrapped in a ResultModel.
         /// </summary>
         public async Task<List<MuscleDto>> GetMuscles(CancellationToken cancellationToken)
@@ -44,6 +29,7 @@ namespace WorkoutTracker.Business.Services.MuscleService
 
             return muscles.Select(x => new MuscleDto
             {
+                Id = x.Id,
                 Name = x.Name,
                 Description = x.Description,
                 ImageUrl = x.ImageUrl
@@ -53,15 +39,10 @@ namespace WorkoutTracker.Business.Services.MuscleService
         /// <summary>
         /// Updates an existing muscle in the database
         /// </summary>
-        public async Task<Muscle> UpdateMuscle(Muscle muscle, CancellationToken cancellationToken)
+        public async Task<MuscleDto> UpdateMuscle(MuscleDto muscle, CancellationToken cancellationToken)
         {
-            var muscleToReturn = await workoutTrackerRepository.UpdateAsync(muscle, cancellationToken);
-
-            string sBaseUrl = configuration["WorkoutTrackerApiBaseUrl"];
-
-            muscleToReturn.ImageUrl = $"{sBaseUrl}{muscleToReturn.ImageUrl}";
-
-            return muscleToReturn;
+            await Task.Delay(0);
+            throw new NotImplementedException();
 
         }
     }

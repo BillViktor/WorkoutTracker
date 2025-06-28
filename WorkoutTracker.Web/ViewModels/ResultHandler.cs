@@ -1,4 +1,4 @@
-﻿using WorkoutTracker.Shared.Models.Result;
+﻿using WorkoutTracker.Shared.Dto.Result;
 
 namespace WorkoutTracker.Web.ViewModels
 {

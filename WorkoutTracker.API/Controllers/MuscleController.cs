@@ -1,15 +1,12 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WorkoutTracker.Business.Services.ExerciseService;
 using WorkoutTracker.Business.Services.MuscleService;
+using WorkoutTracker.Data.Models;
 using WorkoutTracker.Shared.Dto;
-using WorkoutTracker.Shared.Models;
-using WorkoutTracker.Shared.Models.Pagination;
-using WorkoutTracker.Shared.Models.Result;
+using WorkoutTracker.Shared.Dto.Result;
 
 namespace WorkoutTracker.API.Controllers
 {
-    [Authorize]
     [ApiController]
     [Route("muscle")]
     public class MuscleController : ControllerBase
@@ -19,19 +16,6 @@ namespace WorkoutTracker.API.Controllers
         public MuscleController(IMuscleService muscleService)
         {
             this.muscleService = muscleService;
-        }
-
-        /// <summary>
-        /// Returns a paginated, sorted and filtered list of muscles
-        /// </summary>
-        [Authorize(Roles = "Admin")]
-        [HttpPost("list")]
-        public async Task<ActionResult<ResultModel<EntityResult<Muscle>>>> GetMuscles(EntityParameters entityParameters, CancellationToken cancellationToken)
-        {
-            return Ok(new ResultModel<EntityResult<Muscle>>
-            {
-                ResultObject = await muscleService.GetMuscles(entityParameters, cancellationToken)
-            });
         }
 
         /// <summary>
@@ -51,9 +35,9 @@ namespace WorkoutTracker.API.Controllers
         /// </summary>
         [Authorize(Roles = "Admin")]
         [HttpPut]
-        public async Task<ActionResult<ResultModel<Muscle>>> UpdateMuscle(Muscle muscle, CancellationToken cancellationToken)
+        public async Task<ActionResult<ResultModel<MuscleDto>>> UpdateMuscle(MuscleDto muscle, CancellationToken cancellationToken)
         {
-            return Ok(new ResultModel<Muscle>
+            return Ok(new ResultModel<MuscleDto>
             {
                 ResultObject = await muscleService.UpdateMuscle(muscle, cancellationToken)
             });

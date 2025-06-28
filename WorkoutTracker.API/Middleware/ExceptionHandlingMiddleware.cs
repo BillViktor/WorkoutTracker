@@ -1,6 +1,6 @@
 ﻿using WorkoutTracker.API.Models.Exceptions;
 using WorkoutTracker.Data.Models.Exceptions;
-using WorkoutTracker.Shared.Models.Result;
+using WorkoutTracker.Shared.Dto.Result;
 
 namespace WorkoutTracker.API.Middleware
 {

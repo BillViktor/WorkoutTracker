@@ -4,10 +4,10 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using WorkoutTracker.Business.Services.Auth;
-using WorkoutTracker.Shared.Models.Auth;
-using WorkoutTracker.Shared.Models.Auth.Email;
-using WorkoutTracker.Shared.Models.Auth.Password;
-using WorkoutTracker.Shared.Models.Result;
+using WorkoutTracker.Shared.Dto.Auth;
+using WorkoutTracker.Shared.Dto.Auth.Email;
+using WorkoutTracker.Shared.Dto.Auth.Password;
+using WorkoutTracker.Shared.Dto.Result;
 
 namespace WorkoutTracker.API.Controllers
 {

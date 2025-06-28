@@ -1,4 +1,4 @@
-﻿@using WorkoutTracker.Shared.Models.Result
+﻿@using WorkoutTracker.Shared.Dto.Result
 
 <div class="toast-container">
     @foreach (var toast in toasts)
@@ -20,9 +20,14 @@
 }
 
 @code {
-    [Parameter] public List<ErrorModel> Errors { get; set; } = new();
-    [Parameter] public List<string> SuccessMessages { get; set; } = new();
-    [Parameter] public bool IsBusy { get; set; } = false;
+    [Parameter] 
+    public List<ErrorModel> Errors { get; set; } = new();
+
+    [Parameter] 
+    public List<string> SuccessMessages { get; set; } = new();
+
+    [Parameter] 
+    public bool IsBusy { get; set; } = false;
 
     private List<ToastItem> toasts = new List<ToastItem>();
 

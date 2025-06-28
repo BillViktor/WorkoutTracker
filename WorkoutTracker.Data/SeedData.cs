@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using WorkoutTracker.Data.Models;
 using WorkoutTracker.Data.Repository;
-using WorkoutTracker.Shared.Models;
 
 namespace WorkoutTracker.Data
 {

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using WorkoutTracker.Shared.Models.Result;
+using WorkoutTracker.Shared.Dto.Result;
 
 namespace WorkoutTracker.Web.ViewModels.Base
 {

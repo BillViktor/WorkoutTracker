@@ -1,10 +1,10 @@
-﻿using WorkoutTracker.Shared.Models;
+﻿using WorkoutTracker.Shared.Dto;
 using WorkoutTracker.Web.Clients.ExerciseClient;
 using WorkoutTracker.Web.ViewModels.EntityViewModel;
 
 namespace WorkoutTracker.Web.ViewModels.ExerciseViewModel
 {
-    public class ExerciseViewModel : EntityViewModel<Exercise>, IExerciseViewModel
+    public class ExerciseViewModel : EntityViewModel<ExerciseDto>, IExerciseViewModel
     {
         private readonly IExerciseClient exerciseClient;
 
@@ -28,7 +28,7 @@ namespace WorkoutTracker.Web.ViewModels.ExerciseViewModel
         /// <summary>
         /// Adds a new exercise to the database.
         /// </summary>
-        public override async Task<Exercise> Add(Exercise exercise)
+        public override async Task<ExerciseDto> Add(ExerciseDto exercise)
         {
             return await ResultHandler.HandleAsync(
                 exerciseClient.AddExercise(exercise),
@@ -39,7 +39,7 @@ namespace WorkoutTracker.Web.ViewModels.ExerciseViewModel
         /// <summary>
         /// Deletes an exercise.
         /// </summary>
-        public override async Task<bool> Delete(Exercise exercise)
+        public override async Task<bool> Delete(ExerciseDto exercise)
         {
             return await ResultHandler.HandleAsync(
                 exerciseClient.DeleteExercise(exercise.Id),
@@ -50,7 +50,7 @@ namespace WorkoutTracker.Web.ViewModels.ExerciseViewModel
         /// <summary>
         /// Updates an existing exercise.
         /// </summary>
-        public override async Task<Exercise> Update(Exercise exercise)
+        public override async Task<ExerciseDto> Update(ExerciseDto exercise)
         {
             return await ResultHandler.HandleAsync(
                 exerciseClient.UpdateExercise(exercise),

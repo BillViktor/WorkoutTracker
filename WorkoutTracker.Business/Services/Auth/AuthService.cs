@@ -7,9 +7,9 @@ using System.Security.Claims;
 using WorkoutTracker.API.Models.Exceptions;
 using WorkoutTracker.Business.Services.Email;
 using WorkoutTracker.Data.Models;
-using WorkoutTracker.Shared.Models.Auth;
-using WorkoutTracker.Shared.Models.Auth.Email;
-using WorkoutTracker.Shared.Models.Auth.Password;
+using WorkoutTracker.Shared.Dto.Auth;
+using WorkoutTracker.Shared.Dto.Auth.Email;
+using WorkoutTracker.Shared.Dto.Auth.Password;
 
 namespace WorkoutTracker.Business.Services.Auth
 {

@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Linq.Dynamic.Core;
+using System.Linq.Expressions;
+using WorkoutTracker.Data.Models;
 using WorkoutTracker.Data.Models.Exceptions;
-using WorkoutTracker.Shared.Models;
-using WorkoutTracker.Shared.Models.Pagination;
+using WorkoutTracker.Shared.Dto.Pagination;
 
 namespace WorkoutTracker.Data.Repository
 {
@@ -18,14 +20,25 @@ namespace WorkoutTracker.Data.Repository
         /// <summary>
         /// Gets a paginated, sorted and filtered list of the given type
         /// </summary>
-        public async Task<EntityResult<T>> GetEntitiesPaginated<T>(EntityParameters entityParameters, CancellationToken cancellationToken) where T : class
+        public async Task<EntityResult<T>> GetEntitiesPaginated<T>(EntityParameters entityParameters, CancellationToken cancellationToken, params Expression<Func<T, object>>[] includes) where T : class
         {
-            var query = workoutTrackerDbContext.Set<T>().ApplyFiltering(entityParameters);
+            IQueryable<T> query = workoutTrackerDbContext.Set<T>().IncludeProperties(includes);
+
+            //Apply filtering
+            if (!string.IsNullOrWhiteSpace(entityParameters.SearchString))
+            {
+                query = query.Where(entityParameters.SearchString);
+            }
+
+            //Apply sorting
+            if (!string.IsNullOrWhiteSpace(entityParameters.SortBy))
+            {
+                query = query.OrderBy(entityParameters.SortBy);
+            }
 
             var count = await query.CountAsync(cancellationToken);
 
             var list = await query
-                .ApplySorting(entityParameters)
                 .Skip(entityParameters.Page * entityParameters.PageCount)
                 .Take(entityParameters.PageCount)
                 .AsNoTracking()
@@ -41,17 +54,17 @@ namespace WorkoutTracker.Data.Repository
         /// <summary>
         /// Gets all entites with the given type
         /// </summary>
-        public async Task<List<T>> GetEntities<T>(CancellationToken cancellationToken) where T : class
+        public async Task<List<T>> GetEntities<T>(CancellationToken cancellationToken, params Expression<Func<T, object>>[] includes) where T : class
         {
-            return await workoutTrackerDbContext.Set<T>().AsNoTracking().ToListAsync(cancellationToken);
+            return await workoutTrackerDbContext.Set<T>().IncludeProperties(includes).AsNoTracking().ToListAsync(cancellationToken);
         }
 
         /// <summary>
         /// Gets the entity with the given type and id
         /// </summary>
-        public async Task<T> GetEntity<T>(long id, CancellationToken cancellationToken)  where T : BaseEntity
+        public async Task<T> GetEntity<T>(long id, CancellationToken cancellationToken, params Expression<Func<T, object>>[] includes)  where T : BaseEntity
         {
-            var entity = await workoutTrackerDbContext.Set<T>().FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+            var entity = await workoutTrackerDbContext.Set<T>().IncludeProperties(includes).AsNoTracking().FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 
             if(entity == null)
             {

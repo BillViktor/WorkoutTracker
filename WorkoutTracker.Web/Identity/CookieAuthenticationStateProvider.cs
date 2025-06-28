@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components.Authorization;
 using System.Security.Claims;
-using WorkoutTracker.Shared.Models.Auth;
+using WorkoutTracker.Shared.Dto.Auth;
 using WorkoutTracker.Web.Clients.AuthClient;
 
 namespace WorkoutTracker.Web.Identity

@@ -1,13 +1,11 @@
 ﻿using WorkoutTracker.Shared.Dto;
-using WorkoutTracker.Shared.Models;
-using WorkoutTracker.Web.ViewModels.EntityViewModel;
+using WorkoutTracker.Web.ViewModels.Base;
 
 namespace WorkoutTracker.Web.ViewModels.MuscleViewModel
 {
-    public interface IMuscleViewModel : IEntityViewModel<Muscle>
+    public interface IMuscleViewModel : IBaseViewModel
     {
         List<MuscleDto> Muscles { get; set; }
-
         Task GetMuscles();
     }
 }

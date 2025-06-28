@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using WorkoutTracker.Data.Models;
-using WorkoutTracker.Shared.Models;
 
 namespace WorkoutTracker.Data
 {

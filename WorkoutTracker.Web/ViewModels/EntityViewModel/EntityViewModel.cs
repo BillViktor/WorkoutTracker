@@ -1,4 +1,4 @@
-﻿using WorkoutTracker.Shared.Models.Pagination;
+﻿using WorkoutTracker.Shared.Dto.Pagination;
 using WorkoutTracker.Web.ViewModels.Base;
 
 namespace WorkoutTracker.Web.ViewModels.EntityViewModel

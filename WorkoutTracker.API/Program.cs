@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using Swashbuckle.AspNetCore.SwaggerUI;
+using System.Reflection;
 using WorkoutTracker.API.Middleware;
 using WorkoutTracker.Business.Services.Auth;
 using WorkoutTracker.Business.Services.Email;
@@ -12,7 +12,7 @@ using WorkoutTracker.Business.Services.MuscleService;
 using WorkoutTracker.Data;
 using WorkoutTracker.Data.Models;
 using WorkoutTracker.Data.Repository;
-using WorkoutTracker.Shared.Models.Result;
+using WorkoutTracker.Shared.Dto.Result;
 
 namespace WorkoutTracker.API
 {
@@ -28,6 +28,8 @@ namespace WorkoutTracker.API
             builder.Services.AddSwaggerGen(options =>
             {
                 options.OperationFilter<SecurityRequirementsOperationFilter>();
+                var xmlFileName = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFileName));
             });
 
             #region Auth

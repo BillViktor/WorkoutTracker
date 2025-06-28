@@ -1,6 +1,6 @@
-﻿using WorkoutTracker.Shared.Models.Auth;
-using WorkoutTracker.Shared.Models.Auth.Email;
-using WorkoutTracker.Shared.Models.Auth.Password;
+﻿using WorkoutTracker.Shared.Dto.Auth;
+using WorkoutTracker.Shared.Dto.Auth.Email;
+using WorkoutTracker.Shared.Dto.Auth.Password;
 using WorkoutTracker.Web.ViewModels.Base;
 
 namespace WorkoutTracker.Web.ViewModels.AuthViewModel

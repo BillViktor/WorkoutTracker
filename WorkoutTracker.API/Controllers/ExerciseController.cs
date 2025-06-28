@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading;
 using WorkoutTracker.Business.Services.ExerciseService;
-using WorkoutTracker.Shared.Models;
-using WorkoutTracker.Shared.Models.Pagination;
-using WorkoutTracker.Shared.Models.Result;
+using WorkoutTracker.Data.Models;
+using WorkoutTracker.Shared.Dto;
+using WorkoutTracker.Shared.Dto.Pagination;
+using WorkoutTracker.Shared.Dto.Result;
 
 namespace WorkoutTracker.API.Controllers
 {
@@ -22,13 +22,24 @@ namespace WorkoutTracker.API.Controllers
         /// <summary>
         /// Returns a paginated, sorted and filtered list of exercises
         /// </summary>
-        [Authorize(Roles = "Admin")]
         [HttpPost("list")]
-        public async Task<ActionResult<ResultModel<EntityResult<Exercise>>>> GetExercises(EntityParameters entityParameters, CancellationToken cancellationToken)
+        public async Task<ActionResult<ResultModel<EntityResult<ExerciseDto>>>> GetExercises(EntityParameters entityParameters, CancellationToken cancellationToken)
         {
-            return Ok(new ResultModel<EntityResult<Exercise>>
+            return Ok(new ResultModel<EntityResult<ExerciseDto>>
             {
                 ResultObject = await exerciseService.GetExercises(entityParameters, cancellationToken)
+            });
+        }
+
+        /// <summary>
+        /// Returns the exercise with the specified id
+        /// </summary>
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ResultModel<ExerciseDto>>> GetExercise(long id, CancellationToken cancellationToken)
+        {
+            return Ok(new ResultModel<ExerciseDto>
+            {
+                ResultObject = await exerciseService.GetExercise(id, cancellationToken)
             });
         }
 

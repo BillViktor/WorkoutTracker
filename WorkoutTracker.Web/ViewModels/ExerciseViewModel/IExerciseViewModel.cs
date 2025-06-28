@@ -1,13 +1,13 @@
-﻿using WorkoutTracker.Shared.Models;
+﻿using WorkoutTracker.Shared.Dto;
 using WorkoutTracker.Web.ViewModels.EntityViewModel;
 
 namespace WorkoutTracker.Web.ViewModels.ExerciseViewModel
 {
-    public interface IExerciseViewModel : IEntityViewModel<Exercise>
+    public interface IExerciseViewModel : IEntityViewModel<ExerciseDto>
     {
-        Task<Exercise> Add(Exercise exercise);
-        Task<bool> Delete(Exercise exercise);
+        Task<ExerciseDto> Add(ExerciseDto exercise);
+        Task<bool> Delete(ExerciseDto exercise);
         Task GetEntities();
-        Task<Exercise> Update(Exercise exercise);
+        Task<ExerciseDto> Update(ExerciseDto exercise);
     }
 }

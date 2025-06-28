@@ -1,13 +1,17 @@
 ﻿@page "/admin/exercises"
-@using WorkoutTracker.Shared.Models
-@using WorkoutTracker.Web.Components.Entities
 @using WorkoutTracker.Web.ViewModels.ExerciseViewModel
 @attribute [Authorize(Roles = "Admin")]
 
 <PageTitle>Admin - Exercises</PageTitle>
 
-<EntityListComponent Title="Admin - Exercises" EntityViewModel="ExerciseViewModel" T="Exercise" />
+<h2>Admin - Exercises</h2>
 
+<p>
+    Under construction...
+</p>
+
+@* <EntityListComponent Title="Admin - Exercises" EntityViewModel="ExerciseViewModel" T="Exercise" />
+ *@
 @code {
     [Inject] IExerciseViewModel ExerciseViewModel { get; set; }
 

@@ -1,0 +1,21 @@
+﻿@page "/exercises/{id}"
+@using WorkoutTracker.Web.ViewModels.ExerciseViewModel
+
+<PageTitle>Exercise Info</PageTitle>
+
+<p>
+    Under construction...
+</p>
+
+@code {
+    [Parameter]
+    public string Id { get; set; } = string.Empty;
+
+    [Inject]
+    IExerciseViewModel ExerciseViewModel { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+}
