@@ -1,12 +1,23 @@
 ﻿using WorkoutTracker.Shared.Models.Auth;
+using WorkoutTracker.Shared.Models.Auth.Email;
+using WorkoutTracker.Shared.Models.Auth.Password;
 using WorkoutTracker.Shared.Models.Result;
 
 namespace WorkoutTracker.Web.Clients.AuthClient
 {
     public interface IAuthClient
     {
+        Task<ResultModel> ChangeEmail(ChangeEmailRequestDto request);
+        Task<ResultModel> ChangePassword(ChangePasswordRequestDto request);
+        Task<ResultModel> ConfirmChangeEmail(ConfirmChangeEmailRequestDto request);
+        Task<ResultModel> Delete();
+        Task<ResultModel> ForgotPassword(ForgotPasswordRequestDto request);
         Task<ResultModel<WorkoutTrackerUserDto>> Info();
-        Task<ResultModel> Login(LoginRequestModel loginRequest);
+        Task<ResultModel> Login(LoginRequestDto loginRequest);
         Task<ResultModel> Logout();
+        Task<ResultModel> Register(RegisterRequestDto request);
+        Task<ResultModel> ResendConfirmationEmail();
+        Task<ResultModel> ResetPassword(ResetPasswordRequestDto request);
+        Task<ResultModel> VerifyEmail(VerifyEmailRequestDto request);
     }
 }

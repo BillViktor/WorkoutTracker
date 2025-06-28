@@ -1,0 +1,60 @@
+﻿@using WorkoutTracker.Shared.Models.Auth.Email
+@using WorkoutTracker.Web.ViewModels.AuthViewModel
+
+@if (IsVisible)
+{
+    <div class="backdrop">
+        <div class="dialog">
+            <p class="font-bold">
+                Change Email
+            </p>
+
+            <EditForm Model="Request" OnValidSubmit="HandleValidSubmit">
+                <DataAnnotationsValidator />
+
+                <p>
+                    <ValidationSummary />
+                </p>
+
+                <p>
+                    <label for="currentEmail">Current Email</label>
+                    <input class="w-100" id="currentEmail" disabled @bind="AuthViewModel.UserInfo.Email" />
+                </p>
+
+                <p>
+                    <label for="currentEmail">New Email</label>
+                    <input class="w-100" id="currentEmail" @bind="Request.NewEmail" />
+                </p>
+
+                <hr />
+
+                <div class="row justify-content-end">
+                    <button type="submit" class="button-success"><i class="fa fa-plus" /> Confirm</button>
+                    <button @onclick="async () => await OnConfirm.InvokeAsync(false)" class="button-warning"><i class="fa fa-ban" />Cancel</button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] 
+    public bool IsVisible { get; set; } = false;
+
+    [Parameter] 
+    public EventCallback<bool> OnConfirm { get; set; }
+
+    [Parameter]
+    public IAuthViewModel AuthViewModel { get; set; } = default!;
+
+    [Parameter]
+    public ChangeEmailRequestDto Request { get; set; }
+
+    /// <summary>
+    /// Handles the form submission.
+    /// </summary>
+    private void HandleValidSubmit()
+    {
+        OnConfirm.InvokeAsync(true);
+    }
+}

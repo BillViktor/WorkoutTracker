@@ -1,6 +1,12 @@
 ﻿@page "/profile"
+@using WorkoutTracker.Shared.Models.Auth.Email
+@using WorkoutTracker.Shared.Models.Auth.Password
+@using WorkoutTracker.Web.Components.Auth
+@using WorkoutTracker.Web.ViewModels.AuthViewModel
 
 @attribute [Authorize]
+
+<MessageComponent Errors="AuthViewModel.Errors" SuccessMessages="AuthViewModel.SuccessMessages" IsBusy="AuthViewModel.IsBusy"/>
 
 <h1>Profile</h1>
 
@@ -8,7 +14,103 @@
     <Authorized>
         <p>
             Welcome, @context.User.Identity.Name! <br/>
-            This page is currently under construction.
         </p>
+
+        <p>
+            Email: @AuthViewModel.UserInfo?.Email <br/>
+            Confirmed: @(AuthViewModel.UserInfo?.IsEmailConfirmed)
+        </p>
+
+        <p>
+            Roles: @string.Join(", ", AuthViewModel.UserInfo?.Roles ?? Enumerable.Empty<string>())
+        </p>
+
+        <div class="row gap-1">
+            <button class="button-primary" @onclick="ChangeEmail">Change Email</button>
+            <button class="button-primary" @onclick="ChangePassword">Change Password</button>
+            @if (AuthViewModel.UserInfo?.IsEmailConfirmed == false)
+            {
+                <button class="button-primary" @onclick="AuthViewModel.ResendConfirmationEmail">Send Email Confirmation</button>
+            }
+        </div>
     </Authorized>
 </AuthorizeView>
+
+<ChangeEmailComponent AuthViewModel="AuthViewModel" IsVisible="showChangeEmailComponent" OnConfirm="ConfirmChangeEmail" Request="changeEmailRequest" />
+<ChangePasswordComponent AuthViewModel="AuthViewModel" IsVisible="showChangePasswordComponent" OnConfirm="ConfirmChangePassword" Request="changePasswordRequest" />
+
+@code {
+    [Inject]
+    IAuthViewModel AuthViewModel { get; set; }
+
+    private bool showChangeEmailComponent = false;
+    private ChangeEmailRequestDto changeEmailRequest;
+
+    private bool showChangePasswordComponent = false;
+    private ChangePasswordRequestDto changePasswordRequest;
+
+    protected override void OnInitialized()
+    {
+        AuthViewModel.PropertyChanged += ViewModelPropertyChanged;
+
+        base.OnInitialized();
+    }
+
+    public void Dispose() => AuthViewModel.PropertyChanged -= ViewModelPropertyChanged;
+
+    private async void ViewModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) => await InvokeAsync(() => { StateHasChanged(); });
+
+    /// <summary>
+    /// Shows the Change Email component.
+    /// </summary>
+    private void ChangeEmail() 
+    {
+        changeEmailRequest = new ChangeEmailRequestDto();
+        showChangeEmailComponent = true;
+    }
+
+    /// <summary>
+    /// Shows the change password component
+    /// </summary>
+    private void ChangePassword() 
+    {
+        changePasswordRequest = new ChangePasswordRequestDto();
+        showChangePasswordComponent = true;
+    }
+
+    /// <summary>
+    /// Confirms the change of a user's email address.
+    /// </summary>
+    private async Task ConfirmChangeEmail(bool confirm) 
+    {
+        if(confirm) 
+        {
+            if (await AuthViewModel.ChangeEmail(changeEmailRequest))
+            {
+                showChangeEmailComponent = false;
+            }
+        }
+        else 
+        {
+            showChangeEmailComponent = false;
+        }
+    }
+
+    /// <summary>
+    /// Confirms the change of a user's password.
+    /// </summary>
+    private async Task ConfirmChangePassword(bool confirm)
+    {
+        if (confirm)
+        {
+            if (await AuthViewModel.ChangePassword(changePasswordRequest))
+            {
+                showChangePasswordComponent = false;
+            }
+        }
+        else
+        {
+            showChangePasswordComponent = false;
+        }
+    }
+}

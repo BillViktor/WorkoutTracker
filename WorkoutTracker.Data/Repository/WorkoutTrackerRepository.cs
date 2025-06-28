@@ -20,9 +20,12 @@ namespace WorkoutTracker.Data.Repository
         /// </summary>
         public async Task<EntityResult<T>> GetEntitiesPaginated<T>(EntityParameters entityParameters, CancellationToken cancellationToken) where T : class
         {
-            var count = await workoutTrackerDbContext.Set<T>().CountAsync(cancellationToken);
+            var query = workoutTrackerDbContext.Set<T>().ApplyFiltering(entityParameters);
 
-            var list = await workoutTrackerDbContext.Set<T>()
+            var count = await query.CountAsync(cancellationToken);
+
+            var list = await query
+                .ApplySorting(entityParameters)
                 .Skip(entityParameters.Page * entityParameters.PageCount)
                 .Take(entityParameters.PageCount)
                 .AsNoTracking()

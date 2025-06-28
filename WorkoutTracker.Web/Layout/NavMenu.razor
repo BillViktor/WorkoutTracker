@@ -17,17 +17,27 @@
                 </li>
 
                 <!-- Admin Menu Dropdown -->
-                <li>
-                    <div class="dropdown">
-                        <button class="dropdown-button @(IsAdminRoute ? "text-primary" : "")">
-                            Admin
-                            <i class="fa fa-caret-down"></i>
-                        </button>
+                <AuthorizeView Roles="Admin">
+                    <Authorized>
+                        <li>
+                            <div class="dropdown">
+                                <button class="dropdown-button @(isAdminRoute ? "text-primary" : "")">
+                                    Admin
+                                    <i class="fa fa-caret-down"></i>
+                                </button>
 
-                        <div class="dropdown-content">
-                            <NavLink href="admin/exercises" Match="NavLinkMatch.All">Exercises</NavLink>
-                        </div>
-                    </div>
+                                <div class="dropdown-content">
+                                    <NavLink href="admin/muscles" Match="NavLinkMatch.All">Muscles</NavLink>
+                                    <NavLink href="admin/exercises" Match="NavLinkMatch.All">Exercises</NavLink>
+                                </div>
+                            </div>
+                        </li>
+                    </Authorized>
+                </AuthorizeView>
+
+                <!-- Dark Mode Toggle-->
+                <li>
+                    <button title="Click to toggle dark mode!" @onclick="ToggleDarkMode" class="icon-button @(darkMode ? "text-white" : "text-warning")"><i class="@(darkMode ? "fa fa-moon-o" : "fa fa-sun-o")" /></button>
                 </li>
 
                 <li class="nav-auth-link">
@@ -56,14 +66,21 @@
     </div>
 </header>
 
-@code {
-    private bool IsAdminRoute => NavigationManager.Uri.Contains("admin", StringComparison.OrdinalIgnoreCase);
 
+
+@code {
     [Inject]
     NavigationManager NavigationManager { get; set; }
 
-    protected override void OnInitialized()
+    [Inject]
+    IJSRuntime JS { get; set; }
+
+    private bool isAdminRoute => NavigationManager.Uri.Contains("admin", StringComparison.OrdinalIgnoreCase);
+    private bool darkMode = true;
+
+    protected override async Task OnInitializedAsync()
     {
+        darkMode = await JS.InvokeAsync<bool>("initDarkMode");
         NavigationManager.LocationChanged += OnLocationChanged;
         base.OnInitialized();
     }
@@ -76,5 +93,11 @@
     public void Dispose() 
     {
         NavigationManager.LocationChanged -= OnLocationChanged;
+    }
+
+    private async Task ToggleDarkMode() 
+    {
+        await JS.InvokeVoidAsync("toggleDarkMode", !darkMode);
+        darkMode = !darkMode;
     }
 }

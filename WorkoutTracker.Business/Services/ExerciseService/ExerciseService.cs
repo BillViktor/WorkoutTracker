@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using WorkoutTracker.Data.Repository;
+using WorkoutTracker.Shared.Dto;
 using WorkoutTracker.Shared.Models;
 using WorkoutTracker.Shared.Models.Pagination;
 
@@ -28,6 +29,34 @@ namespace WorkoutTracker.Business.Services.ExerciseService
             exercises.List.ForEach(x => x.ImageUrl = $"{sBaseUrl}{x.ImageUrl}");
 
             return exercises;
+        }
+
+        /// <summary>
+        /// Returns a paginated, sorted and filtered list of exercises as DTOs
+        /// </summary>
+        public async Task<EntityResult<ExerciseDto>> GetExercisesDto(EntityParameters entityParameters, CancellationToken cancellationToken)
+        {
+            var exercises = await workoutTrackerRepository.GetEntitiesPaginated<Exercise>(entityParameters, CancellationToken.None);
+            string sBaseUrl = configuration["WorkoutTrackerApiBaseUrl"];
+
+            var exerciseDtos = exercises.List.Select(x => new ExerciseDto
+            {
+                Name = x.Name,
+                Description = x.Description,
+                ImageUrl = $"{sBaseUrl}{x.ImageUrl}",
+                PrimaryMuscle = new MuscleDto
+                {
+                    Name = x.PrimaryMuscle.Name,
+                    Description = x.PrimaryMuscle.Description,
+                    ImageUrl = $"{sBaseUrl}{x.PrimaryMuscle.ImageUrl}"
+                },
+            }).ToList();
+
+            return new EntityResult<ExerciseDto>
+            {
+                Count = exerciseDtos.Count,
+                List = exerciseDtos,
+            };
         }
 
         /// <summary>

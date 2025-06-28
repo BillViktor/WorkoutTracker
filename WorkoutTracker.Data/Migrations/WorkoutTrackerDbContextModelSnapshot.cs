@@ -197,9 +197,6 @@ namespace WorkoutTracker.Data.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("ProfilePicturePath")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -245,6 +242,9 @@ namespace WorkoutTracker.Data.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<long?>("MuscleId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(128)
@@ -258,44 +258,14 @@ namespace WorkoutTracker.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("MuscleId");
+
                     b.HasIndex("Name")
                         .IsUnique();
 
                     b.HasIndex("PrimaryMuscleId");
 
                     b.ToTable("Exercise");
-                });
-
-            modelBuilder.Entity("WorkoutTracker.Shared.Models.ExerciseMuscle", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<DateTime>("CreateDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("getdate()");
-
-                    b.Property<long>("ExerciseId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("MuscleId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("UpdateDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MuscleId");
-
-                    b.HasIndex("ExerciseId", "MuscleId")
-                        .IsUnique();
-
-                    b.ToTable("ExerciseMuscle");
                 });
 
             modelBuilder.Entity("WorkoutTracker.Shared.Models.Muscle", b =>
@@ -388,6 +358,10 @@ namespace WorkoutTracker.Data.Migrations
 
             modelBuilder.Entity("WorkoutTracker.Shared.Models.Exercise", b =>
                 {
+                    b.HasOne("WorkoutTracker.Shared.Models.Muscle", null)
+                        .WithMany("Exercises")
+                        .HasForeignKey("MuscleId");
+
                     b.HasOne("WorkoutTracker.Shared.Models.Muscle", "PrimaryMuscle")
                         .WithMany()
                         .HasForeignKey("PrimaryMuscleId")
@@ -395,30 +369,6 @@ namespace WorkoutTracker.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("PrimaryMuscle");
-                });
-
-            modelBuilder.Entity("WorkoutTracker.Shared.Models.ExerciseMuscle", b =>
-                {
-                    b.HasOne("WorkoutTracker.Shared.Models.Exercise", "Exercise")
-                        .WithMany("Muscles")
-                        .HasForeignKey("ExerciseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("WorkoutTracker.Shared.Models.Muscle", "Muscle")
-                        .WithMany("Exercises")
-                        .HasForeignKey("MuscleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Exercise");
-
-                    b.Navigation("Muscle");
-                });
-
-            modelBuilder.Entity("WorkoutTracker.Shared.Models.Exercise", b =>
-                {
-                    b.Navigation("Muscles");
                 });
 
             modelBuilder.Entity("WorkoutTracker.Shared.Models.Muscle", b =>

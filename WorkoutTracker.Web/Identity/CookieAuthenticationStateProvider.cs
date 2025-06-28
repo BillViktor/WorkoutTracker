@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components.Authorization;
 using System.Security.Claims;
+using WorkoutTracker.Shared.Models.Auth;
 using WorkoutTracker.Web.Clients.AuthClient;
 
 namespace WorkoutTracker.Web.Identity
@@ -9,6 +10,12 @@ namespace WorkoutTracker.Web.Identity
         private readonly IAuthClient authClient;
         private bool authenticated = false;
         private readonly ClaimsPrincipal unauthenticated = new(new ClaimsIdentity());
+        private WorkoutTrackerUserDto userInfo;
+
+        public WorkoutTrackerUserDto UserInfo
+        {
+            get => userInfo;
+        }
 
         public CookieAuthenticationStateProvider(IAuthClient authClient)
         {
@@ -23,20 +30,20 @@ namespace WorkoutTracker.Web.Identity
         {
             authenticated = false;
 
-            var sUser = unauthenticated;
+            var user = unauthenticated;
             try
             {
-                var sUserResponse = await authClient.Info();
+                var userResponse = await authClient.Info();
 
-                if (sUserResponse.Success)
+                if (userResponse.Success)
                 {
                     var sClaims = new List<Claim>
                     {
-                        new Claim(ClaimTypes.Name, sUserResponse.ResultObject.UserName),
-                        new Claim(ClaimTypes.Email, sUserResponse.ResultObject.Email)
+                        new Claim(ClaimTypes.Name, userResponse.ResultObject.UserName),
+                        new Claim(ClaimTypes.Email, userResponse.ResultObject.Email)
                     };
 
-                    foreach (var sRole in sUserResponse.ResultObject.RoleClaims)
+                    foreach (var sRole in userResponse.ResultObject.RoleClaims)
                     {
                         if (!string.IsNullOrEmpty(sRole.Type) && !string.IsNullOrEmpty(sRole.Value))
                         {
@@ -45,13 +52,14 @@ namespace WorkoutTracker.Web.Identity
                     }
 
                     var sId = new ClaimsIdentity(sClaims, nameof(CookieAuthenticationStateProvider));
-                    sUser = new ClaimsPrincipal(sId);
+                    user = new ClaimsPrincipal(sId);
+                    userInfo = userResponse.ResultObject;
                     authenticated = true;
                 }
             }
             catch { }
 
-            return new AuthenticationState(sUser);
+            return new AuthenticationState(user);
         }
     }
 }

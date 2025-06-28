@@ -1,11 +1,94 @@
 ﻿namespace WorkoutTracker.Business.Services.Email
 {
+    /// <summary>
+    /// Helper class for generating email templates.
+    /// </summary>
     public static class EmailHelper
     {
-        public static string GetConfirmationEmail(string aConfirmationLink)
+        public static string GetConfirmationEmail(string confirmationLink)
         {
-            return $@"
-                <!DOCTYPE html>
+            string body = $@"
+                        <h1>Welcome to WorkoutTracker!</h1>
+                        <p>
+                            Verify your email address to complete your registration.
+                        </p>
+                        <a href=""{confirmationLink}"" class=""button"">Verify email</a>
+                        <p>
+                            The link is valid for an hour.
+                        </p>
+                        <p class=""footer"">
+                            Best Regards,<br>
+                            <strong>WorkoutTracker</strong>
+                        </p>
+                        ";
+
+            return GetEmailTemplate(body);
+        }
+
+        public static string GetAccountDeletedConfirmation()
+        {
+            string body = $@"
+                        <h1>Workout Tracker - Account Deleted</h1>
+                        <p>
+                            This is a confirmation that your account is deleted. We hope to see you again!
+                        </p>
+                        <p class=""footer"">
+                            Best Regards,<br>
+                            <strong>WorkoutTracker</strong>
+                        </p>
+                        ";
+
+            return GetEmailTemplate(body);
+        }
+
+        public static string GetChangeEmailEmail(string confirmationLink)
+        {
+            string body = $@"
+                        <h1>Change Email</h1>
+                        <p>
+                           Confirm your new email by clicking the link below.
+                        </p>
+                        <a href=""{confirmationLink}"" class=""button"">Change Email</a>
+                        <p>
+                            The link is valid for an hour.
+                        </p>
+                        <p class=""footer"">
+                            Best Regards,<br>
+                            <strong>WorkoutTracker</strong>
+                        </p>
+                        ";
+
+            return GetEmailTemplate(body);
+        }
+
+        public static string GetResetPasswordEmail(string changePasswordLink)
+        {
+            string body = $@"
+                        <h1>WorkoutTracker - Reset Password</h1>
+                        <p>
+                            Reset your password by clicking the link below.
+                        </p>
+                        <a href=""{changePasswordLink}"" class=""button"">Reset Password</a>
+                        <p>
+                            The link is valid for an hour.
+                        </p>
+                        <p class=""footer"">
+                            Best Regards,<br>
+                            <strong>WorkoutTracker</strong>
+                        </p>
+                        ";
+
+            return GetEmailTemplate(body);
+        }
+
+        /// <summary>
+        /// Private helper method that returns the email template with the provided body.
+        /// </summary>
+        /// <param name="body"></param>
+        /// <returns></returns>
+        private static string GetEmailTemplate(string body)
+        {
+            return $@"<!DOCTYPE html>
                 <html lang=""sv"">
                 <head>
                     <meta charset=""UTF-8"">
@@ -56,22 +139,10 @@
                 </head>
                 <body>
                     <div class=""email-container"">
-                        <h1>Welcome to WorkoutTracker!</h1>
-                        <p>
-                            Verify your email address to complete your registration.
-                        </p>
-                        <a href=""{aConfirmationLink}"" class=""button"">Verify email</a>
-                        <p>
-                            The link is valid for an hour.
-                        </p>
-                        <p class=""footer"">
-                            Best Regards,<br>
-                            <strong>WorkoutTracker</strong>
-                        </p>
+                        {body}
                     </div>
                 </body>
-                </html>
-                ";
+                </html>";
         }
     }
 }

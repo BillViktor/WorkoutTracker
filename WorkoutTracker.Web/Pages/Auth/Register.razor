@@ -1,0 +1,82 @@
+﻿@page "/register"
+@using WorkoutTracker.Shared.Models.Auth
+@using WorkoutTracker.Web.ViewModels.AuthViewModel
+
+<PageTitle>WorkoutTracker - Register</PageTitle>
+
+<MessageComponent Errors="AuthViewModel.Errors" SuccessMessages="AuthViewModel.SuccessMessages" IsBusy="AuthViewModel.IsBusy" />
+
+<div class="center box">
+    <h2>Register</h2>
+
+    <EditForm Model="mRegisterModel" OnValidSubmit="RegisterUser">
+        <DataAnnotationsValidator />
+
+        <p>
+            <ValidationSummary />
+        </p>
+        
+        <p>
+            <label for="userName">Username</label>
+            <input @bind="mRegisterModel.UserName" id="userName" class="w-100" />
+        </p>
+
+        <p>
+            <label for="email">Email</label>
+            <input @bind="mRegisterModel.Email" id="email" class="w-100" />
+        </p>
+
+        <p>
+            <label for="password">Password</label>
+            <input type="password" @bind="mRegisterModel.Password" id="password" class="w-100" />
+        </p>
+
+        <p>
+            <label for="confirmPassword">Confirm password</label>
+            <input type="password" @bind="mRegisterModel.ConfirmPassword" id="confirmPassword" class="w-100" />
+        </p>
+
+        <button class="w-100 button-primary" type="submit">Register</button>
+    </EditForm>
+
+    <p class="text-center">
+        Already a member? <a href="login">Login!</a>
+    </p>
+</div>
+
+@code {
+    [Inject] 
+    IAuthViewModel AuthViewModel { get; set; }
+    
+    [Inject]
+    NavigationManager NavigationManager { get; set; }
+
+    private RegisterRequestDto mRegisterModel = new RegisterRequestDto();
+
+    protected override void OnInitialized()
+    {
+        AuthViewModel.PropertyChanged += ViewModelPropertyChanged;
+
+        if (AuthViewModel.UserInfo != null)
+        {
+            NavigationManager.NavigateTo("");
+        }
+
+        base.OnInitialized();
+    }
+
+    public void Dispose() => AuthViewModel.PropertyChanged -= ViewModelPropertyChanged;
+
+    private async void ViewModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) => await InvokeAsync(() => { StateHasChanged(); });
+
+    private async Task RegisterUser()
+    {
+        if (await AuthViewModel.Register(mRegisterModel))
+        {
+            AuthViewModel.SuccessMessages.Add("Registration successful! Now taking you to the login page...");
+            await InvokeAsync(StateHasChanged);
+            await Task.Delay(2000);
+            NavigationManager.NavigateTo("login");
+        }
+    }
+}

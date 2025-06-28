@@ -1,16 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WorkoutTracker.Shared.Models.Auth
+namespace WorkoutTracker.Shared.Models.Auth.Password
 {
-    public class RegisterRequestModel
+    /// <summary>
+    /// Represents a request to reset a user's password.
+    /// </summary>
+    public class ResetPasswordRequestDto
     {
-        [Required(ErrorMessage = "Username is mandatory!")]
-        [MinLength(5)]
-        public string UserName { get; set; }
-
-        [Required(ErrorMessage = "E-mail ís mandatory!")]
-        [EmailAddress(ErrorMessage = "E-mail is invalid!")]
-        public string Email { get; set; }
+        public string UserId { get; set; }
+        public string Token { get; set; }
 
         [Required(ErrorMessage = "Password is mandatory!")]
         [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$^+=!*()@%&]).{8,}$", ErrorMessage = "Password must contain: one uppercase letter, one lowercase letter, a digit, a special sign and be at least eight characters long!")]

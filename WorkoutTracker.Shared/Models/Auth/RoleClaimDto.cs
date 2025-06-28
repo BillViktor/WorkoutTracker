@@ -1,6 +1,6 @@
 ﻿namespace WorkoutTracker.Shared.Models.Auth
 {
-    public class RoleClaimModel
+    public class RoleClaimDto
     {
         public string? Issuer { get; set; }
         public string? OriginalIssuer { get; set; }

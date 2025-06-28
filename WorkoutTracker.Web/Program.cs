@@ -3,11 +3,11 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using WorkoutTracker.Web.Clients.AuthClient;
 using WorkoutTracker.Web.Clients.ExerciseClient;
-using WorkoutTracker.Web.Clients.Muscle;
+using WorkoutTracker.Web.Clients.MuscleClient;
 using WorkoutTracker.Web.Identity;
 using WorkoutTracker.Web.ViewModels.AuthViewModel;
 using WorkoutTracker.Web.ViewModels.ExerciseViewModel;
-using WorkoutTracker.Web.ViewModels.Muscle;
+using WorkoutTracker.Web.ViewModels.MuscleViewModel;
 
 namespace WorkoutTracker.Web
 {

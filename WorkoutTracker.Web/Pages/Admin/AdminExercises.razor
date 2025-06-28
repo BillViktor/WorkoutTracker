@@ -4,9 +4,9 @@
 @using WorkoutTracker.Web.ViewModels.ExerciseViewModel
 @attribute [Authorize(Roles = "Admin")]
 
-<PageTitle>Exercises</PageTitle>
+<PageTitle>Admin - Exercises</PageTitle>
 
-<EntityListComponent Title="Exercises" EntityViewModel="ExerciseViewModel" T="Exercise" />
+<EntityListComponent Title="Admin - Exercises" EntityViewModel="ExerciseViewModel" T="Exercise" />
 
 @code {
     [Inject] IExerciseViewModel ExerciseViewModel { get; set; }

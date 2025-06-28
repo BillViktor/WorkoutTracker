@@ -32,7 +32,8 @@ namespace WorkoutTracker.Web.ViewModels.ExerciseViewModel
         {
             return await ResultHandler.HandleAsync(
                 exerciseClient.AddExercise(exercise),
-                AppendErrorList);
+                AppendErrorList,
+                message => SuccessMessages.Add(message), "Exercise added successfully");
         }
 
         /// <summary>
@@ -42,7 +43,8 @@ namespace WorkoutTracker.Web.ViewModels.ExerciseViewModel
         {
             return await ResultHandler.HandleAsync(
                 exerciseClient.DeleteExercise(exercise.Id),
-                AppendErrorList);
+                AppendErrorList,
+                message => SuccessMessages.Add(message), "Exercise deleted successfully");
         }
 
         /// <summary>
@@ -52,7 +54,8 @@ namespace WorkoutTracker.Web.ViewModels.ExerciseViewModel
         {
             return await ResultHandler.HandleAsync(
                 exerciseClient.UpdateExercise(exercise),
-                AppendErrorList);
+                AppendErrorList,
+                message => SuccessMessages.Add(message), "Exercise updated successfully");
         }
         #endregion
     }

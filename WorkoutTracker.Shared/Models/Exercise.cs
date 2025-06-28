@@ -17,7 +17,5 @@ namespace WorkoutTracker.Shared.Models
         [Required(ErrorMessage = "Primary muscle is required.")]
         public long PrimaryMuscleId { get; set; }
         public Muscle PrimaryMuscle { get; set; }
-
-        public ICollection<ExerciseMuscle> Muscles { get; set; }
     }
 }

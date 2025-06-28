@@ -20,33 +20,26 @@ namespace WorkoutTracker.Business.Services.Email
         /// </summary>
         public async Task SendEmail(string recipient, string header, string body)
         {
-            try
+            SmtpClient smtpClient = new SmtpClient
             {
-                SmtpClient smtpClient = new SmtpClient
-                {
-                    Port = Convert.ToInt32(configuration["SmtpSettings:Port"]),
-                    Host = configuration["SmtpSettings:Host"],
-                    EnableSsl = true,
-                    DeliveryMethod = SmtpDeliveryMethod.Network,
-                    Credentials = new NetworkCredential(configuration["SmtpSettings:Username"], configuration["SmtpSettings:Password"])
-                };
+                Port = Convert.ToInt32(configuration["SmtpSettings:Port"]),
+                Host = configuration["SmtpSettings:Host"],
+                EnableSsl = true,
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                Credentials = new NetworkCredential(configuration["SmtpSettings:Username"], configuration["SmtpSettings:Password"])
+            };
 
-                MailMessage mail = new MailMessage
-                {
-                    From = new MailAddress(configuration["SmtpSettings:Username"], "WorkoutTracker"),
-                    Subject = header,
-                    Body = body,
-                    IsBodyHtml = true
-                };
-
-                mail.To.Add(recipient);
-
-                await smtpClient.SendMailAsync(mail);
-            }
-            catch (Exception ex)
+            MailMessage mail = new MailMessage
             {
-                logger.LogError(ex, "Error sending email to {Email}", recipient);
-            }
+                From = new MailAddress(configuration["SmtpSettings:Username"], "WorkoutTracker"),
+                Subject = header,
+                Body = body,
+                IsBodyHtml = true
+            };
+
+            mail.To.Add(recipient);
+
+            await smtpClient.SendMailAsync(mail);
         }
     }
 }

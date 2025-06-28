@@ -2,8 +2,8 @@
 
 namespace WorkoutTracker.Data.Models
 {
-    public class WorkoutTrackerUserModel : IdentityUser
-    {
-        public string? ProfilePicturePath { get; set; }
-    }
+    /// <summary>
+    /// The user model for WorkoutTracker
+    /// </summary>
+    public class WorkoutTrackerUserModel : IdentityUser { }
 }

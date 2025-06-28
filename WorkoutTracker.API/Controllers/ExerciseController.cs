@@ -20,7 +20,7 @@ namespace WorkoutTracker.API.Controllers
         }
 
         /// <summary>
-        /// Returns a paginated, sortered and filtered list of exercises
+        /// Returns a paginated, sorted and filtered list of exercises
         /// </summary>
         [Authorize(Roles = "Admin")]
         [HttpPost("list")]

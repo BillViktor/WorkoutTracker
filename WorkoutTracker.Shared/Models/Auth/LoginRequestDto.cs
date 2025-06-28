@@ -2,7 +2,7 @@
 
 namespace WorkoutTracker.Shared.Models.Auth
 {
-    public class LoginRequestModel
+    public class LoginRequestDto
     {
         [Required(ErrorMessage = "You must enter your username!")]
         public string UserName { get; set; }

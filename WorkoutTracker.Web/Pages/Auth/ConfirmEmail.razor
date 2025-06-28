@@ -1,0 +1,84 @@
+﻿@page "/confirm-email"
+@using WorkoutTracker.Shared.Models.Auth
+@using WorkoutTracker.Shared.Models.Auth.Email
+@using WorkoutTracker.Shared.Models.Auth.Password
+@using WorkoutTracker.Web.Components
+@using WorkoutTracker.Web.ViewModels.AuthViewModel
+@using Microsoft.AspNetCore.WebUtilities
+
+<PageTitle>WorkoutTracker - Confirm Email</PageTitle>
+
+<MessageComponent IsBusy="AuthViewModel.IsBusy" Errors="AuthViewModel.Errors" SuccessMessages="AuthViewModel.SuccessMessages"/>
+
+<div class="center box">
+    <h2>Verify Email</h2>
+
+    @if (success == null)
+    {
+        <p>
+            Verifying email...
+        </p>
+    }
+    else
+    {
+        @if (success == true)
+        {
+            <p>
+                Email verified successfully!
+                <AuthorizeView>
+                    <Authorized>
+                        <a href="login">Home</a>
+                    </Authorized>
+                    <NotAuthorized>
+                        <a href="login">Login</a>
+                    </NotAuthorized>
+                </AuthorizeView>
+            </p>
+        }
+        else
+        {
+            <p>
+                Email verification failed. Please try again.
+            </p>
+        }
+    }
+</div>
+
+
+@code {
+    [Inject] 
+    IAuthViewModel AuthViewModel { get; set; }
+
+    [Inject] 
+    NavigationManager NavigationManager { get; set; }
+
+    private VerifyEmailRequestDto request = new VerifyEmailRequestDto();
+    private bool? success = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("userId", out var userId))
+        {
+            request.UserId = userId;
+        }
+        else 
+        {
+            success = false;
+        }
+
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("token", out var token))
+        {
+            request.Token = token;
+        }
+        else
+        {
+            success = false;
+        }
+
+        if(success == null) 
+        {
+            success = await AuthViewModel.VerifyEmail(request);
+        }
+    }
+}

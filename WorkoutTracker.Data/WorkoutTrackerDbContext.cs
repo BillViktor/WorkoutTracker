@@ -14,13 +14,6 @@ namespace WorkoutTracker.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<ExerciseMuscle>(e =>
-            {
-                e.Property(p => p.CreateDate).HasDefaultValueSql("getdate()");
-
-                e.HasIndex(e => new { e.ExerciseId, e.MuscleId }).IsUnique();
-            });
-
             modelBuilder.Entity<Muscle>(e =>
             {
                 e.Property(p => p.Name).HasMaxLength(128);
@@ -30,11 +23,6 @@ namespace WorkoutTracker.Data
                 e.Property(p => p.CreateDate).HasDefaultValueSql("getdate()");
 
                 e.HasIndex(e => e.Name).IsUnique();
-
-                e.HasMany(p => p.Exercises)
-                    .WithOne(e => e.Muscle)
-                        .HasForeignKey(e => e.MuscleId)
-                            .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<Exercise>(e =>
@@ -51,11 +39,6 @@ namespace WorkoutTracker.Data
                     .WithMany()
                         .HasForeignKey(e => e.PrimaryMuscleId)
                             .OnDelete(DeleteBehavior.Restrict);
-
-                e.HasMany(p => p.Muscles)
-                    .WithOne(e => e.Exercise)
-                        .HasForeignKey(e => e.ExerciseId)
-                            .OnDelete(DeleteBehavior.Cascade);
 
             });
 

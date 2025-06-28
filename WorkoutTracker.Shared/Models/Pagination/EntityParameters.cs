@@ -4,8 +4,8 @@
     {
         public int Page { get; set; } = 0;
         public int PageCount { get; set; } = 20;
-        public string? SortBy { get; set; }
+        public string? SortBy { get; set; } = "Name";
         public bool SortDescending { get; set; } = false;
-        public string? SearchString { get; set; }
+        public string? SearchString { get; set; } = "Barbell";
     }
 }

@@ -7,6 +7,6 @@
         public string? ImageUrl { get; set; }
 
         //Navigation property
-        public virtual ICollection<ExerciseMuscle> Exercises { get; set; }
+        public virtual ICollection<Exercise> Exercises { get; set; } = null!;
     }
 }

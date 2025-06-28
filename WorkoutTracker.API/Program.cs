@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
@@ -11,6 +12,7 @@ using WorkoutTracker.Business.Services.MuscleService;
 using WorkoutTracker.Data;
 using WorkoutTracker.Data.Models;
 using WorkoutTracker.Data.Repository;
+using WorkoutTracker.Shared.Models.Result;
 
 namespace WorkoutTracker.API
 {
@@ -45,6 +47,8 @@ namespace WorkoutTracker.API
                 .AddEntityFrameworkStores<WorkoutTrackerDbContext>();
 
             builder.Services.Configure<DataProtectionTokenProviderOptions>(opt => opt.TokenLifespan = TimeSpan.FromHours(1));
+
+            builder.Services.AddMemoryCache();
             #endregion
 
             #region Database
@@ -63,6 +67,26 @@ namespace WorkoutTracker.API
 
             //Load Smtp Credentials
             builder.Configuration.AddJsonFile("smtpsettings.json", false);
+
+            //Override the default model validation response
+            builder.Services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.InvalidModelStateResponseFactory = context =>
+                {
+                    var errors = context.ModelState
+                        .Where(e => e.Value?.Errors?.Count > 0)
+                        .SelectMany(kvp => kvp.Value.Errors.Select(e => $"[{kvp.Key}] {e.ErrorMessage}"))
+                        .ToList();
+
+                    var resultModel = new ResultModel(errors)
+                    {
+                        Message = "One or more validation errors occurred.",
+                        Success = false
+                    };
+
+                    return new BadRequestObjectResult(resultModel);
+                };
+            });
 
             var app = builder.Build();
 

@@ -1,4 +1,5 @@
-﻿using WorkoutTracker.Data.Models.Exceptions;
+﻿using WorkoutTracker.API.Models.Exceptions;
+using WorkoutTracker.Data.Models.Exceptions;
 using WorkoutTracker.Shared.Models.Result;
 
 namespace WorkoutTracker.API.Middleware
@@ -28,9 +29,19 @@ namespace WorkoutTracker.API.Middleware
             {
                 await next(context); // Pass control to next middleware
             }
+            catch (EmailAlreadyConfirmedException ex)
+            {
+                logger.LogWarning(ex, "Email already confirmed.");
+                await HandleExceptionAsync(context, ex, StatusCodes.Status400BadRequest);
+            }
             catch (EntityNotFoundException ex)
             {
                 logger.LogWarning(ex, "Entity not found.");
+                await HandleExceptionAsync(context, ex, StatusCodes.Status404NotFound);
+            }
+            catch(UserNotFoundException ex)
+            {
+                logger.LogWarning(ex, "User not found.");
                 await HandleExceptionAsync(context, ex, StatusCodes.Status404NotFound);
             }
             catch (Exception ex)
