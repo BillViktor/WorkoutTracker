@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using System.Linq.Expressions;
 using WorkoutTracker.Data.Models;
 using WorkoutTracker.Data.Repository;
 using WorkoutTracker.Shared.Dto;
@@ -23,12 +25,30 @@ namespace WorkoutTracker.Business.Services.ExerciseService
         /// <summary>
         /// Returns a paginated, sorted and filtered list of exercises
         /// </summary>
-        public async Task<EntityResult<ExerciseDto>> GetExercises(EntityParameters entityParameters, CancellationToken cancellationToken)
+        public async Task<EntityResult<ExerciseDto>> GetExercises(ExerciseParameters parameters, CancellationToken cancellationToken)
         {
-            entityParameters.SortBy = "Name asc";
-            entityParameters.SearchString = $"Name.Contains(\"{entityParameters.SearchString}\")";
+            string? filter = null;
 
-            var exercises = await workoutTrackerRepository.GetEntitiesPaginated<Exercise>(entityParameters, cancellationToken, e => e.PrimaryMuscle);
+            //Filter by exercise name
+            if (!string.IsNullOrWhiteSpace(parameters.ExerciseName))
+                filter = $"Name.Contains(\"{parameters.ExerciseName}\")";
+
+            //Filter by primary muscle
+            if (!string.IsNullOrWhiteSpace(parameters.PrimaryMuscle))
+            {
+                if (filter != null)
+                    filter += " && ";
+
+                filter += $"PrimaryMuscle.Name.Contains(\"{parameters.PrimaryMuscle}\")";
+            }
+
+            var exercises = await workoutTrackerRepository.GetEntitiesPaginated<Exercise>(
+                parameters.Page, 
+                parameters.PageCount, 
+                cancellationToken,
+                whereFilter: filter,
+                orderBy: x => x.Name, 
+                includes: x => x.PrimaryMuscle);
 
             string sBaseUrl = configuration["WorkoutTrackerApiBaseUrl"];
 

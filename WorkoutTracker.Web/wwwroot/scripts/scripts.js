@@ -8,3 +8,11 @@ window.initDarkMode = function () {
     document.body.classList.toggle('dark', isDark);
     return isDark;
 }
+
+window.scrollTo(xCoord, yCoord) = function () {
+    window.scrollTo({
+        top: yCoord,
+        left: xCoord,
+        behavior: 'smooth'
+    });
+}

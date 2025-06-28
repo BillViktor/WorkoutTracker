@@ -29,6 +29,11 @@ namespace WorkoutTracker.API.Middleware
             {
                 await next(context); // Pass control to next middleware
             }
+            catch(ArgumentOutOfRangeException ex)
+            {
+                logger.LogWarning(ex, "Argument out of range.");
+                await HandleExceptionAsync(context, ex, StatusCodes.Status400BadRequest);
+            }
             catch (EmailAlreadyConfirmedException ex)
             {
                 logger.LogWarning(ex, "Email already confirmed.");

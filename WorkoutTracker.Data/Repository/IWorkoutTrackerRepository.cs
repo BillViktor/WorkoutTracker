@@ -13,7 +13,15 @@ namespace WorkoutTracker.Data.Repository
         Task<List<T>> AddRangeAsync<T>(List<T> entity, CancellationToken cancellationToken);
         Task DeleteAsync<T>(T entity, CancellationToken cancellationToken);
         Task<List<T>> GetEntities<T>(CancellationToken cancellationToken, params Expression<Func<T, object>>[] includes) where T : class;
-        Task<EntityResult<T>> GetEntitiesPaginated<T>(EntityParameters entityParameters, CancellationToken cancellationToken, params Expression<Func<T, object>>[] includes) where T : class;
+        Task<EntityResult<T>> GetEntitiesPaginated<T>(
+            int page,
+            int pageCount,
+            CancellationToken cancellationToken,
+            string? whereFilter = null,
+            Expression<Func<T, bool>>? filter = null,
+            Expression<Func<T, object>>? orderBy = null,
+            bool orderByDescending = false,
+            params Expression<Func<T, object>>[] includes) where T : class;
         Task<T> GetEntity<T>(long id, CancellationToken cancellationToken, params Expression<Func<T, object>>[] includes) where T : BaseEntity;
         Task<T> UpdateAsync<T>(T entity, CancellationToken cancellationToken);
     }

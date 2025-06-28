@@ -31,7 +31,8 @@ namespace WorkoutTracker.Web.ViewModels.MuscleViewModel
         {
             return await ResultHandler.HandleAsync(
                 muscleClient.UpdateMuscle(muscle),
-                AppendErrorList);
+                AppendErrorList,
+                setBusy: busy => IsBusy = busy);
         }
 
         /// <summary>
@@ -41,7 +42,8 @@ namespace WorkoutTracker.Web.ViewModels.MuscleViewModel
         {
             muscles = await ResultHandler.HandleAsync(
                 muscleClient.GetMuscles(),
-                AppendErrorList);
+                AppendErrorList,
+                setBusy: busy => IsBusy = busy);
         }
         #endregion
     }

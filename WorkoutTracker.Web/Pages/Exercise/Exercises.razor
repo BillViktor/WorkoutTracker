@@ -1,4 +1,6 @@
 ﻿@page "/exercises"
+@using Microsoft.AspNetCore.WebUtilities
+@using WorkoutTracker.Shared.Dto.Pagination
 @using WorkoutTracker.Shared.Dto.Result
 @using WorkoutTracker.Web.ViewModels.ExerciseViewModel
 @using WorkoutTracker.Web.ViewModels.MuscleViewModel
@@ -10,13 +12,22 @@
 <h1>Exercises</h1>
 
 <div class="row gap-1">
-    <input @bind="searchString" @bind:event="oninput" @bind:after="SearchChanged" id="searchInput" placeholder="Search by name..." type="text">
+    <input @bind="ExerciseViewModel.ExerciseParameters.ExerciseName" @bind:event="oninput" @bind:after="SearchChanged" id="searchInput" placeholder="Search by name..." type="text">
 
     <div>
-        <button class="button-primary m-0"><i class="fa fa-filter" /> Filters</button>
+        <select @bind="ExerciseViewModel.ExerciseParameters.PrimaryMuscle" @bind:after="SearchChanged">
+            <option value="">All Muscles</option>
+            @foreach (var muscle in MuscleViewModel.Muscles ?? new List<MuscleDto>())
+            {
+                <option value="@muscle.Name">@muscle.Name</option>
+            }
+        </select>
     </div>
 </div>
 
+<p class="m-0">
+    @($"{ExerciseViewModel.Entities?.Count ?? 0} exercises found.")
+</p>
 
 <div class="card-grid">
     @foreach (var exercise in ExerciseViewModel.Entities?.List ?? new List<ExerciseDto>())
@@ -34,12 +45,20 @@
     }
 </div>
 
+@if(ExerciseViewModel.Entities?.List != null) 
+{
+    <PaginationComponent Page="ExerciseViewModel.ExerciseParameters.Page" PageCount="ExerciseViewModel.ExerciseParameters.PageCount" TotalCount="ExerciseViewModel.Entities.Count" PageChanged="OnPageChanged" />
+}
+
 @code {
     [Inject]
     IMuscleViewModel MuscleViewModel { get; set; }
 
     [Inject]
     IExerciseViewModel ExerciseViewModel { get; set; }
+
+    [Inject]
+    IJSRuntime JS { get; set; }
 
     [Inject]
     NavigationManager NavigationManager { get; set; }
@@ -51,15 +70,33 @@
     private List<string> successMessages => MuscleViewModel.SuccessMessages.Concat(ExerciseViewModel.SuccessMessages).ToList();
 
     private string searchString = "";
-    private List<MuscleDto> selectedMuscles = new List<MuscleDto>();
 
     protected override async Task OnInitializedAsync()
     {
+        ExerciseViewModel.ExerciseParameters = new ExerciseParameters();
+
         MuscleViewModel.PropertyChanged += ViewModelPropertyChanged;
         ExerciseViewModel.PropertyChanged += ViewModelPropertyChanged;
 
         await MuscleViewModel.GetMuscles();
-        await ExerciseViewModel.GetEntities();
+
+        GetQueryString();
+
+        await SearchChanged();
+    }
+
+    private void GetQueryString() 
+    {
+        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+        var queryDict = QueryHelpers.ParseQuery(uri.Query);
+
+        if (queryDict.TryGetValue("muscle", out var value))
+        {
+            if (MuscleViewModel.Muscles?.Any(x => string.Equals(x.Name, value.ToString(), StringComparison.OrdinalIgnoreCase)) == true)
+            {
+                ExerciseViewModel.ExerciseParameters.PrimaryMuscle = value.ToString();
+            }
+        }
     }
 
     public void Dispose() 
@@ -72,7 +109,15 @@
 
     private async Task SearchChanged() 
     {
-        ExerciseViewModel.EntityParameters.SearchString = searchString;
+        //Reset the page
+        ExerciseViewModel.ExerciseParameters.Page = 0;
         await ExerciseViewModel.GetEntities();
+    }
+
+    private async Task OnPageChanged(int page)
+    {
+        ExerciseViewModel.ExerciseParameters.Page = page;
+        await ExerciseViewModel.GetEntities();
+        await JS.InvokeVoidAsync("scrollTo", 0, 0);
     }
 }

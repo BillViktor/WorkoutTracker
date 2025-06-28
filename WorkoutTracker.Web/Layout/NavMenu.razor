@@ -16,25 +16,6 @@
                     <NavLink href="routines" Match="NavLinkMatch.All">Routines</NavLink>
                 </li>
 
-                <!-- Admin Menu Dropdown -->
-                <AuthorizeView Roles="Admin">
-                    <Authorized>
-                        <li>
-                            <div class="dropdown">
-                                <button class="dropdown-button @(isAdminRoute ? "text-primary" : "")">
-                                    Admin
-                                    <i class="fa fa-caret-down"></i>
-                                </button>
-
-                                <div class="dropdown-content">
-                                    <NavLink href="admin/muscles" Match="NavLinkMatch.All">Muscles</NavLink>
-                                    <NavLink href="admin/exercises" Match="NavLinkMatch.All">Exercises</NavLink>
-                                </div>
-                            </div>
-                        </li>
-                    </Authorized>
-                </AuthorizeView>
-
                 <!-- Dark Mode Toggle-->
                 <li>
                     <button id="darkModeToggle" title="Click to toggle dark mode!" @onclick="ToggleDarkMode" class="icon-button @(darkMode ? "text-white" : "text-warning")"><i class="@(darkMode ? "fa fa-moon-o" : "fa fa-sun-o")" /></button>

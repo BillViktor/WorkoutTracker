@@ -25,12 +25,12 @@ namespace WorkoutTracker.API.Controllers
         /// <summary>
         /// Returns a paginated, sorted and filtered list of exercises
         /// </summary>
-        [HttpPost("list")]
-        public async Task<ActionResult<ResultModel<EntityResult<ExerciseDto>>>> GetExercises(EntityParameters entityParameters, CancellationToken cancellationToken)
+        [HttpGet("list")]
+        public async Task<ActionResult<ResultModel<EntityResult<ExerciseDto>>>> GetExercises([FromQuery] ExerciseParameters parameters, CancellationToken cancellationToken)
         {
             return Ok(new ResultModel<EntityResult<ExerciseDto>>
             {
-                ResultObject = await exerciseService.GetExercises(entityParameters, cancellationToken)
+                ResultObject = await exerciseService.GetExercises(parameters, cancellationToken)
             });
         }
 

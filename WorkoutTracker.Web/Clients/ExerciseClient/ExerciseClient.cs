@@ -1,4 +1,5 @@
-﻿using WorkoutTracker.Shared.Dto;
+﻿using Microsoft.AspNetCore.WebUtilities;
+using WorkoutTracker.Shared.Dto;
 using WorkoutTracker.Shared.Dto.Pagination;
 using WorkoutTracker.Shared.Dto.Result;
 
@@ -19,9 +20,17 @@ namespace WorkoutTracker.Web.Clients.ExerciseClient
         /// <summary>
         /// Get a paginated, sorted and filtered list of exercises.
         /// </summary>
-        public async Task<ResultModel<EntityResult<ExerciseDto>>> GetExercises(EntityParameters entityParameters)
+        public async Task<ResultModel<EntityResult<ExerciseDto>>> GetExercises(ExerciseParameters parameters)
         {
-            return await HttpRequestHelper.PostAsJsonAsync<EntityResult<ExerciseDto>, EntityParameters>(httpClient, "exercise/list", entityParameters);
+            var queryString = new Dictionary<string, string>
+            {
+                { "page", parameters.Page.ToString() },
+                { "pageCount", parameters.PageCount.ToString() },
+                { "exerciseName", parameters.ExerciseName },
+                { "primaryMuscle", parameters.PrimaryMuscle }
+            };
+
+            return await HttpRequestHelper.GetAsync<EntityResult<ExerciseDto>>(httpClient, QueryHelpers.AddQueryString("exercise/list", queryString));
         }
 
         /// <summary>

@@ -23,27 +23,49 @@ namespace WorkoutTracker.Data.Repository
         /// <summary>
         /// Gets a paginated, sorted and filtered list of the given type
         /// </summary>
-        public async Task<EntityResult<T>> GetEntitiesPaginated<T>(EntityParameters entityParameters, CancellationToken cancellationToken, params Expression<Func<T, object>>[] includes) where T : class
+        public async Task<EntityResult<T>> GetEntitiesPaginated<T>(
+            int page,
+            int pageCount,
+            CancellationToken cancellationToken,
+            string? whereFilter = null,
+            Expression<Func<T, bool>>? expressionFilter = null,
+            Expression<Func<T, object>>? orderBy = null,
+            bool orderByDescending = false,
+            params Expression<Func<T, object>>[] includes) where T : class
         {
-            IQueryable<T> query = workoutTrackerDbContext.Set<T>().IncludeProperties(includes);
-
-            //Apply filtering
-            if (!string.IsNullOrWhiteSpace(entityParameters.SearchString))
+            if(page < 0)
             {
-                query = query.Where(entityParameters.SearchString);
+                throw new ArgumentOutOfRangeException(nameof(page), "Page number cannot be less than zero.");
             }
 
-            //Apply sorting
-            if (!string.IsNullOrWhiteSpace(entityParameters.SortBy))
+            if(pageCount > 100 || pageCount <= 0)
             {
-                query = query.OrderBy(entityParameters.SortBy);
+                throw new ArgumentOutOfRangeException(nameof(pageCount), "Page count must be between 1 and 100");
+            }
+
+            IQueryable<T> query = workoutTrackerDbContext.Set<T>().IncludeProperties(includes);
+
+            // Filtering
+            if (expressionFilter is not null)
+            {
+                query = query.Where(expressionFilter);
+            }
+            if(!string.IsNullOrWhiteSpace(whereFilter))
+            {
+                query = query.Where(whereFilter);
+            }
+
+            // Sorting
+            if (orderBy is not null)
+            {
+                query = orderByDescending ? query.OrderByDescending(orderBy) : query.OrderBy(orderBy);
             }
 
             var count = await query.CountAsync(cancellationToken);
 
             var list = await query
-                .Skip(entityParameters.Page * entityParameters.PageCount)
-                .Take(entityParameters.PageCount)
+                .Skip(page * pageCount)
+                .Take(pageCount)
                 .AsNoTracking()
                 .ToListAsync(cancellationToken);
 
