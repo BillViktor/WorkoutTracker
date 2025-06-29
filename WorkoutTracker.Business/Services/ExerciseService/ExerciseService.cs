@@ -39,7 +39,7 @@ namespace WorkoutTracker.Business.Services.ExerciseService
                 if (filter != null)
                     filter += " && ";
 
-                filter += $"PrimaryMuscle.Name.Contains(\"{parameters.PrimaryMuscle}\")";
+                filter += $"PrimaryMuscle.Name.Equals(\"{parameters.PrimaryMuscle}\")";
             }
 
             var exercises = await workoutTrackerRepository.GetEntitiesPaginated<Exercise>(
