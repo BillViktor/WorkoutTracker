@@ -1,11 +1,31 @@
 ﻿@page "/exercises/{id}"
 @using WorkoutTracker.Web.ViewModels.ExerciseViewModel
 
-<PageTitle>Exercise Info</PageTitle>
+<PageTitle>@(exercise == null ? "Exercise Info" : exercise.Name)</PageTitle>
 
-<p>
-    Under construction...
-</p>
+@if(exercise != null) 
+{
+    <div class="card">
+        <h2>@exercise.Name</h2>
+        <img class="display-block" src="@exercise.ImageUrl" />
+        <h3>Primary Muscle: <a href="exercises?muscle=@exercise.PrimaryMuscle">@exercise.PrimaryMuscle</a></h3>
+
+        <hr />
+
+        <h4>Instructions</h4>
+        <p>
+            @exercise.Description
+            @if (!string.IsNullOrEmpty(exercise.Instructions))
+            {
+                <br />
+                <br />
+
+                @exercise.Instructions
+            }
+        </p>
+    </div>
+    
+}
 
 @code {
     [Parameter]
@@ -14,8 +34,15 @@
     [Inject]
     IExerciseViewModel ExerciseViewModel { get; set; }
 
-    protected override void OnInitialized()
+    private ExerciseDto? exercise = null;
+
+    protected override async Task OnInitializedAsync()
     {
+        long exerciseId;
+
+        if (long.TryParse(Id, out exerciseId))
+            exercise = await ExerciseViewModel.GetExercise(exerciseId);
+
         base.OnInitialized();
     }
 }

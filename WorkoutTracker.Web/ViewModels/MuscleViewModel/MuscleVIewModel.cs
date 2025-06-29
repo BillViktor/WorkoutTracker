@@ -32,6 +32,8 @@ namespace WorkoutTracker.Web.ViewModels.MuscleViewModel
             return await ResultHandler.HandleAsync(
                 muscleClient.UpdateMuscle(muscle),
                 AppendErrorList,
+                handleSuccessMessage: SuccessMessages.Add,
+                messageOnSuccess: "Muscle updated successfully.",
                 setBusy: busy => IsBusy = busy);
         }
 

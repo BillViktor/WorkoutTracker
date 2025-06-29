@@ -60,12 +60,9 @@ namespace WorkoutTracker.Business.Services.ExerciseService
                     Id = x.Id,
                     Name = x.Name,
                     Description = x.Description,
-                    ImageUrl = $"{sBaseUrl}images/exercises/{x.ImageUrl}",
-                    PrimaryMuscle = new MuscleDto
-                    {
-                        Name = x.PrimaryMuscle.Name,
-                        Description = x.PrimaryMuscle.Description,
-                    },
+                    Instructions = x.Instructions,
+                    ImageUrl = $"{sBaseUrl}{x.ImageUrl}",
+                    PrimaryMuscle = x.PrimaryMuscle.Name
                 }).ToList(),
             };
         }
@@ -75,19 +72,16 @@ namespace WorkoutTracker.Business.Services.ExerciseService
         /// </summary>
         public async Task<ExerciseDto> GetExercise(long id, CancellationToken cancellationToken)
         {
-            var exercise = await workoutTrackerRepository.GetEntity<Exercise>(id, cancellationToken);
+            var exercise = await workoutTrackerRepository.GetEntity<Exercise>(id, cancellationToken, x => x.PrimaryMuscle);
 
             return new ExerciseDto
             {
                 Id = exercise.Id,
-                Description = exercise.Description,
                 Name = exercise.Name,
-                ImageUrl = $"{configuration["WorkoutTrackerApiBaseUrl"]}images/exercises/{exercise.ImageUrl}",
-                PrimaryMuscle = new MuscleDto
-                {
-                    Name = exercise.PrimaryMuscle.Name,
-                    Description = exercise.PrimaryMuscle.Description,
-                }
+                Description = exercise.Description,
+                Instructions = exercise.Instructions,
+                ImageUrl = $"{configuration["WorkoutTrackerApiBaseUrl"]}{exercise.ImageUrl}",
+                PrimaryMuscle = exercise.PrimaryMuscle.Name
             };
         }
 

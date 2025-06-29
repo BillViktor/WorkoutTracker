@@ -40,6 +40,17 @@ namespace WorkoutTracker.Web.ViewModels.ExerciseViewModel
         }
 
         /// <summary>
+        /// Retrieves a specific exercise by its ID from the database.
+        /// </summary>
+        public async Task<ExerciseDto> GetExercise(long id)
+        {
+            return await ResultHandler.HandleAsync(
+                exerciseClient.GetExercise(id),
+                AppendErrorList,
+                setBusy: busy => IsBusy = busy);
+        }
+
+        /// <summary>
         /// Adds a new exercise to the database.
         /// </summary>
         public async Task<ExerciseDto> Add(ExerciseDto exercise)

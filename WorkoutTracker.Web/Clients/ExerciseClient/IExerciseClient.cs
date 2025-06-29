@@ -11,6 +11,7 @@ namespace WorkoutTracker.Web.Clients.ExerciseClient
     {
         Task<ResultModel<ExerciseDto>> AddExercise(ExerciseDto exercise);
         Task<ResultModel> DeleteExercise(long id);
+        Task<ResultModel<ExerciseDto>> GetExercise(long id);
         Task<ResultModel<EntityResult<ExerciseDto>>> GetExercises(ExerciseParameters parameters);
         Task<ResultModel<ExerciseDto>> UpdateExercise(ExerciseDto exercise);
     }

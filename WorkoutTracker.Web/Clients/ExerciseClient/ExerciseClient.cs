@@ -34,6 +34,14 @@ namespace WorkoutTracker.Web.Clients.ExerciseClient
         }
 
         /// <summary>
+        /// Get an exercise by its ID.
+        /// </summary>
+        public async Task<ResultModel<ExerciseDto>> GetExercise(long id)
+        {
+            return await HttpRequestHelper.GetAsync<ExerciseDto>(httpClient, $"exercise/{id}");
+        }
+
+        /// <summary>
         /// Add a new exercise to the database.
         /// </summary>
         public async Task<ResultModel<ExerciseDto>> AddExercise(ExerciseDto exercise)

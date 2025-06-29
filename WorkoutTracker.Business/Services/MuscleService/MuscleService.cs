@@ -26,9 +26,7 @@ namespace WorkoutTracker.Business.Services.MuscleService
         {
             var muscles = await workoutTrackerRepository.GetEntities<Muscle>(cancellationToken);
 
-            string sBaseUrl = configuration["WorkoutTrackerApiBaseUrl"];
-
-            muscles.ForEach(x => x.ImageUrl = $"{sBaseUrl}{x.ImageUrl}");
+            muscles.ForEach(x => x.ImageUrl = $"{configuration["WorkoutTrackerApiBaseUrl"]}{x.ImageUrl}");
 
             return muscles.Select(x => new MuscleDto
             {
@@ -44,9 +42,20 @@ namespace WorkoutTracker.Business.Services.MuscleService
         /// </summary>
         public async Task<MuscleDto> UpdateMuscle(MuscleDto muscle, CancellationToken cancellationToken)
         {
-            await Task.Delay(0);
-            throw new NotImplementedException();
+            var existingMuscle = await workoutTrackerRepository.GetEntity<Muscle>(muscle.Id, cancellationToken);
 
+            existingMuscle.Name = muscle.Name;
+            existingMuscle.Description = muscle.Description;
+
+            var updatedEntity = await workoutTrackerRepository.UpdateAsync(existingMuscle, cancellationToken);
+
+            return new MuscleDto
+            {
+                Id = updatedEntity.Id,
+                Name = updatedEntity.Name,
+                Description = updatedEntity.Description,
+                ImageUrl = $"{configuration["WorkoutTrackerApiBaseUrl"]}{updatedEntity.ImageUrl}"
+            };
         }
     }
 }

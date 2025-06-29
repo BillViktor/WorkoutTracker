@@ -12,7 +12,7 @@
 <h1>Exercises</h1>
 
 <div class="row gap-1">
-    <input @bind="ExerciseViewModel.ExerciseParameters.ExerciseName" @bind:event="oninput" @bind:after="SearchChanged" id="searchInput" placeholder="Search by name..." type="text">
+    <input @bind="ExerciseViewModel.ExerciseParameters.ExerciseName" @bind:event="oninput" @bind:after="SearchChanged" id="searchInput" placeholder="Search exercises" type="text">
 
     <div>
         <select @bind="ExerciseViewModel.ExerciseParameters.PrimaryMuscle" @bind:after="SearchChanged">
@@ -36,8 +36,8 @@
             <a href="@($"exercises/{exercise.Id}")">
                 <img src="@exercise.ImageUrl" alt="@exercise.Name" />
                 <div class="card-info">
-                    <h5>@exercise.Name</h5>
-                    <h4>@exercise.PrimaryMuscle.Name</h4>
+                    <h4>@exercise.Name</h4>
+                    <h5>@exercise.PrimaryMuscle</h5>
                     <p>@exercise.Description</p>
                 </div>
             </a>

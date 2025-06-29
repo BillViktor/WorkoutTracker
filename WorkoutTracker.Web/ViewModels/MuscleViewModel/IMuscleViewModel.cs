@@ -10,5 +10,6 @@ namespace WorkoutTracker.Web.ViewModels.MuscleViewModel
     {
         List<MuscleDto> Muscles { get; set; }
         Task GetMuscles();
+        Task<MuscleDto> Update(MuscleDto muscle);
     }
 }

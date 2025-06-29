@@ -11,6 +11,12 @@
     @foreach (var muscle in MuscleViewModel.Muscles ?? new List<MuscleDto>())
     {
         <div class="muscle-card">
+            <AuthorizeView Roles="Admin">
+                <Authorized>
+                    <button @onclick="() => ShowEditMuscle(muscle)" class="icon-button button-top-right-corner"><i class="fa fa-pencil text-warning" /></button>
+                </Authorized>
+            </AuthorizeView>
+
             <a href="@($"exercises?muscle={muscle.Name}")">
                 <img src="@muscle.ImageUrl" alt="@muscle.Name" />
                 <div class="card-info">
@@ -22,6 +28,7 @@
     }
 </div>
 
+<EditMuscleComponent IsVisible="showEditMuscleComponent" Muscle="selectedMuscle" OnConfirm="OnEdit" />
 
 @code {
     [Inject] 
@@ -29,6 +36,9 @@
 
     [Inject]
     NavigationManager NavigationManager { get; set; }
+
+    private bool showEditMuscleComponent = false;
+    private MuscleDto selectedMuscle;
 
     protected override async Task OnInitializedAsync() 
     {
@@ -41,11 +51,36 @@
 
     private async void ViewModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) => await InvokeAsync(() => { StateHasChanged(); });
 
-    /// <summary>
-    /// Navigate to the exercise page to show all exercises for the specified muscle.
-    /// </summary>
     private void NavigateToExercises(string muscleName) 
     {
         NavigationManager.NavigateTo($"exercises?muscle={muscleName}");
+    }
+
+    private void ShowEditMuscle(MuscleDto muscle)
+    {
+        selectedMuscle = new MuscleDto(muscle);
+        showEditMuscleComponent = true;
+    }
+
+    private async Task OnEdit(bool confirmed) 
+    {
+        if(confirmed) 
+        {
+            var result = await MuscleViewModel.Update(selectedMuscle);
+
+            //Replace the updated muscle in the list if the update was successful
+            if(result != null) 
+            {
+                var currentMuscle = MuscleViewModel.Muscles.First(x => x.Id == selectedMuscle.Id);
+
+                MuscleViewModel.Muscles[MuscleViewModel.Muscles.IndexOf(currentMuscle)] = result;
+
+                showEditMuscleComponent = false;
+            }
+        }
+        else 
+        {
+            showEditMuscleComponent = false;
+        }
     }
 }

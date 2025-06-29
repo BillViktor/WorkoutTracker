@@ -14,6 +14,7 @@ namespace WorkoutTracker.Web.ViewModels.ExerciseViewModel
         Task<ExerciseDto> Add(ExerciseDto exercise);
         Task<bool> Delete(ExerciseDto exercise);
         Task GetEntities();
+        Task<ExerciseDto> GetExercise(long id);
         Task<ExerciseDto> Update(ExerciseDto exercise);
     }
 }

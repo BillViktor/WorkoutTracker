@@ -122,11 +122,23 @@ h2 {
     font-size: 2rem;
 }
 
+h3 {
+    font-size: 1.75rem;
+}
+
+h4 {
+    font-size: 1.5rem;
+}
+
 /* Text */
 p {
     font-size: 1.25rem;
     margin: 1rem 0;
     line-height: 1.5rem;
+}
+
+strong {
+    font-weight: bold;
 }
 
 .font-bold {
@@ -228,6 +240,12 @@ button:disabled {
     color: var(--font-color);
 }
 
+.button-top-right-corner {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+}
+
 #darkModeToggle:hover {
     color: var(--primary-color) !important;
 }
@@ -288,6 +306,11 @@ button:disabled {
     display: inline;
 }
 
+.display-block {
+    display: block;
+}
+
+
 /* Sizing */
 .w-100 {
     width: 100%;
@@ -319,6 +342,10 @@ button:disabled {
 /* Inputs */
 input, select {
     height: 2.5rem;
+
+}
+
+input, select, textarea {
     font-size: 1.25rem;
     box-sizing: border-box;
     -webkit-box-sizing: border-box;
@@ -326,6 +353,14 @@ input, select {
     outline: none;
     border-radius: 0.5rem;
     padding: 0 0.5rem;
+    resize: none;
+    font-family: inherit;
+}
+
+input:disabled, select:disabled, textarea:disabled {
+    background-color: var(--foreground-color);
+    opacity: 0.75;
+    cursor: not-allowed;
 }
 
 .checkbox {
@@ -419,14 +454,15 @@ label {
 
 .dismiss-btn {
     position: absolute;
-    right: 0rem;
-    top: 0rem;
+    right: 0;
+    top: 0;
     background: transparent;
     border: none;
     color: white;
     font-weight: bold;
     cursor: pointer;
-    font-size: 0.75rem;
+    padding: 0.5rem;
+    margin: 0;
 }
 
 @keyframes fadein {
@@ -472,6 +508,14 @@ label {
     gap: 1rem;
     padding: 1rem 0;
     justify-content: center;
+}
+
+.card {
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 0.5rem 8px rgba(0, 0, 0, 0.215);
+    background-color: var(--foreground-color);
+    padding: 1rem;
 }
 
 .muscle-card {

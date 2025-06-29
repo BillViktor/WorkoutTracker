@@ -13,6 +13,8 @@ namespace WorkoutTracker.Data.Models
         [Required(ErrorMessage = "Description is required.")]
         public string Description { get; set; }
 
+        public string? Instructions { get; set; }
+
         public string? ImageUrl { get; set; }
 
         [Required(ErrorMessage = "Primary muscle is required.")]
