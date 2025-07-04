@@ -1,4 +1,5 @@
 ﻿@page "/muscles"
+@using WorkoutTracker.Web.Models
 @using WorkoutTracker.Web.ViewModels.MuscleViewModel
 
 <PageTitle>Muscles</PageTitle>
@@ -28,7 +29,7 @@
     }
 </div>
 
-<EditMuscleComponent IsVisible="showEditMuscleComponent" Muscle="selectedMuscle" OnConfirm="OnEdit" />
+<UpdateMuscleComponent ViewModel="MuscleViewModel" IsVisible="showEditMuscleComponent" UpdateMuscle="updateMuscle" Muscle="selectedMuscle" OnConfirm="OnEdit" />
 
 @code {
     [Inject] 
@@ -38,6 +39,7 @@
     NavigationManager NavigationManager { get; set; }
 
     private bool showEditMuscleComponent = false;
+    private UpdateMuscleClientDto updateMuscle;
     private MuscleDto selectedMuscle;
 
     protected override async Task OnInitializedAsync() 
@@ -58,7 +60,8 @@
 
     private void ShowEditMuscle(MuscleDto muscle)
     {
-        selectedMuscle = new MuscleDto(muscle);
+        selectedMuscle = new MuscleDto(muscle); // Create a copy to avoid modifying the original muscle directly
+        updateMuscle = new UpdateMuscleClientDto(muscle);
         showEditMuscleComponent = true;
     }
 
@@ -66,7 +69,7 @@
     {
         if(confirmed) 
         {
-            var result = await MuscleViewModel.Update(selectedMuscle);
+            var result = await MuscleViewModel.Update(selectedMuscle.Id, updateMuscle);
 
             //Replace the updated muscle in the list if the update was successful
             if(result != null) 

@@ -1,6 +1,7 @@
-﻿using WorkoutTracker.Shared.Dto;
+﻿using WorkoutTracker.Shared.Dto.Exercise;
 using WorkoutTracker.Shared.Dto.Pagination;
 using WorkoutTracker.Web.Clients.ExerciseClient;
+using WorkoutTracker.Web.Models;
 using WorkoutTracker.Web.ViewModels.EntityViewModel;
 
 namespace WorkoutTracker.Web.ViewModels.ExerciseViewModel
@@ -53,10 +54,14 @@ namespace WorkoutTracker.Web.ViewModels.ExerciseViewModel
         /// <summary>
         /// Adds a new exercise to the database.
         /// </summary>
-        public async Task<ExerciseDto> Add(ExerciseDto exercise)
+        public async Task<ExerciseDto> Add(AddExerciseClientDto exercise)
         {
-            await Task.Delay(0);
-            throw new NotImplementedException();
+            return await ResultHandler.HandleAsync(
+                exerciseClient.AddExercise(exercise),
+                AppendErrorList,
+                handleSuccessMessage: AddSuccessMessage,
+                messageOnSuccess: "Exercise successfully created.",
+                setBusy: busy => IsBusy = busy);
         }
 
         /// <summary>
@@ -64,17 +69,25 @@ namespace WorkoutTracker.Web.ViewModels.ExerciseViewModel
         /// </summary>
         public async Task<bool> Delete(ExerciseDto exercise)
         {
-            await Task.Delay(0);
-            throw new NotImplementedException();
+            return await ResultHandler.HandleAsync(
+                exerciseClient.DeleteExercise(exercise.Id),
+                AppendErrorList,
+                handleSuccessMessage: AddSuccessMessage,
+                messageOnSuccess: "Exercise successfully deleted.",
+                setBusy: busy => IsBusy = busy);
         }
 
         /// <summary>
         /// Updates an existing exercise.
         /// </summary>
-        public async Task<ExerciseDto> Update(ExerciseDto exercise)
+        public async Task<ExerciseDto> Update(long id, UpdateExerciseClientDto exercise)
         {
-            await Task.Delay(0);
-            throw new NotImplementedException();
+            return await ResultHandler.HandleAsync(
+                exerciseClient.UpdateExercise(id, exercise),
+                AppendErrorList,
+                handleSuccessMessage: AddSuccessMessage,
+                messageOnSuccess: "Exercise successfully updated.",
+                setBusy: busy => IsBusy = busy);
         }
         #endregion
     }

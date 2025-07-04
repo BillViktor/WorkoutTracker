@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.WebUtilities;
-using WorkoutTracker.Shared.Dto;
+using WorkoutTracker.Shared.Dto.Exercise;
 using WorkoutTracker.Shared.Dto.Pagination;
 using WorkoutTracker.Shared.Dto.Result;
+using WorkoutTracker.Web.Models;
 
 namespace WorkoutTracker.Web.Clients.ExerciseClient
 {
@@ -44,18 +45,56 @@ namespace WorkoutTracker.Web.Clients.ExerciseClient
         /// <summary>
         /// Add a new exercise to the database.
         /// </summary>
-        public async Task<ResultModel<ExerciseDto>> AddExercise(ExerciseDto exercise)
+        public async Task<ResultModel<ExerciseDto>> AddExercise(AddExerciseClientDto exercise)
         {
-            return await HttpRequestHelper.PostAsJsonAsync<ExerciseDto, ExerciseDto>(httpClient, "", exercise);
+            var content = new MultipartFormDataContent
+            {
+                { new StringContent(exercise.Name), "Name" },
+                { new StringContent(exercise.Description), "Description" },
+                { new StringContent(exercise.PrimaryMuscleId.ToString()), "PrimaryMuscleId" },
+            };
+
+            if(exercise.Instructions != null)
+            {
+                content.Add(new StringContent(exercise.Instructions), "Instructions");
+            }
+
+            if (exercise.Image != null)
+            {
+                var fileContent = new StreamContent(exercise.Image.OpenReadStream());
+                fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(exercise.Image.ContentType);
+                content.Add(fileContent, "Image", exercise.Image.Name);
+            }
+
+            return await HttpRequestHelper.PostAsync<ExerciseDto>(httpClient, $"", content);
         }
 
         /// <summary>
         /// Update an existing exercise in the database.
         /// </summary>
-        public async Task<ResultModel<ExerciseDto>> UpdateExercise(ExerciseDto exercise)
+        public async Task<ResultModel<ExerciseDto>> UpdateExercise(long id, UpdateExerciseClientDto exercise)
         {
-            return await HttpRequestHelper.PutAsJsonAsync<ExerciseDto, ExerciseDto>(httpClient, "", exercise);
+            var content = new MultipartFormDataContent
+            {
+                { new StringContent(exercise.Name), "Name" },
+                { new StringContent(exercise.Description), "Description" },
+                { new StringContent(exercise.PrimaryMuscleId.ToString()), "PrimaryMuscleId" },
+                { new StringContent(exercise.DeleteImage.ToString()), "DeleteImage" }
+            };
 
+            if (exercise.Instructions != null)
+            {
+                content.Add(new StringContent(exercise.Instructions), "Instructions");
+            }
+
+            if (exercise.Image != null)
+            {
+                var fileContent = new StreamContent(exercise.Image.OpenReadStream());
+                fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(exercise.Image.ContentType);
+                content.Add(fileContent, "Image", exercise.Image.Name);
+            }
+
+            return await HttpRequestHelper.PutAsync<ExerciseDto, HttpContent>(httpClient, $"exercise/{id}", content);
         }
 
         /// <summary>

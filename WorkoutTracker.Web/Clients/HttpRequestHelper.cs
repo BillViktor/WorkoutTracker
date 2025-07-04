@@ -85,6 +85,41 @@ namespace WorkoutTracker.Web.Clients
         }
 
         /// <summary>
+        /// Performs a POST request to the specified URL with a HttpContent and returns a ResultModel with a ResultObject.
+        /// </summary>
+        public static async Task<ResultModel<T>> PostAsync<T>(this HttpClient httpClient, string url, HttpContent content)
+        {
+            try
+            {
+                var response = await httpClient.PostAsync(url, content);
+
+                var result = await ReadFromJsonAsync<T>(response);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    if (result == null)
+                    {
+                        return new ResultModel<T>($"Non-success status code: {response.StatusCode}");
+                    }
+
+                    // If the result is not null, it may contain errors
+                    return new ResultModel<T>
+                    {
+                        Errors = result.Errors,
+                        Message = result.Message,
+                        Success = false
+                    };
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return new ResultModel<T>(ex);
+            }
+        }
+
+        /// <summary>
         /// Performs a POST request to the specified URL with a JSON content and returns a ResultModel with a ResultObject.
         /// </summary>
         public static async Task<ResultModel<T>> PostAsJsonAsync<T, U>(this HttpClient httpClient, string url, U content)
@@ -193,6 +228,42 @@ namespace WorkoutTracker.Web.Clients
                 return new ResultModel<T>(ex);
             }
         }
+
+        /// <summary>
+        /// Performs a PUT request to the specified URL and returns a ResultModel with a ResultObject.
+        /// </summary>
+        public static async Task<ResultModel<T>> PutAsync<T, U>(this HttpClient httpClient, string url, HttpContent content)
+        {
+            try
+            {
+                var response = await httpClient.PutAsync(url, content);
+
+                var result = await ReadFromJsonAsync<T>(response);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    if (result == null)
+                    {
+                        return new ResultModel<T>($"Non-success status code: {response.StatusCode}");
+                    }
+
+                    // If the result is not null, it may contain errors
+                    return new ResultModel<T>
+                    {
+                        Errors = result.Errors,
+                        Message = result.Message,
+                        ResultObject = result.ResultObject,
+                        Success = false
+                    };
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return new ResultModel<T>(ex);
+            }
+        }
         #endregion
 
 
@@ -244,7 +315,7 @@ namespace WorkoutTracker.Web.Clients
             }
             catch (Exception ex)
             {
-                return null;
+                return new ResultModel($"Error reading response: {ex.Message}");
             }
         }
 

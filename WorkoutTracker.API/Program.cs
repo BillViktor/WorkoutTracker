@@ -8,6 +8,7 @@ using WorkoutTracker.API.Middleware;
 using WorkoutTracker.Business.Services.Auth;
 using WorkoutTracker.Business.Services.Email;
 using WorkoutTracker.Business.Services.ExerciseService;
+using WorkoutTracker.Business.Services.Image;
 using WorkoutTracker.Business.Services.MuscleService;
 using WorkoutTracker.Data;
 using WorkoutTracker.Data.Models;
@@ -53,6 +54,7 @@ namespace WorkoutTracker.API
             builder.Services.AddMemoryCache();
             #endregion
 
+
             #region Database
             builder.Services.AddDbContext<WorkoutTrackerDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("WorkoutTrackerDb")));
@@ -60,12 +62,15 @@ namespace WorkoutTracker.API
             builder.Services.AddScoped<IWorkoutTrackerRepository, WorkoutTrackerRepository>();
             #endregion
 
+
             #region Services
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IEmailService, EmailService>();
             builder.Services.AddScoped<IExerciseService, ExerciseService>();
+            builder.Services.AddScoped<IImageService, ImageService>();
             builder.Services.AddScoped<IMuscleService, MuscleService>();
             #endregion
+
 
             //Load Smtp Credentials
             builder.Configuration.AddJsonFile("smtpsettings.json", false);

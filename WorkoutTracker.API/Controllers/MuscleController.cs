@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WorkoutTracker.Business.Models;
 using WorkoutTracker.Business.Services.MuscleService;
 using WorkoutTracker.Shared.Dto;
 using WorkoutTracker.Shared.Dto.Result;
@@ -36,12 +37,15 @@ namespace WorkoutTracker.API.Controllers
         /// Updates a muscle in the database
         /// </summary>
         [Authorize(Roles = "Admin")]
-        [HttpPut]
-        public async Task<ActionResult<ResultModel<MuscleDto>>> UpdateMuscle(MuscleDto muscle, CancellationToken cancellationToken)
+        [HttpPut("{id}")]
+        public async Task<ActionResult<ResultModel<MuscleDto>>> UpdateMuscle(
+            [FromRoute] long id,
+            [FromForm] UpdateMuscleDto muscle,
+            CancellationToken cancellationToken)
         {
             return Ok(new ResultModel<MuscleDto>
             {
-                ResultObject = await muscleService.UpdateMuscle(muscle, cancellationToken)
+                ResultObject = await muscleService.UpdateMuscle(id, muscle, cancellationToken)
             });
         }
     }

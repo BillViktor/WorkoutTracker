@@ -67,6 +67,7 @@ namespace WorkoutTracker.Web.ViewModels.Base
         public void AppendErrorList(List<ErrorModel> errorList)
         {
             errors.AddRange(errorList);
+            OnPropertyChanged(null);
         }
 
         /// <summary>
@@ -75,6 +76,7 @@ namespace WorkoutTracker.Web.ViewModels.Base
         public void AddError(string error)
         {
             errors.Add(new ErrorModel { ErrorText = error });
+            OnPropertyChanged(null);
         }
 
         /// <summary>
@@ -83,6 +85,7 @@ namespace WorkoutTracker.Web.ViewModels.Base
         public void AddSuccessMessage(string message)
         {
             successMessages.Add(message);
+            OnPropertyChanged(null);
         }
         #endregion
     }

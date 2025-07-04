@@ -1,4 +1,4 @@
-﻿namespace WorkoutTracker.Shared.Dto
+﻿namespace WorkoutTracker.Shared.Dto.Exercise
 {
     /// <summary>
     /// Data Transfer Object for an exercise.

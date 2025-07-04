@@ -18,6 +18,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="Components\UpdateExerciseComponent.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
     <Content Update="Pages\Muscles.razor">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>

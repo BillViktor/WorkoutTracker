@@ -1,5 +1,6 @@
-﻿using WorkoutTracker.Shared.Dto;
+﻿using WorkoutTracker.Shared.Dto.Exercise;
 using WorkoutTracker.Shared.Dto.Pagination;
+using WorkoutTracker.Web.Models;
 using WorkoutTracker.Web.ViewModels.EntityViewModel;
 
 namespace WorkoutTracker.Web.ViewModels.ExerciseViewModel
@@ -11,10 +12,10 @@ namespace WorkoutTracker.Web.ViewModels.ExerciseViewModel
     {
         ExerciseParameters ExerciseParameters { get; set; }
 
-        Task<ExerciseDto> Add(ExerciseDto exercise);
+        Task<ExerciseDto> Add(AddExerciseClientDto exercise);
         Task<bool> Delete(ExerciseDto exercise);
         Task GetEntities();
         Task<ExerciseDto> GetExercise(long id);
-        Task<ExerciseDto> Update(ExerciseDto exercise);
+        Task<ExerciseDto> Update(long id, UpdateExerciseClientDto exercise);
     }
 }

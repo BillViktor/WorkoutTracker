@@ -29,7 +29,7 @@ namespace WorkoutTracker.API.Middleware
             {
                 await next(context); // Pass control to next middleware
             }
-            catch(ArgumentOutOfRangeException ex)
+            catch (ArgumentOutOfRangeException ex)
             {
                 logger.LogWarning(ex, "Argument out of range.");
                 await HandleExceptionAsync(context, ex, StatusCodes.Status400BadRequest);

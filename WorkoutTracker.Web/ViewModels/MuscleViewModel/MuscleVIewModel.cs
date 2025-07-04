@@ -1,5 +1,6 @@
 ﻿using WorkoutTracker.Shared.Dto;
 using WorkoutTracker.Web.Clients.MuscleClient;
+using WorkoutTracker.Web.Models;
 using WorkoutTracker.Web.ViewModels.Base;
 
 namespace WorkoutTracker.Web.ViewModels.MuscleViewModel
@@ -27,12 +28,12 @@ namespace WorkoutTracker.Web.ViewModels.MuscleViewModel
         /// <summary>
         /// Updates an existing exercise.
         /// </summary>
-        public async Task<MuscleDto> Update(MuscleDto muscle)
+        public async Task<MuscleDto> Update(long id, UpdateMuscleClientDto muscle)
         {
             return await ResultHandler.HandleAsync(
-                muscleClient.UpdateMuscle(muscle),
+                muscleClient.UpdateMuscle(id, muscle),
                 AppendErrorList,
-                handleSuccessMessage: SuccessMessages.Add,
+                handleSuccessMessage: AddSuccessMessage,
                 messageOnSuccess: "Muscle updated successfully.",
                 setBusy: busy => IsBusy = busy);
         }

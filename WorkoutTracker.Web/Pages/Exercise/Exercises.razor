@@ -1,15 +1,29 @@
 ﻿@page "/exercises"
 @using Microsoft.AspNetCore.WebUtilities
+@using WorkoutTracker.Shared.Dto.Exercise
 @using WorkoutTracker.Shared.Dto.Pagination
 @using WorkoutTracker.Shared.Dto.Result
+@using WorkoutTracker.Web.Models
 @using WorkoutTracker.Web.ViewModels.ExerciseViewModel
 @using WorkoutTracker.Web.ViewModels.MuscleViewModel
 
 <PageTitle>Exercises</PageTitle>
 
-<MessageComponent Errors="errors" SuccessMessages="successMessages" IsBusy="isBusy" />
+<MessageComponent Errors="MuscleViewModel.Errors" SuccessMessages="MuscleViewModel.SuccessMessages" IsBusy="MuscleViewModel.IsBusy" />
+<MessageComponent Errors="ExerciseViewModel.Errors" SuccessMessages="ExerciseViewModel.SuccessMessages" IsBusy="ExerciseViewModel.IsBusy" />
 
-<h1>Exercises</h1>
+<div class="row justify-content-between">
+    <h1>Exercises</h1>
+
+    <AuthorizeView Roles="Admin">
+        <Authorized>
+            <div>
+                <button @onclick="ShowCreateExercise" class="button-success m-0"><i class="fa fa-plus" /> Add</button>
+            </div>
+        </Authorized>
+    </AuthorizeView>
+</div>
+
 
 <div class="row gap-1">
     <input @bind="ExerciseViewModel.ExerciseParameters.ExerciseName" @bind:event="oninput" @bind:after="SearchChanged" id="searchInput" placeholder="Search exercises" type="text">
@@ -50,6 +64,8 @@
     <PaginationComponent Page="ExerciseViewModel.ExerciseParameters.Page" PageCount="ExerciseViewModel.ExerciseParameters.PageCount" TotalCount="ExerciseViewModel.Entities.Count" PageChanged="OnPageChanged" />
 }
 
+<AddExerciseComponent IsVisible="showCreateExerciseComponent" Exercise="newExercise" Muscles="MuscleViewModel.Muscles" OnConfirm="OnCreate" />
+
 @code {
     [Inject]
     IMuscleViewModel MuscleViewModel { get; set; }
@@ -63,13 +79,10 @@
     [Inject]
     NavigationManager NavigationManager { get; set; }
 
-    private bool isBusy {
-        get => MuscleViewModel.IsBusy || ExerciseViewModel.IsBusy;
-    }
-    private List<ErrorModel> errors => MuscleViewModel.Errors.Concat(ExerciseViewModel.Errors).ToList();
-    private List<string> successMessages => MuscleViewModel.SuccessMessages.Concat(ExerciseViewModel.SuccessMessages).ToList();
-
     private string searchString = "";
+
+    private bool showCreateExerciseComponent = false;
+    private AddExerciseClientDto newExercise;
 
     protected override async Task OnInitializedAsync()
     {
@@ -85,7 +98,15 @@
         await SearchChanged();
     }
 
-    private void GetQueryString() 
+    public void Dispose() 
+    {
+        MuscleViewModel.PropertyChanged -= ViewModelPropertyChanged;
+        ExerciseViewModel.PropertyChanged -= ViewModelPropertyChanged;
+    }
+
+    private async void ViewModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) => await InvokeAsync(() => { StateHasChanged(); });
+
+    private void GetQueryString()
     {
         var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
         var queryDict = QueryHelpers.ParseQuery(uri.Query);
@@ -99,14 +120,6 @@
         }
     }
 
-    public void Dispose() 
-    {
-        MuscleViewModel.PropertyChanged -= ViewModelPropertyChanged;
-        ExerciseViewModel.PropertyChanged -= ViewModelPropertyChanged;
-    }
-
-    private async void ViewModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) => await InvokeAsync(() => { StateHasChanged(); });
-
     private async Task SearchChanged() 
     {
         //Reset the page
@@ -119,5 +132,30 @@
         ExerciseViewModel.ExerciseParameters.Page = page;
         await ExerciseViewModel.GetEntities();
         await JS.InvokeVoidAsync("scrollTo", 0, 0);
+    }
+
+    private void ShowCreateExercise() 
+    {
+        showCreateExerciseComponent = true;
+        newExercise = new AddExerciseClientDto();
+    }
+
+    private async Task OnCreate(bool confirmed)
+    {
+        if (confirmed)
+        {
+            var result = await ExerciseViewModel.Add(newExercise);
+
+            //Update the list if successfully added
+            if (result != null)
+            {
+                await ExerciseViewModel.GetEntities();
+                showCreateExerciseComponent = false;
+            }
+        }
+        else
+        {
+            showCreateExerciseComponent = false;
+        }
     }
 }
