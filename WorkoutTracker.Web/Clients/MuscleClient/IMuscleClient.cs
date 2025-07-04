@@ -1,5 +1,6 @@
 ﻿using WorkoutTracker.Shared.Dto;
 using WorkoutTracker.Shared.Dto.Result;
+using WorkoutTracker.Web.Models;
 
 namespace WorkoutTracker.Web.Clients.MuscleClient
 {
@@ -9,6 +10,6 @@ namespace WorkoutTracker.Web.Clients.MuscleClient
     public interface IMuscleClient
     {
         Task<ResultModel<List<MuscleDto>>> GetMuscles();
-        Task<ResultModel<MuscleDto>> UpdateMuscle(MuscleDto muscle);
+        Task<ResultModel<MuscleDto>> UpdateMuscle(long id, UpdateMuscleClientDto muscle);
     }
 }

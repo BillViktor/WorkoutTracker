@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using System.Linq.Expressions;
+﻿using Microsoft.Extensions.Configuration;
+using WorkoutTracker.Business.Models;
+using WorkoutTracker.Business.Services.Image;
 using WorkoutTracker.Data.Models;
 using WorkoutTracker.Data.Repository;
 using WorkoutTracker.Shared.Dto;
+using WorkoutTracker.Shared.Dto.Exercise;
 using WorkoutTracker.Shared.Dto.Pagination;
 
 namespace WorkoutTracker.Business.Services.ExerciseService
@@ -14,11 +15,13 @@ namespace WorkoutTracker.Business.Services.ExerciseService
     public class ExerciseService : IExerciseService
     {
         private readonly IWorkoutTrackerRepository workoutTrackerRepository;
+        private readonly IImageService imageService;
         private readonly IConfiguration configuration;
 
-        public ExerciseService(IWorkoutTrackerRepository workoutTrackerRepository, IConfiguration configuration)
+        public ExerciseService(IWorkoutTrackerRepository workoutTrackerRepository, IImageService imageService, IConfiguration configuration)
         {
             this.workoutTrackerRepository = workoutTrackerRepository;
+            this.imageService = imageService;
             this.configuration = configuration;
         }
 
@@ -88,20 +91,72 @@ namespace WorkoutTracker.Business.Services.ExerciseService
         /// <summary>
         /// Adds a new exercise to the database
         /// </summary>
-        public async Task<Exercise> AddExercise(Exercise exercise, CancellationToken cancellationToken)
+        public async Task<ExerciseDto> AddExercise(AddExerciseDto exercise, CancellationToken cancellationToken)
         {
-            await Task.Delay(0);
-            throw new NotImplementedException();
+            Exercise newExercise = new Exercise
+            {
+                Name = exercise.Name,
+                Description = exercise.Description,
+                Instructions = exercise.Instructions,
+                PrimaryMuscleId = exercise.PrimaryMuscleId,
+            };
+
+            //Upload the image if provided
+            if (exercise.Image != null)
+            {
+                string imagePath = $"images/exercises/exercise_{Guid.NewGuid()}{Path.GetExtension(exercise.Image.FileName)}";
+
+                await imageService.SaveImage(exercise.Image, imagePath, cancellationToken);
+
+                newExercise.ImageUrl = imagePath;
+            }
+
+            await workoutTrackerRepository.AddAsync<Exercise>(newExercise, cancellationToken);
+
+            return await GetExercise(newExercise.Id, cancellationToken);
         }
 
         /// <summary>
         /// Updates an existing exercise in the database
         /// </summary>
-        public async Task<Exercise> UpdateExercise(Exercise exercise, CancellationToken cancellationToken)
+        public async Task<ExerciseDto> UpdateExercise(long id, UpdateExerciseDto exercise, CancellationToken cancellationToken)
         {
-            await Task.Delay(0);
-            throw new NotImplementedException();
+            var existingExercise = await workoutTrackerRepository.GetEntity<Exercise>(id, cancellationToken);
 
+            //Update the image if provided
+            if (exercise.Image != null)
+            {
+                string imagePath = $"images/exercises/{Guid.NewGuid()}{Path.GetExtension(exercise.Image.FileName)}";
+
+                await imageService.SaveImage(exercise.Image, imagePath, cancellationToken);
+
+                //Delete the old image if it was not overwritten
+                if (existingExercise.ImageUrl != null && existingExercise.ImageUrl != imagePath)
+                {
+                    imageService.DeleteImage(existingExercise.ImageUrl);
+                }
+
+                existingExercise.ImageUrl = imagePath;
+            }
+            else
+            {
+                //If no new image is provided, check if the image should be deleted
+                if (exercise.DeleteImage && existingExercise.ImageUrl != null)
+                {
+                    imageService.DeleteImage(existingExercise.ImageUrl);
+                    existingExercise.ImageUrl = null; //Set to null if the image is deleted
+                }
+            }
+
+            //Update the other fields
+            existingExercise.Name = exercise.Name;
+            existingExercise.Description = exercise.Description;
+            existingExercise.Instructions = exercise.Instructions;
+            existingExercise.PrimaryMuscleId = exercise.PrimaryMuscleId;
+
+            var updatedEntity = await workoutTrackerRepository.UpdateAsync(existingExercise, cancellationToken);
+
+            return await GetExercise(existingExercise.Id, cancellationToken);
         }
 
         /// <summary>
@@ -111,6 +166,12 @@ namespace WorkoutTracker.Business.Services.ExerciseService
         {
             //Get exercise
             var exercise = await workoutTrackerRepository.GetEntity<Exercise>(id, cancellationToken);
+
+            //Delete image
+            if (exercise.ImageUrl != null)
+            {
+                imageService.DeleteImage(exercise.ImageUrl);
+            }
 
             //Delete exercise
             await workoutTrackerRepository.DeleteAsync(exercise, cancellationToken);

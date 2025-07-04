@@ -1,0 +1,68 @@
+﻿@using Microsoft.AspNetCore.Http
+@using WorkoutTracker.Shared.Dto.Exercise
+@using WorkoutTracker.Web.Models
+@using WorkoutTracker.Web.ViewModels.Base
+@if (IsVisible)
+{
+    <div class="backdrop">
+        <div class="dialog">
+            <h3>Add Exercise</h3>
+
+            <EditForm Model="Exercise" OnValidSubmit="async () => await OnConfirm.InvokeAsync(true)">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <p>
+                    <label for="exerciseName">Name</label>
+                    <input class="w-100" id="exerciseName" @bind="@Exercise.Name" />
+                </p>
+
+                <p>
+                    <label for="exerciseDescription">Description</label>
+                    <textarea rows="10" class="w-100" id="exerciseDescription" @bind="@Exercise.Description" placeholder="Enter exercise description"></textarea>
+                </p>
+
+                <p>
+                    <label for="exerciseInstructions">Instructions</label>
+                    <textarea rows="10" class="w-100" id="exerciseInstructions" @bind="@Exercise.Instructions" placeholder="Enter exercise instructions"></textarea>
+                </p>
+
+                <p>
+                    <label for="exerciseMuscleGroup">Muscle Group</label>
+                    <select class="w-100" id="exerciseMuscleGroup" @bind="@Exercise.PrimaryMuscleId">
+                        <option value="">Select Muscle Group</option>
+                        @foreach (var muscleGroup in Muscles)
+                        {
+                            <option value="@muscleGroup.Id">@muscleGroup.Name</option>
+                        }
+                    </select>
+                </p>
+
+                <p>
+                    <ImageUploadComponent ViewModel="@ViewModel" BrowserFileChanged="@(f => Exercise.Image = f)" ShowDeleteCurrentImage="false" />
+                </p>
+
+                <div class="row justify-content-end gap-1">
+                    <button type="submit" class="button-success">Create Exercise</button>
+                    <button @onclick="async () => await OnConfirm.InvokeAsync(false)" class="button-warning">Cancel</button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public AddExerciseClientDto Exercise { get; set; }
+
+    [Parameter]
+    public List<MuscleDto> Muscles { get; set; } = new List<MuscleDto>();
+
+    [Parameter]
+    public bool IsVisible { get; set; } = false;
+
+    [Parameter]
+    public IBaseViewModel ViewModel { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OnConfirm { get; set; }
+}

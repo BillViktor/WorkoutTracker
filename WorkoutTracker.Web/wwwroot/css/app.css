@@ -327,6 +327,8 @@ button:disabled {
     border-radius: 1rem;
     padding: 1rem;
     min-width: 20rem;
+    max-height: 90vh;
+    overflow-y: scroll;
 }
 
 .backdrop {
@@ -340,9 +342,8 @@ button:disabled {
 }
 
 /* Inputs */
-input, select {
+input:not([type="checkbox"]), select {
     height: 2.5rem;
-
 }
 
 input, select, textarea {

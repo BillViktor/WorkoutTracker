@@ -1,31 +1,59 @@
 ﻿@page "/exercises/{id}"
+@using WorkoutTracker.Shared.Dto.Exercise
+@using WorkoutTracker.Shared.Dto.Result
+@using WorkoutTracker.Web.Models
 @using WorkoutTracker.Web.ViewModels.ExerciseViewModel
+@using WorkoutTracker.Web.ViewModels.MuscleViewModel
 
 <PageTitle>@(exercise == null ? "Exercise Info" : exercise.Name)</PageTitle>
+
+<MessageComponent Errors="MuscleViewModel.Errors" SuccessMessages="MuscleViewModel.SuccessMessages" IsBusy="MuscleViewModel.IsBusy" />
+<MessageComponent Errors="ExerciseViewModel.Errors" SuccessMessages="ExerciseViewModel.SuccessMessages" IsBusy="ExerciseViewModel.IsBusy" />
 
 @if(exercise != null) 
 {
     <div class="card">
-        <h2>@exercise.Name</h2>
+        <div class="row justify-content-between">
+            <h2>@exercise.Name</h2>
+
+            <AuthorizeView Roles="Admin">
+                <Authorized>
+                    <div class="gap-1">
+                        <button @onclick="async () => await EditExercise()" title="Edit exercise" class="icon-button"><i class="fa fa-pencil text-warning" /></button>
+                        <button @onclick="() => showDeleteExercise = true" title="Delete exercise" class="icon-button"><i class="fa fa-trash text-danger" /></button>
+                    </div>
+                </Authorized>
+            </AuthorizeView>
+        </div>
+
         <img class="display-block" src="@exercise.ImageUrl" />
         <h3>Primary Muscle: <a href="exercises?muscle=@exercise.PrimaryMuscle">@exercise.PrimaryMuscle</a></h3>
 
         <hr />
 
-        <h4>Instructions</h4>
+        <h4>Description</h4>
         <p>
             @exercise.Description
+        </p>
+
+        <hr/>
+
+        <h4>Instructions</h4>
+        <p>
             @if (!string.IsNullOrEmpty(exercise.Instructions))
             {
-                <br />
-                <br />
-
                 @exercise.Instructions
+            }
+            else 
+            {
+                <em>No instructions provided.</em>
             }
         </p>
     </div>
-    
 }
+
+<ConfirmationComponent IsVisible="@showDeleteExercise" Title="Confirm delete" Message="Are you absolutely sure you want to permanently delete this exercise?" OnConfirm="async x => await OnDelete(x)" />
+<UpdateExerciseComponent IsVisible="@showEditExercise" Exercise="updateExercise" OnConfirm="async x => await OnEdit(x)" ViewModel="ExerciseViewModel" Muscles="MuscleViewModel.Muscles"/>
 
 @code {
     [Parameter]
@@ -34,7 +62,18 @@
     [Inject]
     IExerciseViewModel ExerciseViewModel { get; set; }
 
-    private ExerciseDto? exercise = null;
+    [Inject]
+    IMuscleViewModel MuscleViewModel { get; set; }
+
+    [Inject]
+    NavigationManager NavigationManager { get; set; }
+
+    private ExerciseDto exercise;
+
+    private bool showDeleteExercise = false;
+
+    private UpdateExerciseClientDto updateExercise;
+    private bool showEditExercise = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -43,6 +82,64 @@
         if (long.TryParse(Id, out exerciseId))
             exercise = await ExerciseViewModel.GetExercise(exerciseId);
 
+        ExerciseViewModel.PropertyChanged += ViewModelPropertyChanged;
+        MuscleViewModel.PropertyChanged += ViewModelPropertyChanged;
+
         base.OnInitialized();
     }
+
+    public void Dispose()
+    {
+        MuscleViewModel.PropertyChanged -= ViewModelPropertyChanged;
+        ExerciseViewModel.PropertyChanged -= ViewModelPropertyChanged;
+    }
+
+    private async void ViewModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) => await InvokeAsync(() => { StateHasChanged(); });
+
+    private async Task OnDelete(bool delete) 
+    {
+        if(delete) 
+        {
+            if(await ExerciseViewModel.Delete(exercise)) 
+            {
+                NavigationManager.NavigateTo("/exercises");
+            }
+        }
+        else 
+        {
+            showDeleteExercise = false;
+        }
+    }
+
+    private async Task EditExercise()
+    {
+        if (MuscleViewModel.Muscles == null || MuscleViewModel.Muscles.Count == 0)
+        {
+            await MuscleViewModel.GetMuscles();
+        }
+
+        long muscleId = MuscleViewModel.Muscles.First(x => x.Name == exercise.PrimaryMuscle).Id;
+
+        updateExercise = new UpdateExerciseClientDto(exercise, muscleId);
+
+        showEditExercise = true;
+    }
+
+    private async Task OnEdit(bool confirmed) 
+    {
+        if (confirmed)
+        {
+            var result = await ExerciseViewModel.Update(exercise.Id, updateExercise);
+
+            if(result != null) 
+            {
+                exercise = result;
+                showEditExercise = false;
+            }
+        }
+        else
+        {
+            showEditExercise = false;
+        }
+     }
 }

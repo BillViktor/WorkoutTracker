@@ -1,4 +1,5 @@
 ﻿using WorkoutTracker.Shared.Dto;
+using WorkoutTracker.Web.Models;
 using WorkoutTracker.Web.ViewModels.Base;
 
 namespace WorkoutTracker.Web.ViewModels.MuscleViewModel
@@ -10,6 +11,6 @@ namespace WorkoutTracker.Web.ViewModels.MuscleViewModel
     {
         List<MuscleDto> Muscles { get; set; }
         Task GetMuscles();
-        Task<MuscleDto> Update(MuscleDto muscle);
+        Task<MuscleDto> Update(long id, UpdateMuscleClientDto muscle);
     }
 }

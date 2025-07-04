@@ -1,0 +1,99 @@
+﻿@using Microsoft.AspNetCore.Http
+@using WorkoutTracker.Shared.Constants
+@using WorkoutTracker.Web.ViewModels.Base
+
+<label for="imageInput">Image</label>
+@if (!string.IsNullOrEmpty(tempImage))
+{
+    <img src="@tempImage" alt="New Image" style="max-width: 100%; height: auto;" />
+}
+else if (!string.IsNullOrEmpty(ImageUrl))
+{
+    <img src="@ImageUrl" alt="Uploaded Image" style="max-width: 100%; height: auto;" />
+}
+else
+{
+    <p>No image uploaded.</p>
+}
+
+<div class="row justify-content-between align-content-center">
+    <InputFile @key="@inputFileId" id="imageInput" OnChange="OnInputFileChanged" accept=".jpg,.jpeg,.webp" />
+
+    @if(ShowDeleteCurrentImage) 
+    {
+        <div>
+            <label class="display-inline" for="deleteCurrentImage">Delete Current Image</label>
+            <input class="m-0" type="checkbox" @onchange="async (e) => await DeleteCurrentImageChanged.InvokeAsync((bool)e.Value)" id="deleteCurrentImage" />
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public IBaseViewModel ViewModel { get; set; }
+
+    [Parameter]
+    public string? ImageUrl { get; set; }
+
+    [Parameter]
+    public bool ShowDeleteCurrentImage { get; set; } = true;
+
+    [Parameter]
+    public EventCallback<IBrowserFile> BrowserFileChanged { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> DeleteCurrentImageChanged { get; set; }
+
+    private string? tempImage;
+    private string inputFileId = Guid.NewGuid().ToString();
+    private IBrowserFile? browserFile { get; set; }
+    private bool deleteCurrentImage = false;
+
+    private async Task OnInputFileChanged(InputFileChangeEventArgs e)
+    {
+        IBrowserFile file = e.File;
+
+        if (!ValidateImage(file)) 
+            return;
+
+        // Read image stream and convert to base64 string
+        var buffer = new byte[file.Size];
+        await file.OpenReadStream(ImageConstants.MaxFileSizeInBytes).ReadAsync(buffer);
+        var imageBase64 = Convert.ToBase64String(buffer);
+        var imageFormat = file.ContentType; // e.g. "image/jpeg"
+
+        tempImage = $"data:{imageFormat};base64,{imageBase64}";
+        browserFile = file;
+        ImageUrl = null; // Clear the ImageUrl if a new file is uploaded
+
+        await BrowserFileChanged.InvokeAsync(file);
+    }
+
+    private bool ValidateImage(IBrowserFile file)
+    {
+        if (file == null)
+            return false;
+
+        if (file.Size > ImageConstants.MaxFileSizeInBytes)
+        {
+            ViewModel.AddError($"File size exceeds the maximum limit of {ImageConstants.MaxFileSizeInBytes / 1024}kb.");
+            ResetImage();
+            return false;
+        }
+        if (!file.ContentType.StartsWith("image/"))
+        {
+            ViewModel.AddError("Only image files are allowed.");
+            ResetImage();
+            return false;
+        }
+
+        return true;
+    }
+
+    private void ResetImage() 
+    {
+        tempImage = null;
+        browserFile = null;
+        inputFileId = Guid.NewGuid().ToString();
+    }
+}
