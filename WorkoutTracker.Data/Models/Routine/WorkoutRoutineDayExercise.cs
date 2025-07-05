@@ -7,7 +7,6 @@
     {
         public int Sets { get; set; }
         public int Reps { get; set; }
-        public double Weight { get; set; }
         public int RestTimeSeconds { get; set; }
         public int SortOrder { get; set; }
 

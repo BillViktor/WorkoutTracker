@@ -31,7 +31,7 @@ namespace WorkoutTracker.Web.Clients.ExerciseClient
                 { "primaryMuscle", parameters.PrimaryMuscle }
             };
 
-            return await HttpRequestHelper.GetAsync<EntityResult<ExerciseDto>>(httpClient, QueryHelpers.AddQueryString("exercise/list", queryString));
+            return await HttpRequestHelper.GetAsync<EntityResult<ExerciseDto>>(httpClient, QueryHelpers.AddQueryString("exercises/list", queryString));
         }
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace WorkoutTracker.Web.Clients.ExerciseClient
         /// </summary>
         public async Task<ResultModel<ExerciseDto>> GetExercise(long id)
         {
-            return await HttpRequestHelper.GetAsync<ExerciseDto>(httpClient, $"exercise/{id}");
+            return await HttpRequestHelper.GetAsync<ExerciseDto>(httpClient, $"exercises/{id}");
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace WorkoutTracker.Web.Clients.ExerciseClient
                 content.Add(fileContent, "Image", exercise.Image.Name);
             }
 
-            return await HttpRequestHelper.PutAsync<ExerciseDto, HttpContent>(httpClient, $"exercise/{id}", content);
+            return await HttpRequestHelper.PutAsync<ExerciseDto, HttpContent>(httpClient, $"exercises/{id}", content);
         }
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace WorkoutTracker.Web.Clients.ExerciseClient
         /// </summary>
         public async Task<ResultModel> DeleteExercise(long id)
         {
-            return await HttpRequestHelper.DeleteAsync(httpClient, $"exercise/{id}");
+            return await HttpRequestHelper.DeleteAsync(httpClient, $"exercises/{id}");
         }
     }
 }

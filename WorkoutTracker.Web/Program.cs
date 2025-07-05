@@ -4,10 +4,12 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using WorkoutTracker.Web.Clients.AuthClient;
 using WorkoutTracker.Web.Clients.ExerciseClient;
 using WorkoutTracker.Web.Clients.MuscleClient;
+using WorkoutTracker.Web.Clients.RoutineClient;
 using WorkoutTracker.Web.Identity;
 using WorkoutTracker.Web.ViewModels.AuthViewModel;
 using WorkoutTracker.Web.ViewModels.ExerciseViewModel;
 using WorkoutTracker.Web.ViewModels.MuscleViewModel;
+using WorkoutTracker.Web.ViewModels.RoutineViewModel;
 
 namespace WorkoutTracker.Web
 {
@@ -28,6 +30,7 @@ namespace WorkoutTracker.Web
             builder.Services.AddScoped<AuthenticationStateProvider>(p => p.GetService<CookieAuthenticationStateProvider>());
             #endregion
 
+
             #region Clients
             string baseUrl = builder.Configuration["WorkoutTrackerApiBaseUrl"];
 
@@ -38,12 +41,17 @@ namespace WorkoutTracker.Web
 
             builder.Services.AddHttpClient<IExerciseClient, ExerciseClient>(client =>
             {
-                client.BaseAddress = new Uri(baseUrl + "exercise");
+                client.BaseAddress = new Uri(baseUrl + "exercises");
             }).AddHttpMessageHandler<CookieHandler>();
 
             builder.Services.AddHttpClient<IMuscleClient, MuscleClient>(client =>
             {
-                client.BaseAddress = new Uri(baseUrl + "muscle");
+                client.BaseAddress = new Uri(baseUrl + "muscles");
+            }).AddHttpMessageHandler<CookieHandler>();
+
+            builder.Services.AddHttpClient<IRoutineClient, RoutineClient>(client =>
+            {
+                client.BaseAddress = new Uri(baseUrl + "routines");
             }).AddHttpMessageHandler<CookieHandler>();
             #endregion
 
@@ -52,6 +60,7 @@ namespace WorkoutTracker.Web
             builder.Services.AddScoped<IAuthViewModel, AuthViewModel>();
             builder.Services.AddScoped<IExerciseViewModel, ExerciseViewModel>();
             builder.Services.AddScoped<IMuscleViewModel, MuscleViewModel>();
+            builder.Services.AddScoped<IRoutineViewModel, RoutineViewModel>();
             #endregion
 
 

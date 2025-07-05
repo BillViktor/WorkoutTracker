@@ -16,4 +16,9 @@
     <ProjectReference Include="..\WorkoutTracker.Shared\WorkoutTracker.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Services\RoutineDayExerciseService\" />
+    <Folder Include="Services\RoutineDayService\" />
+  </ItemGroup>
+
 </Project>

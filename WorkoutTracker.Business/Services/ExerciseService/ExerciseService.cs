@@ -1,9 +1,9 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using WorkoutTracker.Business.Models;
 using WorkoutTracker.Business.Services.Image;
 using WorkoutTracker.Data.Models;
 using WorkoutTracker.Data.Repository;
-using WorkoutTracker.Shared.Dto;
 using WorkoutTracker.Shared.Dto.Exercise;
 using WorkoutTracker.Shared.Dto.Pagination;
 
@@ -51,7 +51,7 @@ namespace WorkoutTracker.Business.Services.ExerciseService
                 cancellationToken,
                 whereFilter: filter,
                 orderBy: x => x.Name, 
-                includes: x => x.PrimaryMuscle);
+                includes: query => query.Include(x => x.PrimaryMuscle));
 
             string sBaseUrl = configuration["WorkoutTrackerApiBaseUrl"];
 
@@ -75,7 +75,7 @@ namespace WorkoutTracker.Business.Services.ExerciseService
         /// </summary>
         public async Task<ExerciseDto> GetExercise(long id, CancellationToken cancellationToken)
         {
-            var exercise = await workoutTrackerRepository.GetEntity<Exercise>(id, cancellationToken, x => x.PrimaryMuscle);
+            var exercise = await workoutTrackerRepository.GetEntity<Exercise>(id, cancellationToken, query => query.Include(x => x.PrimaryMuscle));
 
             return new ExerciseDto
             {

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WorkoutTracker.Data;
 
@@ -11,9 +12,11 @@ using WorkoutTracker.Data;
 namespace WorkoutTracker.Data.Migrations
 {
     [DbContext(typeof(WorkoutTrackerDbContext))]
-    partial class WorkoutTrackerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250704230423_Routines")]
+    partial class Routines
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -257,7 +260,6 @@ namespace WorkoutTracker.Data.Migrations
                         .HasDefaultValueSql("getdate()");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasMaxLength(2048)
                         .HasColumnType("nvarchar(2048)");
 
@@ -303,7 +305,9 @@ namespace WorkoutTracker.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RoutineId", "SortOrder")
+                    b.HasIndex("RoutineId");
+
+                    b.HasIndex("Id", "SortOrder")
                         .IsUnique();
 
                     b.ToTable("RoutineDays");
@@ -340,6 +344,9 @@ namespace WorkoutTracker.Data.Migrations
                     b.Property<DateTime?>("UpdateDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<double>("Weight")
+                        .HasColumnType("float");
+
                     b.Property<long>("WorkoutRoutineDayId")
                         .HasColumnType("bigint");
 
@@ -347,7 +354,9 @@ namespace WorkoutTracker.Data.Migrations
 
                     b.HasIndex("ExerciseId");
 
-                    b.HasIndex("WorkoutRoutineDayId", "SortOrder")
+                    b.HasIndex("WorkoutRoutineDayId");
+
+                    b.HasIndex("Id", "SortOrder")
                         .IsUnique();
 
                     b.ToTable("RoutineDayExercises");

@@ -1,0 +1,135 @@
+﻿@page "/routines/{id}"
+@using WorkoutTracker.Shared.Dto.Pagination
+@using WorkoutTracker.Shared.Dto.Routine
+@using WorkoutTracker.Web.Components.Routine
+@using WorkoutTracker.Web.ViewModels.RoutineViewModel
+
+<PageTitle>Routine Details</PageTitle>
+
+<MessageComponent Errors="RoutineViewModel.Errors" SuccessMessages="RoutineViewModel.SuccessMessages" IsBusy="RoutineViewModel.IsBusy" />
+
+@if(routine != null)
+{
+    <div class="card">
+        <div class="row justify-content-between">
+            <h2>@routine.Name</h2>
+
+            <AuthorizeView Roles="Admin">
+                <Authorized>
+                    <div class="gap-1">
+                        <button @onclick="EditRoutine"  title="Edit exercise" class="icon-button"><i class="fa fa-pencil text-warning" /></button>
+                        <button @onclick="() => showDeleteRoutine = true" title="Delete exercise" class="icon-button"><i class="fa fa-trash text-danger" /></button>
+                    </div>
+                </Authorized>
+            </AuthorizeView>
+        </div>
+
+        <h4>Description</h4>
+        <p>
+            @routine.Description
+        </p>
+
+        @foreach(var day in routine.Days) 
+        {
+            <div class="routine-day">
+                <div class="routine-day-header">
+                    <h5>@day.Name</h5>
+                </div>
+
+                @foreach (var exercise in day.Exercises)
+                {
+                    <div class="routine-day-exercise">
+                        <img width="180" height="180" src="@exercise.ExerciseImageUrl" />
+                        <p>
+                            <b>@exercise.ExerciseName</b>
+                        </p>
+                        <p>
+                            @exercise.Sets sets x @exercise.Reps reps
+                        </p>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+}
+
+<ConfirmationComponent IsVisible="@showDeleteRoutine" Title="Confirm delete" Message="Are you absolutely sure you want to permanently delete this routine?" OnConfirm="async x => await OnDelete(x)" />
+<UpdateRoutineComponent IsVisible="@showEditRoutine" Routine="updateRoutine" OnConfirm="async x => await OnEdit(x)"/>
+
+
+@code {
+    [Parameter]
+    public string Id { get; set; } = string.Empty;
+
+    [Inject]
+    IRoutineViewModel RoutineViewModel { get; set; }
+
+    [Inject]
+    NavigationManager NavigationManager { get; set; }
+
+    private RoutineDto routine;
+
+    private bool showDeleteRoutine = false;
+
+    private UpdateRoutineDto updateRoutine;
+    private bool showEditRoutine = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        RoutineViewModel.PropertyChanged += ViewModelPropertyChanged;
+
+        long routineId;
+
+        if (long.TryParse(Id, out routineId))
+            routine = await RoutineViewModel.GetRoutine(routineId);
+
+        base.OnInitialized();
+    }
+
+    public void Dispose()
+    {
+        RoutineViewModel.PropertyChanged -= ViewModelPropertyChanged;
+    }
+
+    private async void ViewModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) => await InvokeAsync(() => { StateHasChanged(); });
+
+    private async Task OnDelete(bool delete)
+    {
+        if (delete)
+        {
+            if (await RoutineViewModel.Delete(routine))
+            {
+                NavigationManager.NavigateTo("/routines");
+            }
+        }
+        else
+        {
+            showDeleteRoutine = false;
+        }
+    }
+
+    private void EditRoutine()
+    {
+        updateRoutine = new UpdateRoutineDto(routine);
+
+        showEditRoutine = true;
+    }
+
+    private async Task OnEdit(bool confirmed)
+    {
+        if (confirmed)
+        {
+            var result = await RoutineViewModel.Update(routine.Id, updateRoutine);
+
+            if (result != null)
+            {
+                routine = result;
+                showEditRoutine = false;
+            }
+        }
+        else
+        {
+            showEditRoutine = false;
+        }
+    }
+}

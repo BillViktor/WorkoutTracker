@@ -1,0 +1,43 @@
+﻿@using Microsoft.AspNetCore.Http
+@using WorkoutTracker.Shared.Dto.Exercise
+@using WorkoutTracker.Shared.Dto.Routine
+@using WorkoutTracker.Web.Models
+@using WorkoutTracker.Web.ViewModels.Base
+@if (IsVisible)
+{
+    <div class="backdrop">
+        <div class="dialog">
+            <h3>Update Routine</h3>
+
+            <EditForm Model="Routine" OnValidSubmit="async () => await OnConfirm.InvokeAsync(true)">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <p>
+                    <label for="routineName">Name</label>
+                    <input class="w-100" id="routineName" @bind="@Routine.Name" placeholder="Enter routine name" />
+                </p>
+
+                <p>
+                    <label for="routineDescription">Description</label>
+                    <textarea rows="10" class="w-100" id="routineDescription" @bind="@Routine.Description" placeholder="Enter routine description"></textarea>
+                </p>
+
+                <div class="row justify-content-end gap-1">
+                    <button type="submit" class="button-success">Update Routine</button>
+                    <button @onclick="async () => await OnConfirm.InvokeAsync(false)" class="button-warning">Cancel</button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public UpdateRoutineDto Routine { get; set; }
+
+    [Parameter]
+    public bool IsVisible { get; set; } = false;
+
+    [Parameter]
+    public EventCallback<bool> OnConfirm { get; set; }
+}

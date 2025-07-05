@@ -31,7 +31,7 @@ namespace WorkoutTracker.Data.Repository
             Expression<Func<T, bool>>? expressionFilter = null,
             Expression<Func<T, object>>? orderBy = null,
             bool orderByDescending = false,
-            params Expression<Func<T, object>>[] includes) where T : class
+            Func<IQueryable<T>, IQueryable<T>>? includes = null) where T : class
         {
             if(page < 0)
             {
@@ -79,7 +79,7 @@ namespace WorkoutTracker.Data.Repository
         /// <summary>
         /// Gets all entites with the given type
         /// </summary>
-        public async Task<List<T>> GetEntities<T>(CancellationToken cancellationToken, params Expression<Func<T, object>>[] includes) where T : class
+        public async Task<List<T>> GetEntities<T>(CancellationToken cancellationToken, Func<IQueryable<T>, IQueryable<T>>? includes) where T : class
         {
             return await workoutTrackerDbContext.Set<T>().IncludeProperties(includes).AsNoTracking().ToListAsync(cancellationToken);
         }
@@ -87,7 +87,7 @@ namespace WorkoutTracker.Data.Repository
         /// <summary>
         /// Gets the entity with the given type and id
         /// </summary>
-        public async Task<T> GetEntity<T>(long id, CancellationToken cancellationToken, params Expression<Func<T, object>>[] includes)  where T : BaseEntity
+        public async Task<T> GetEntity<T>(long id, CancellationToken cancellationToken, Func<IQueryable<T>, IQueryable<T>>? includes)  where T : BaseEntity
         {
             var entity = await workoutTrackerDbContext.Set<T>().IncludeProperties(includes).AsNoTracking().FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 

@@ -1,7 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
-
-namespace WorkoutTracker.Data
+﻿namespace WorkoutTracker.Data
 {
     /// <summary>
     /// Extension methods for IQueryable to simplify including related entities.
@@ -13,18 +10,13 @@ namespace WorkoutTracker.Data
         /// </summary>
         public static IQueryable<T> IncludeProperties<T>(
             this IQueryable<T> query,
-            params Expression<Func<T, object>>[] includes)
+            Func<IQueryable<T>, IQueryable<T>>? includes)
             where T : class
         {
-            if (includes == null || includes.Length == 0)
+            if (includes == null)
                 return query;
 
-            foreach (var include in includes)
-            {
-                query = query.Include(include);
-            }
-
-            return query;
+            return includes(query);
         }
     }
 }

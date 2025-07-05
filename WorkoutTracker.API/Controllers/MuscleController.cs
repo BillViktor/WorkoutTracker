@@ -11,7 +11,7 @@ namespace WorkoutTracker.API.Controllers
     /// Controller for managing muscles in the workout tracker application.
     /// </summary>
     [ApiController]
-    [Route("muscle")]
+    [Route("muscles")]
     public class MuscleController : ControllerBase
     {
         private readonly IMuscleService muscleService;

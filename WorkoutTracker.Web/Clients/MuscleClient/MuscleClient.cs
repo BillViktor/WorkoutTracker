@@ -42,7 +42,7 @@ namespace WorkoutTracker.Web.Clients.MuscleClient
                 content.Add(fileContent, "Image", muscle.Image.Name);
             }
 
-            return await HttpRequestHelper.PutAsync<MuscleDto, MultipartFormDataContent>(httpClient, $"muscle/{id}", content);
+            return await HttpRequestHelper.PutAsync<MuscleDto, MultipartFormDataContent>(httpClient, $"muscles/{id}", content);
         }
     }
 }

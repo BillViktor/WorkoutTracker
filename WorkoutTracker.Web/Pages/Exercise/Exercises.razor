@@ -3,6 +3,7 @@
 @using WorkoutTracker.Shared.Dto.Exercise
 @using WorkoutTracker.Shared.Dto.Pagination
 @using WorkoutTracker.Shared.Dto.Result
+@using WorkoutTracker.Web.Components.Exercise
 @using WorkoutTracker.Web.Models
 @using WorkoutTracker.Web.ViewModels.ExerciseViewModel
 @using WorkoutTracker.Web.ViewModels.MuscleViewModel
@@ -78,8 +79,6 @@
 
     [Inject]
     NavigationManager NavigationManager { get; set; }
-
-    private string searchString = "";
 
     private bool showCreateExerciseComponent = false;
     private AddExerciseClientDto newExercise;

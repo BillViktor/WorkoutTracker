@@ -1,6 +1,7 @@
 ﻿@page "/exercises/{id}"
 @using WorkoutTracker.Shared.Dto.Exercise
 @using WorkoutTracker.Shared.Dto.Result
+@using WorkoutTracker.Web.Components.Exercise
 @using WorkoutTracker.Web.Models
 @using WorkoutTracker.Web.ViewModels.ExerciseViewModel
 @using WorkoutTracker.Web.ViewModels.MuscleViewModel
@@ -77,13 +78,13 @@
 
     protected override async Task OnInitializedAsync()
     {
+        ExerciseViewModel.PropertyChanged += ViewModelPropertyChanged;
+        MuscleViewModel.PropertyChanged += ViewModelPropertyChanged;
+
         long exerciseId;
 
         if (long.TryParse(Id, out exerciseId))
             exercise = await ExerciseViewModel.GetExercise(exerciseId);
-
-        ExerciseViewModel.PropertyChanged += ViewModelPropertyChanged;
-        MuscleViewModel.PropertyChanged += ViewModelPropertyChanged;
 
         base.OnInitialized();
     }

@@ -1,0 +1,116 @@
+﻿@page "/routines"
+@using WorkoutTracker.Shared.Dto.Pagination
+@using WorkoutTracker.Shared.Dto.Routine
+@using WorkoutTracker.Web.Components.Routine
+@using WorkoutTracker.Web.ViewModels.RoutineViewModel
+
+<PageTitle>Routines</PageTitle>
+
+<MessageComponent Errors="RoutineViewModel.Errors" SuccessMessages="RoutineViewModel.SuccessMessages" IsBusy="RoutineViewModel.IsBusy" />
+
+<div class="row justify-content-between">
+    <h1>Routines</h1>
+
+    <AuthorizeView Roles="Admin">
+        <Authorized>
+            <div>
+                <button @onclick="OnAddRoutine" class="button-success m-0"><i class="fa fa-plus" /> Add</button>
+            </div>
+        </Authorized>
+    </AuthorizeView>
+</div>
+
+
+<input @bind="RoutineViewModel.Parameters.SearchString" @bind:event="oninput" @bind:after="SearchChanged" id="searchInput" placeholder="Search routines" type="text">
+
+
+<p class="m-0">
+    @($"{RoutineViewModel.Entities?.Count ?? 0} routines found.")
+</p>
+
+<div class="card-grid">
+    @foreach (var routine in RoutineViewModel.Entities?.List ?? new List<RoutineDto>())
+    {
+        <div class="exercise-card w-100">
+            <a href="@($"routines/{routine.Id}")">
+                <div class="card-info">
+                    <h4>@routine.Name</h4>
+                    <p>@routine.Description</p>
+                </div>
+            </a>
+        </div>
+    }
+</div>
+
+@if (RoutineViewModel.Entities?.List != null)
+{
+    <PaginationComponent Page="RoutineViewModel.Parameters.Page" PageCount="RoutineViewModel.Parameters.PageCount" TotalCount="RoutineViewModel.Entities.Count" PageChanged="OnPageChanged" />
+}
+
+<AddRoutineComponent IsVisible="showCreateRoutineComponent" OnConfirm="OnCreateRoutine" Routine="newRoutine" />
+
+@code {
+    [Inject]
+    IRoutineViewModel RoutineViewModel { get; set; }
+
+    [Inject]
+    IJSRuntime JS { get; set; }
+
+    private bool showCreateRoutineComponent = false;
+    private AddRoutineDto newRoutine;
+
+    protected override async Task OnInitializedAsync()
+    {
+        RoutineViewModel.Parameters = new EntityParameters();
+
+        RoutineViewModel.PropertyChanged += ViewModelPropertyChanged;
+
+        await SearchChanged();
+    }
+
+    public void Dispose()
+    {
+        RoutineViewModel.PropertyChanged -= ViewModelPropertyChanged;
+    }
+
+    private async void ViewModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) => await InvokeAsync(() => { StateHasChanged(); });
+
+    private async Task SearchChanged()
+    {
+        //Reset the page
+        RoutineViewModel.Parameters.Page = 0;
+        await RoutineViewModel.GetEntities();
+    }
+
+    private async Task OnPageChanged(int page)
+    {
+        RoutineViewModel.Parameters.Page = page;
+        await RoutineViewModel.GetEntities();
+        await JS.InvokeVoidAsync("scrollTo", 0, 0);
+    }
+
+    private void OnAddRoutine()
+    {
+        showCreateRoutineComponent = true;
+        newRoutine = new AddRoutineDto();
+    }
+
+    private async Task OnCreateRoutine(bool confirmed) 
+    {
+        if(confirmed) 
+        {
+            var result = await RoutineViewModel.Add(newRoutine);
+
+            //Update the list if successfully added
+            if (result != null)
+            {
+                await RoutineViewModel.GetEntities();
+                showCreateRoutineComponent = false;
+            }
+        }
+        else 
+        {
+            showCreateRoutineComponent = false;
+        }
+    }
+}

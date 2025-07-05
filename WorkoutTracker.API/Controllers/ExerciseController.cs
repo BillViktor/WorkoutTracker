@@ -13,7 +13,7 @@ namespace WorkoutTracker.API.Controllers
     /// Controller for managing exercises in the workout tracker application.
     /// </summary>
     [ApiController]
-    [Route("exercise")]
+    [Route("exercises")]
     public class ExerciseController : ControllerBase
     {
         private readonly IExerciseService exerciseService;
