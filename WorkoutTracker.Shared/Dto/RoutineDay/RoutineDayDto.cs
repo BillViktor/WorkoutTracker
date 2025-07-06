@@ -1,7 +1,10 @@
 ﻿using WorkoutTracker.Shared.Dto.RoutineDayExercise;
 
-namespace WorkoutTracker.Shared.Dto.Routine
+namespace WorkoutTracker.Shared.Dto.RoutineDay
 {
+    /// <summary>
+    /// Data Transfer Object for a routine day, representing a specific day in a workout routine with its associated exercises.
+    /// </summary>
     public class RoutineDayDto
     {
         public long Id { get; set; }

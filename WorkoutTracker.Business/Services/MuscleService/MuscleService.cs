@@ -31,14 +31,12 @@ namespace WorkoutTracker.Business.Services.MuscleService
         {
             var muscles = await workoutTrackerRepository.GetEntities<Muscle>(cancellationToken);
 
-            muscles.ForEach(x => x.ImageUrl = $"{configuration["WorkoutTrackerApiBaseUrl"]}{x.ImageUrl}");
-
             return muscles.Select(x => new MuscleDto
             {
                 Id = x.Id,
                 Name = x.Name,
                 Description = x.Description,
-                ImageUrl = x.ImageUrl
+                ImageUrl = x.ImageUrl != null ? $"{configuration["WorkoutTrackerApiBaseUrl"]}{x.ImageUrl}" : ""
             }).OrderBy(x => x.Name).ToList();
         }
 

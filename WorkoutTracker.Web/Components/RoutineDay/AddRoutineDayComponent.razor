@@ -1,0 +1,45 @@
+﻿@using Microsoft.AspNetCore.Http
+@using WorkoutTracker.Shared.Dto.Exercise
+@using WorkoutTracker.Shared.Dto.Routine
+@using WorkoutTracker.Shared.Dto.RoutineDay
+@using WorkoutTracker.Web.Models
+@using WorkoutTracker.Web.ViewModels.Base
+@using WorkoutTracker.Web.ViewModels.RoutineDayViewModel
+@if (IsVisible)
+{
+    <div class="backdrop">
+        <div class="dialog">
+            <h3>Add Routine</h3>
+
+            <EditForm Model="RoutineDay" OnValidSubmit="async () => await OnConfirm.InvokeAsync(true)">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <p>
+                    <label for="routineDayName">Name</label>
+                    <input class="w-100" id="routineDayName" @bind="@RoutineDay.Name" placeholder="Enter routine day name" />
+                </p>
+
+                <p>
+                    <label for="routineDaySortOrder">Sort Order</label>
+                    <input class="w-100" id="routineDaySortOrder" @bind="@RoutineDay.SortOrder" placeholder="Enter sort order"></input>
+                </p>
+
+                <div class="row justify-content-end gap-1">
+                    <button type="submit" class="button-success">Add Day</button>
+                    <button @onclick="async () => await OnConfirm.InvokeAsync(false)" class="button-warning">Cancel</button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public AddRoutineDayDto RoutineDay { get; set; }
+
+    [Parameter]
+    public bool IsVisible { get; set; } = false;
+
+    [Parameter]
+    public EventCallback<bool> OnConfirm { get; set; }
+}

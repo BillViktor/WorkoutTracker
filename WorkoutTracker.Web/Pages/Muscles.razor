@@ -20,7 +20,7 @@
             </AuthorizeView>
 
             <a href="@($"exercises?muscle={muscle.Name}")">
-                <img src="@muscle.ImageUrl" alt="@muscle.Name" />
+                <img src="@muscle.ImageUrl" alt="@muscle.Name" onerror="this.onerror=null; this.src='images/no_image.jpg';" />
                 <div class="card-info">
                     <h5>@muscle.Name</h5>
                     <p>@muscle.Description</p>

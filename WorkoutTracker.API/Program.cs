@@ -10,6 +10,8 @@ using WorkoutTracker.Business.Services.Email;
 using WorkoutTracker.Business.Services.ExerciseService;
 using WorkoutTracker.Business.Services.Image;
 using WorkoutTracker.Business.Services.MuscleService;
+using WorkoutTracker.Business.Services.RoutineDayExerciseService;
+using WorkoutTracker.Business.Services.RoutineDayService;
 using WorkoutTracker.Business.Services.RoutineService;
 using WorkoutTracker.Data;
 using WorkoutTracker.Data.Models;
@@ -71,6 +73,8 @@ namespace WorkoutTracker.API
             builder.Services.AddScoped<IImageService, ImageService>();
             builder.Services.AddScoped<IMuscleService, MuscleService>();
             builder.Services.AddScoped<IRoutineService, RoutineService>();
+            builder.Services.AddScoped<IRoutineDayService, RoutineDayService>();
+            builder.Services.AddScoped<IRoutineDayExerciseService, RoutineDayExerciseService>();
             #endregion
 
 

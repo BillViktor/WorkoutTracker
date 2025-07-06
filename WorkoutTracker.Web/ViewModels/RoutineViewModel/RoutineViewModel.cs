@@ -1,9 +1,6 @@
-﻿using WorkoutTracker.Shared.Dto.Exercise;
-using WorkoutTracker.Shared.Dto.Pagination;
+﻿using WorkoutTracker.Shared.Dto.Pagination;
 using WorkoutTracker.Shared.Dto.Routine;
-using WorkoutTracker.Web.Clients.ExerciseClient;
 using WorkoutTracker.Web.Clients.RoutineClient;
-using WorkoutTracker.Web.Models;
 using WorkoutTracker.Web.ViewModels.EntityViewModel;
 
 namespace WorkoutTracker.Web.ViewModels.RoutineViewModel

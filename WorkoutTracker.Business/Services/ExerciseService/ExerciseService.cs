@@ -53,8 +53,6 @@ namespace WorkoutTracker.Business.Services.ExerciseService
                 orderBy: x => x.Name, 
                 includes: query => query.Include(x => x.PrimaryMuscle));
 
-            string sBaseUrl = configuration["WorkoutTrackerApiBaseUrl"];
-
             return new EntityResult<ExerciseDto>
             {
                 Count = exercises.Count,
@@ -64,7 +62,7 @@ namespace WorkoutTracker.Business.Services.ExerciseService
                     Name = x.Name,
                     Description = x.Description,
                     Instructions = x.Instructions,
-                    ImageUrl = $"{sBaseUrl}{x.ImageUrl}",
+                    ImageUrl = x.ImageUrl != null ? $"{configuration["WorkoutTrackerApiBaseUrl"]}{x.ImageUrl}" : "",
                     PrimaryMuscle = x.PrimaryMuscle.Name
                 }).ToList(),
             };
@@ -83,7 +81,7 @@ namespace WorkoutTracker.Business.Services.ExerciseService
                 Name = exercise.Name,
                 Description = exercise.Description,
                 Instructions = exercise.Instructions,
-                ImageUrl = $"{configuration["WorkoutTrackerApiBaseUrl"]}{exercise.ImageUrl}",
+                ImageUrl = exercise.ImageUrl != null ? $"{configuration["WorkoutTrackerApiBaseUrl"]}{exercise.ImageUrl}" : "",
                 PrimaryMuscle = exercise.PrimaryMuscle.Name
             };
         }

@@ -1,12 +1,21 @@
 ﻿@page "/routines/{id}"
 @using WorkoutTracker.Shared.Dto.Pagination
 @using WorkoutTracker.Shared.Dto.Routine
+@using WorkoutTracker.Shared.Dto.RoutineDay
+@using WorkoutTracker.Shared.Dto.RoutineDayExercise
 @using WorkoutTracker.Web.Components.Routine
+@using WorkoutTracker.Web.Components.RoutineDay
+@using WorkoutTracker.Web.Components.RoutineDayExercise
+@using WorkoutTracker.Web.ViewModels.ExerciseViewModel
+@using WorkoutTracker.Web.ViewModels.RoutineDayExerciseViewModel
+@using WorkoutTracker.Web.ViewModels.RoutineDayViewModel
 @using WorkoutTracker.Web.ViewModels.RoutineViewModel
 
 <PageTitle>Routine Details</PageTitle>
 
 <MessageComponent Errors="RoutineViewModel.Errors" SuccessMessages="RoutineViewModel.SuccessMessages" IsBusy="RoutineViewModel.IsBusy" />
+<MessageComponent Errors="RoutineDayViewModel.Errors" SuccessMessages="RoutineDayViewModel.SuccessMessages" IsBusy="RoutineDayViewModel.IsBusy" />
+<MessageComponent Errors="RoutineDayExerciseViewModel.Errors" SuccessMessages="RoutineDayExerciseViewModel.SuccessMessages" IsBusy="RoutineDayExerciseViewModel.IsBusy" />
 
 @if(routine != null)
 {
@@ -16,9 +25,9 @@
 
             <AuthorizeView Roles="Admin">
                 <Authorized>
-                    <div class="gap-1">
-                        <button @onclick="EditRoutine"  title="Edit exercise" class="icon-button"><i class="fa fa-pencil text-warning" /></button>
-                        <button @onclick="() => showDeleteRoutine = true" title="Delete exercise" class="icon-button"><i class="fa fa-trash text-danger" /></button>
+                    <div >
+                        <button @onclick="EditRoutine"  title="Edit routine" class="icon-button"><i class="fa fa-pencil text-warning" /></button>
+                        <button @onclick="() => showDeleteRoutine = true" title="Delete routine" class="icon-button"><i class="fa fa-trash text-danger" /></button>
                     </div>
                 </Authorized>
             </AuthorizeView>
@@ -29,32 +38,77 @@
             @routine.Description
         </p>
 
+        <div class="row justify-content-between align-content-center">
+            <h5 class="m-0">Days</h5>
+
+            <AuthorizeView Roles="Admin">
+                <Authorized>
+                    <div>
+                        <button @onclick="AddRoutineDay" class="button-success m-0"><i class="fa fa-plus" /> Add Days</button>
+                    </div>
+                </Authorized>
+            </AuthorizeView>
+        </div>
+
+        @if(routine.Days.Count == 0) 
+        {
+            <strong>No days added yet.</strong>
+        }
         @foreach(var day in routine.Days) 
         {
-            <div class="routine-day">
+            <div class="routine-day mt-1">
                 <div class="routine-day-header">
-                    <h5>@day.Name</h5>
+                    <h6>@day.Name</h6>
+
+                    <div>
+                        <button @onclick="() => UpdateDay(day)" title="Edit day" class="icon-button"><i class="fa fa-pencil text-warning" /></button>
+                        <button @onclick="() => DeleteDay(day)" title="Delete day" class="icon-button"><i class="fa fa-trash text-danger" /></button>
+                    </div>
                 </div>
 
+                @if(day.Exercises.Count == 0) 
+                {
+                    <strong>No exercises added yet.</strong>
+                }
                 @foreach (var exercise in day.Exercises)
                 {
                     <div class="routine-day-exercise">
-                        <img width="180" height="180" src="@exercise.ExerciseImageUrl" />
-                        <p>
-                            <b>@exercise.ExerciseName</b>
-                        </p>
-                        <p>
-                            @exercise.Sets sets x @exercise.Reps reps
-                        </p>
+                        <a href="exercises/@exercise.ExerciseId">
+                            <img width="96" height="96" src="@exercise.ExerciseImageUrl" />
+                        </a>
+                        <div>
+                            <p>
+                                <b>@exercise.ExerciseName</b> <br/>
+                                @exercise.Sets sets x @exercise.Reps reps
+                            </p>
+                        </div>
                     </div>
                 }
+
+                <div class="row justify-content-end">
+                    <AuthorizeView Roles="Admin">
+                        <Authorized>
+                            <button @onclick="() => AddExercise(day)" class="button-success"><i class="fa fa-plus" /> Add Exercise</button>
+                        </Authorized>
+                    </AuthorizeView>
+                </div>
             </div>
         }
     </div>
 }
 
+<!-- Routine -->
 <ConfirmationComponent IsVisible="@showDeleteRoutine" Title="Confirm delete" Message="Are you absolutely sure you want to permanently delete this routine?" OnConfirm="async x => await OnDelete(x)" />
 <UpdateRoutineComponent IsVisible="@showEditRoutine" Routine="updateRoutine" OnConfirm="async x => await OnEdit(x)"/>
+
+<!-- Routine Day -->
+<AddRoutineDayComponent IsVisible="@showAddRoutineDay" OnConfirm="OnAddRoutineDay" RoutineDay="newRoutineDay" />
+<UpdateRoutineDayComponent IsVisible="@showUpdateRoutineDay" OnConfirm="OnUpdateDay" RoutineDay="updateRoutineDay" />
+<ConfirmationComponent IsVisible="@showDeleteRoutineDay" Title="Confirm delete" Message="Are you absolutely sure you want to permanently delete this day?" OnConfirm="async x => await OnDeleteDay(x)" />
+
+<!-- Routine Day Exercises -->
+<AddRoutineDayExerciseComponent IsVisible="@showAddRoutineDayExercise" OnConfirm="OnAddExercise" RoutineDayExercise="newRoutineDayExercise" />
+<ConfirmationComponent IsVisible="@showDeleteRoutineDayExercise" Title="Confirm delete" Message="Are you absolutely sure you want to remove this exercise?" OnConfirm="async x => await OnDeleteDay(x)" />
 
 
 @code {
@@ -65,14 +119,15 @@
     IRoutineViewModel RoutineViewModel { get; set; }
 
     [Inject]
+    IRoutineDayViewModel RoutineDayViewModel { get; set; }
+
+    [Inject]
+    IRoutineDayExerciseViewModel RoutineDayExerciseViewModel { get; set; }
+
+    [Inject]
     NavigationManager NavigationManager { get; set; }
 
     private RoutineDto routine;
-
-    private bool showDeleteRoutine = false;
-
-    private UpdateRoutineDto updateRoutine;
-    private bool showEditRoutine = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -86,12 +141,14 @@
         base.OnInitialized();
     }
 
-    public void Dispose()
-    {
-        RoutineViewModel.PropertyChanged -= ViewModelPropertyChanged;
-    }
+    public void Dispose() => RoutineViewModel.PropertyChanged -= ViewModelPropertyChanged;
 
     private async void ViewModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) => await InvokeAsync(() => { StateHasChanged(); });
+
+    #region Routine CRUD
+    private bool showDeleteRoutine = false;
+    private UpdateRoutineDto updateRoutine;
+    private bool showEditRoutine = false;
 
     private async Task OnDelete(bool delete)
     {
@@ -132,4 +189,195 @@
             showEditRoutine = false;
         }
     }
+    #endregion
+
+
+    #region Routine Day CRUD
+    private RoutineDayDto selectedDay;
+
+    //Add
+    private bool showAddRoutineDay = false;
+    private AddRoutineDayDto newRoutineDay;
+
+    private void AddRoutineDay()
+    {
+        showAddRoutineDay = true;
+        newRoutineDay = new AddRoutineDayDto { RoutineId = routine.Id };
+    }
+
+    private async Task OnAddRoutineDay(bool confirmed)
+    {
+        if (confirmed)
+        {
+            var result = await RoutineDayViewModel.Add(newRoutineDay);
+
+            //Add 
+            if (result != null)
+            {
+                routine.Days.Add(result);
+                routine.Days = routine.Days.OrderBy(x => x.SortOrder).ToList();
+                showAddRoutineDay = false;
+            }
+        }
+        else
+        {
+            showAddRoutineDay = false;
+        }
+    }
+
+
+    //Delete
+    private bool showDeleteRoutineDay = false;
+
+    private void DeleteDay(RoutineDayDto day) 
+    {
+        selectedDay = day;
+        showDeleteRoutineDay = true;
+    }
+
+    private async Task OnDeleteDay(bool delete)
+    {
+        if (delete)
+        {
+            if (await RoutineDayViewModel.Delete(selectedDay))
+            {
+                routine.Days.Remove(selectedDay);
+                showDeleteRoutineDay = false;
+            }
+        }
+        else
+        {
+            showDeleteRoutineDay = false;
+        }
+    }
+
+    //Update
+    private bool showUpdateRoutineDay = false;
+    private UpdateRoutineDayDto updateRoutineDay;
+
+    private void UpdateDay(RoutineDayDto day)
+    {
+        showUpdateRoutineDay = true;
+        updateRoutineDay = new UpdateRoutineDayDto(day);
+        selectedDay = day;
+    }
+
+    private async Task OnUpdateDay(bool confirmed)
+    {
+        if (confirmed)
+        {
+            var result = await RoutineDayViewModel.Update(selectedDay.Id, updateRoutineDay);
+
+            //Add
+            if (result != null)
+            {
+                // Find the existing day in the routine and update it
+                var existingDay = routine.Days.FirstOrDefault(x => x.Id == result.Id);
+                routine.Days[routine.Days.IndexOf(existingDay)] = result;
+                routine.Days = routine.Days.OrderBy(x => x.SortOrder).ToList();
+                showUpdateRoutineDay = false;
+            }
+        }
+        else
+        {
+            showUpdateRoutineDay = false;
+        }
+    }
+    #endregion
+
+
+    #region Routine Day Exercise CRUD
+    private RoutineDayExerciseDto selectedExercise;
+
+    //Add
+    private bool showAddRoutineDayExercise = false;
+    private AddRoutineDayExerciseDto newRoutineDayExercise;
+
+    private void AddExercise(RoutineDayDto day)
+    {
+        selectedDay = day;
+        showAddRoutineDayExercise = true;
+        newRoutineDayExercise = new AddRoutineDayExerciseDto { RoutineDayId = day.Id };
+    }
+
+    private async Task OnAddExercise(bool confirmed)
+    {
+        if (confirmed)
+        {
+            var result = await RoutineDayExerciseViewModel.Add(newRoutineDayExercise);
+
+            //Add
+            if (result != null)
+            {
+                routine.Days[routine.Days.IndexOf(selectedDay)].Exercises.Add(result);
+                routine.Days[routine.Days.IndexOf(selectedDay)].Exercises = routine.Days[routine.Days.IndexOf(selectedDay)].Exercises.OrderBy(x => x.SortOrder).ToList();
+                showAddRoutineDayExercise = false;
+            }
+        }
+        else
+        {
+            showAddRoutineDayExercise = false;
+        }
+    }
+
+
+    //Delete
+    private bool showDeleteRoutineDayExercise = false;
+
+    private void DeleteExercise(RoutineDayExerciseDto exercise)
+    {
+        selectedDay = routine.Days.FirstOrDefault(x => x.Exercises.Contains(exercise));
+        selectedExercise = exercise;
+        showDeleteRoutineDayExercise = true;
+    }
+
+    private async Task OnDeleteExercise(bool delete)
+    {
+        if (delete)
+        {
+            if (await RoutineDayExerciseViewModel.Delete(selectedExercise))
+            {
+                routine.Days[routine.Days.IndexOf(selectedDay)].Exercises.Remove(selectedExercise);
+                showDeleteRoutineDay = false;
+            }
+        }
+        else
+        {
+            showDeleteRoutineDay = false;
+        }
+    }
+
+    //Update
+    // private bool showUpdateExercise = false;
+    // private UpdateRoutineDayExerciseDto updateExercise;
+
+    // private void UpdateExercise(RoutineDayDto day)
+    // {
+    //     showUpdateRoutineDay = true;
+    //     updateRoutineDay = new UpdateRoutineDayDto(day);
+    //     selectedDay = day;
+    // }
+
+    // private async Task OnUpdateDay(bool confirmed)
+    // {
+    //     if (confirmed)
+    //     {
+    //         var result = await RoutineDayViewModel.Update(selectedDay.Id, updateRoutineDay);
+
+    //         //Add
+    //         if (result != null)
+    //         {
+    //             // Find the existing day in the routine and update it
+    //             var existingDay = routine.Days.FirstOrDefault(x => x.Id == result.Id);
+    //             routine.Days[routine.Days.IndexOf(existingDay)] = result;
+    //             routine.Days = routine.Days.OrderBy(x => x.SortOrder).ToList();
+    //             showUpdateRoutineDay = false;
+    //         }
+    //     }
+    //     else
+    //     {
+    //         showUpdateRoutineDay = false;
+    //     }
+    // }
+    #endregion
 }

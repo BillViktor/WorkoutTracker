@@ -8,7 +8,7 @@ using WorkoutTracker.Shared.Dto.Routine;
 namespace WorkoutTracker.API.Controllers
 {
     /// <summary>
-    /// Controller for managing exercises in the workout tracker application.
+    /// Controller for managing routines in the workout tracker application.
     /// </summary>
     [ApiController]
     [Route("routines")]

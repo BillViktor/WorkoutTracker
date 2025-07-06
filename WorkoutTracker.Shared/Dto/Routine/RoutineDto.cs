@@ -1,4 +1,6 @@
-﻿namespace WorkoutTracker.Shared.Dto.Routine
+﻿using WorkoutTracker.Shared.Dto.RoutineDay;
+
+namespace WorkoutTracker.Shared.Dto.Routine
 {
     /// <summary>
     /// Data Transfer Object for a workout routine.

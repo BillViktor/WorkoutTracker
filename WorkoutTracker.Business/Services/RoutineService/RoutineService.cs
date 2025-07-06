@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using WorkoutTracker.Data.Models.Routine;
 using WorkoutTracker.Data.Repository;
 using WorkoutTracker.Shared.Dto.Pagination;
 using WorkoutTracker.Shared.Dto.Routine;
+using WorkoutTracker.Shared.Dto.RoutineDay;
 using WorkoutTracker.Shared.Dto.RoutineDayExercise;
 
 namespace WorkoutTracker.Business.Services.RoutineService
@@ -13,10 +15,12 @@ namespace WorkoutTracker.Business.Services.RoutineService
     public class RoutineService : IRoutineService
     {
         private readonly IWorkoutTrackerRepository workoutTrackerRepository;
+        private readonly IConfiguration configuration;
 
-        public RoutineService(IWorkoutTrackerRepository workoutTrackerRepository)
+        public RoutineService(IWorkoutTrackerRepository workoutTrackerRepository, IConfiguration configuration)
         {
             this.workoutTrackerRepository = workoutTrackerRepository;
+            this.configuration = configuration;
         }
 
         /// <summary>
@@ -26,7 +30,7 @@ namespace WorkoutTracker.Business.Services.RoutineService
         {
             string? filter = null;
 
-            //Filter by exercise name
+            //Filter by name
             if (!string.IsNullOrWhiteSpace(parameters.SearchString))
                 filter = $"Name.Contains(\"{parameters.SearchString}\")";
 
@@ -69,16 +73,18 @@ namespace WorkoutTracker.Business.Services.RoutineService
                 {
                     Id = day.Id,
                     Name = day.Name,
+                    SortOrder = day.SortOrder,
                     Exercises = day.Exercises.Select(exercise => new RoutineDayExerciseDto
                     {
                         Id = exercise.Id,
                         Sets = exercise.Sets,
                         Reps = exercise.Reps,
                         SortOrder = exercise.SortOrder,
+                        ExerciseId = exercise.ExerciseId,
                         ExerciseName = exercise.Exercise.Name,
-                        ExerciseImageUrl = exercise.Exercise.ImageUrl
-                    }).ToList()
-                }).ToList()
+                        ExerciseImageUrl = $"{configuration["WorkoutTrackerApiBaseUrl"]}{exercise.Exercise.ImageUrl}"
+                    }).OrderBy(x => x.SortOrder).ToList()
+                }).OrderBy(x => x.SortOrder).ToList()
             };
         }
 
@@ -119,7 +125,7 @@ namespace WorkoutTracker.Business.Services.RoutineService
         /// </summary>
         public async Task DeleteRoutine(long id, CancellationToken cancellationToken)
         {
-            //Get exercise
+            //Get routine
             var routine = await workoutTrackerRepository.GetEntity<WorkoutRoutine>(id, cancellationToken);
 
             //Delete routine

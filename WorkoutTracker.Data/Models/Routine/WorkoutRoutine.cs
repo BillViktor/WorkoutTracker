@@ -2,6 +2,7 @@
 {
     /// <summary>
     /// Represents a workout routine.
+    /// This is to serve as a template for users to follow.
     /// </summary>
     public class WorkoutRoutine : BaseEntity
     {

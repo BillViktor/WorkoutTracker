@@ -5,10 +5,14 @@ using WorkoutTracker.Web.Clients.AuthClient;
 using WorkoutTracker.Web.Clients.ExerciseClient;
 using WorkoutTracker.Web.Clients.MuscleClient;
 using WorkoutTracker.Web.Clients.RoutineClient;
+using WorkoutTracker.Web.Clients.RoutineDayClient;
+using WorkoutTracker.Web.Clients.RoutineDayExerciseClient;
 using WorkoutTracker.Web.Identity;
 using WorkoutTracker.Web.ViewModels.AuthViewModel;
 using WorkoutTracker.Web.ViewModels.ExerciseViewModel;
 using WorkoutTracker.Web.ViewModels.MuscleViewModel;
+using WorkoutTracker.Web.ViewModels.RoutineDayExerciseViewModel;
+using WorkoutTracker.Web.ViewModels.RoutineDayViewModel;
 using WorkoutTracker.Web.ViewModels.RoutineViewModel;
 
 namespace WorkoutTracker.Web
@@ -53,6 +57,16 @@ namespace WorkoutTracker.Web
             {
                 client.BaseAddress = new Uri(baseUrl + "routines");
             }).AddHttpMessageHandler<CookieHandler>();
+
+            builder.Services.AddHttpClient<IRoutineDayClient, RoutineDayClient>(client =>
+            {
+                client.BaseAddress = new Uri(baseUrl + "routine-days");
+            }).AddHttpMessageHandler<CookieHandler>();
+
+            builder.Services.AddHttpClient<IRoutineDayExerciseClient, RoutineDayExerciseClient>(client =>
+            {
+                client.BaseAddress = new Uri(baseUrl + "routine-day-exercises");
+            }).AddHttpMessageHandler<CookieHandler>();
             #endregion
 
 
@@ -61,6 +75,8 @@ namespace WorkoutTracker.Web
             builder.Services.AddScoped<IExerciseViewModel, ExerciseViewModel>();
             builder.Services.AddScoped<IMuscleViewModel, MuscleViewModel>();
             builder.Services.AddScoped<IRoutineViewModel, RoutineViewModel>();
+            builder.Services.AddScoped<IRoutineDayViewModel, RoutineDayViewModel>();
+            builder.Services.AddScoped<IRoutineDayExerciseViewModel, RoutineDayExerciseViewModel>();
             #endregion
 
 

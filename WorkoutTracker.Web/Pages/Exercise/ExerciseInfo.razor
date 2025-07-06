@@ -27,8 +27,9 @@
             </AuthorizeView>
         </div>
 
-        <img class="display-block" src="@exercise.ImageUrl" />
-        <h3>Primary Muscle: <a href="exercises?muscle=@exercise.PrimaryMuscle">@exercise.PrimaryMuscle</a></h3>
+        <img height="512" width="512" class="display-block" src="@exercise.ImageUrl" onerror="this.onerror=null; this.src='images/no_image.jpg';" />
+        
+        <h3 class="mt-1">Primary Muscle: <a href="exercises?muscle=@exercise.PrimaryMuscle">@exercise.PrimaryMuscle</a></h3>
 
         <hr />
 

@@ -49,7 +49,7 @@
     {
         <div class="exercise-card">
             <a href="@($"exercises/{exercise.Id}")">
-                <img src="@exercise.ImageUrl" alt="@exercise.Name" />
+                <img src="@exercise.ImageUrl" alt="@exercise.Name" onerror="this.onerror=null; this.src='images/no_image.jpg';" />
                 <div class="card-info">
                     <h4>@exercise.Name</h4>
                     <h5>@exercise.PrimaryMuscle</h5>
