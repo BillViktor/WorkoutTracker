@@ -33,7 +33,7 @@ namespace WorkoutTracker.Business.Services.RoutineDayExerciseService
                 Id = exercise.Id,
                 ExerciseId = exercise.ExerciseId,
                 ExerciseName = exercise.Exercise.Name,
-                ExerciseImageUrl = exercise.Exercise.ImageUrl != null ? $"{configuration["ApiBaseUrl"]}{exercise.Exercise.ImageUrl}" : null,
+                ExerciseImageUrl = exercise.Exercise.ImageUrl != null ? $"{configuration["WorkoutTrackerApiBaseUrl"]}{exercise.Exercise.ImageUrl}" : "",
                 Sets = exercise.Sets,
                 Reps = exercise.Reps,
                 SortOrder = exercise.SortOrder
@@ -43,7 +43,7 @@ namespace WorkoutTracker.Business.Services.RoutineDayExerciseService
         /// <summary>
         /// Adds a new exercise to the database
         /// </summary>
-        public async Task<RoutineDayExerciseDto> AddRoutineDay(AddRoutineDayExerciseDto exercise, CancellationToken cancellationToken)
+        public async Task<RoutineDayExerciseDto> AddRoutineDayExercise(AddRoutineDayExerciseDto exercise, CancellationToken cancellationToken)
         {
             WorkoutRoutineDayExercise newExercise = new WorkoutRoutineDayExercise
             {
@@ -63,7 +63,7 @@ namespace WorkoutTracker.Business.Services.RoutineDayExerciseService
         /// <summary>
         /// Updates an existing exercise in the database
         /// </summary>
-        public async Task<RoutineDayExerciseDto> UpdateRoutineDay(long id, UpdateRoutineDayExerciseDto exercise, CancellationToken cancellationToken)
+        public async Task<RoutineDayExerciseDto> UpdateRoutineDayExercise(long id, UpdateRoutineDayExerciseDto exercise, CancellationToken cancellationToken)
         {
             var existingExercise = await workoutTrackerRepository.GetEntity<WorkoutRoutineDayExercise>(id, cancellationToken);
 

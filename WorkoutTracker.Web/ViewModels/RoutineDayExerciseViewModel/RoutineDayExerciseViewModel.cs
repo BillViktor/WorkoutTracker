@@ -24,7 +24,7 @@ namespace WorkoutTracker.Web.ViewModels.RoutineDayExerciseViewModel
                 routineDayExerciseClient.AddRoutineDayExercise(exercise),
                 AppendErrorList,
                 handleSuccessMessage: AddSuccessMessage,
-                messageOnSuccess: "Day successfully added.",
+                messageOnSuccess: "Exercise successfully added.",
                 setBusy: busy => IsBusy = busy);
         }
 
@@ -37,7 +37,7 @@ namespace WorkoutTracker.Web.ViewModels.RoutineDayExerciseViewModel
                 routineDayExerciseClient.DeleteRoutineDayExercise(day.Id),
                 AppendErrorList,
                 handleSuccessMessage: AddSuccessMessage,
-                messageOnSuccess: "Day successfully deleted.",
+                messageOnSuccess: "Exercise successfully removed.",
                 setBusy: busy => IsBusy = busy);
         }
 
@@ -50,7 +50,7 @@ namespace WorkoutTracker.Web.ViewModels.RoutineDayExerciseViewModel
                 routineDayExerciseClient.UpdateRoutineDayExercise(id, exercise),
                 AppendErrorList,
                 handleSuccessMessage: AddSuccessMessage,
-                messageOnSuccess: "Day successfully updated.",
+                messageOnSuccess: "Exercise successfully updated.",
                 setBusy: busy => IsBusy = busy);
         }
         #endregion

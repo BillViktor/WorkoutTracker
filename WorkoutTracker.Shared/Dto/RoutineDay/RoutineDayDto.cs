@@ -12,5 +12,16 @@ namespace WorkoutTracker.Shared.Dto.RoutineDay
         public int SortOrder { get; set; }
 
         public List<RoutineDayExerciseDto> Exercises { get; set; } = new List<RoutineDayExerciseDto>();
+
+        /// <summary>
+        /// Calculates the estimated duration of the routine in seconds based on the exercises and their rest times.
+        /// </summary>
+        public int EstimatedDurationMinutes
+        {
+            get
+            {
+                return Exercises.Sum(exercise => exercise.RestTimeSeconds * exercise.Sets + exercise.Reps * exercise.Sets * 3)/60;
+            }
+        }
     }
 }

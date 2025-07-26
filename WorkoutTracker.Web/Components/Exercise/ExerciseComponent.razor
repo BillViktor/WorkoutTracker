@@ -1,1 +1,111 @@
-﻿
+﻿@using WorkoutTracker.Shared.Dto.Exercise
+@using WorkoutTracker.Shared.Dto.Pagination
+@using WorkoutTracker.Web.ViewModels.ExerciseViewModel
+@using WorkoutTracker.Web.ViewModels.MuscleViewModel
+<div class="row gap-1">
+    <input @bind="ExerciseViewModel.ExerciseParameters.ExerciseName" @bind:event="oninput" @bind:after="SearchChanged" id="searchInput" placeholder="Search exercises" type="text">
+
+    <div>
+        <select @bind="ExerciseViewModel.ExerciseParameters.PrimaryMuscle" @bind:after="SearchChanged">
+            <option value="">All Muscles</option>
+            @foreach (var muscle in MuscleViewModel.Muscles ?? new List<MuscleDto>())
+            {
+                <option value="@muscle.Name">@muscle.Name</option>
+            }
+        </select>
+    </div>
+</div>
+
+<p class="m-0">
+    @($"{ExerciseViewModel.Entities?.Count ?? 0} exercises found.")
+</p>
+
+<div class="card-grid">
+    @foreach (var exercise in ExerciseViewModel.Entities?.List ?? new List<ExerciseDto>())
+    {
+        <div class="exercise-card">
+            <button class="image-button" @onclick="async () => await ExerciseSelected.InvokeAsync(exercise)">
+                <img src="@exercise.ImageUrl" alt="@exercise.Name" onerror="this.onerror=null; this.src='images/no_image.jpg';" />
+                <div class="card-info">
+                    <h4>@exercise.Name</h4>
+                    <h5>@exercise.PrimaryMuscle</h5>
+                    <p>@exercise.Description</p>
+                </div>
+            </button>
+        </div>
+    }
+</div>
+
+@if (ExerciseViewModel.Entities?.List != null)
+{
+    <PaginationComponent Page="ExerciseViewModel.ExerciseParameters.Page" PageCount="ExerciseViewModel.ExerciseParameters.PageCount" TotalCount="ExerciseViewModel.Entities.Count" PageChanged="OnPageChanged" />
+}
+
+@code {
+    [Parameter]
+    public string? MuscleName { get; set; }
+
+    [Parameter]
+    public EventCallback<ExerciseDto> ExerciseSelected { get; set; }
+
+    [Inject]
+    IMuscleViewModel MuscleViewModel { get; set; }
+
+    [Inject]
+    IExerciseViewModel ExerciseViewModel { get; set; }
+
+    [Inject]
+    IJSRuntime JS { get; set; }
+
+    [Inject]
+    NavigationManager NavigationManager { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        MuscleViewModel.PropertyChanged += ViewModelPropertyChanged;
+        ExerciseViewModel.PropertyChanged += ViewModelPropertyChanged;
+
+        if (MuscleViewModel.Muscles == null || MuscleViewModel.Muscles.Count == 0) 
+        {
+            await MuscleViewModel.GetMuscles();
+        }
+
+        Console.WriteLine($"Muscle Name from Parameter: {MuscleName}");
+        if(MuscleName != null && MuscleViewModel.Muscles.Any(x => string.Equals(MuscleName, x.Name, StringComparison.OrdinalIgnoreCase))) 
+        {
+            ExerciseViewModel.ExerciseParameters.PrimaryMuscle = MuscleName;
+        }
+
+        await SearchChanged();
+    }
+
+    public void Dispose()
+    {
+        MuscleViewModel.PropertyChanged -= ViewModelPropertyChanged;
+        ExerciseViewModel.PropertyChanged -= ViewModelPropertyChanged;
+    }
+
+    private async void ViewModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) => await InvokeAsync(() => { StateHasChanged(); });
+
+    private async Task SearchChanged()
+    {
+        //Reset the page
+        ExerciseViewModel.ExerciseParameters.Page = 0;
+        await ExerciseViewModel.GetEntities();
+    }
+
+    private async Task OnPageChanged(int page)
+    {
+        ExerciseViewModel.ExerciseParameters.Page = page;
+        await ExerciseViewModel.GetEntities();
+        await JS.InvokeVoidAsync("scrollTo", 0, 0);
+    }
+
+    internal async Task Refresh() 
+    {
+        await ExerciseViewModel.GetEntities();
+        await InvokeAsync(StateHasChanged);
+    }
+
+
+}

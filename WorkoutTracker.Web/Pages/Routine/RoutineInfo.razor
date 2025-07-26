@@ -44,7 +44,7 @@
             <AuthorizeView Roles="Admin">
                 <Authorized>
                     <div>
-                        <button @onclick="AddRoutineDay" class="button-success m-0"><i class="fa fa-plus" /> Add Days</button>
+                        <button @onclick="AddRoutineDay" class="button-success m-0"><i class="fa fa-plus" /> Add Day</button>
                     </div>
                 </Authorized>
             </AuthorizeView>
@@ -58,7 +58,7 @@
         {
             <div class="routine-day mt-1">
                 <div class="routine-day-header">
-                    <h6>@day.Name</h6>
+                    <h6>@day.Name (Estimated Time: @day.EstimatedDurationMinutes min)</h6>
 
                     <div>
                         <button @onclick="() => UpdateDay(day)" title="Edit day" class="icon-button"><i class="fa fa-pencil text-warning" /></button>
@@ -73,14 +73,22 @@
                 @foreach (var exercise in day.Exercises)
                 {
                     <div class="routine-day-exercise">
-                        <a href="exercises/@exercise.ExerciseId">
-                            <img width="96" height="96" src="@exercise.ExerciseImageUrl" />
-                        </a>
+                        <div class="row gap-1">
+                            <a href="exercises/@exercise.ExerciseId">
+                                <img width="96" height="96" src="@exercise.ExerciseImageUrl" onerror="this.onerror=null; this.src='images/no_image.jpg';" />
+                            </a>
+                            <div>
+                                <p>
+                                    <b>@exercise.ExerciseName</b> <br />
+                                    @exercise.Sets sets x @exercise.Reps reps <br />
+                                    Rest: @exercise.RestTimeSeconds seconds
+                                </p>
+                            </div>
+                        </div>
+                        
                         <div>
-                            <p>
-                                <b>@exercise.ExerciseName</b> <br/>
-                                @exercise.Sets sets x @exercise.Reps reps
-                            </p>
+                            <button title="Edit exercise" class="icon-button"><i class="fa fa-pencil text-warning" /></button>
+                            <button @onclick="() => DeleteExercise(exercise)" title="Remove exercise" class="icon-button"><i class="fa fa-trash text-danger" /></button>
                         </div>
                     </div>
                 }
@@ -108,7 +116,7 @@
 
 <!-- Routine Day Exercises -->
 <AddRoutineDayExerciseComponent IsVisible="@showAddRoutineDayExercise" OnConfirm="OnAddExercise" RoutineDayExercise="newRoutineDayExercise" />
-<ConfirmationComponent IsVisible="@showDeleteRoutineDayExercise" Title="Confirm delete" Message="Are you absolutely sure you want to remove this exercise?" OnConfirm="async x => await OnDeleteDay(x)" />
+<ConfirmationComponent IsVisible="@showDeleteRoutineDayExercise" Title="Confirm delete" Message="Are you absolutely sure you want to remove this exercise?" OnConfirm="async x => await OnDeleteExercise(x)" />
 
 
 @code {
@@ -338,12 +346,12 @@
             if (await RoutineDayExerciseViewModel.Delete(selectedExercise))
             {
                 routine.Days[routine.Days.IndexOf(selectedDay)].Exercises.Remove(selectedExercise);
-                showDeleteRoutineDay = false;
+                showDeleteRoutineDayExercise = false;
             }
         }
         else
         {
-            showDeleteRoutineDay = false;
+            showDeleteRoutineDayExercise = false;
         }
     }
 

@@ -145,6 +145,12 @@ p {
     line-height: 1.5rem;
 }
 
+label {
+    font-size: 1.25rem;
+    font-weight: bold;
+    display: block;
+}
+
 strong {
     font-weight: bold;
 }
@@ -246,6 +252,15 @@ button:disabled {
     margin: 0.25rem 0.5rem;
     font-size: 1.25rem;
     color: var(--font-color);
+}
+
+.image-button {
+    background: transparent;
+    border: none;
+    text-align: inherit;
+    padding: inherit;
+    margin: inherit;
+    font-weight: inherit;
 }
 
 .button-top-right-corner {
@@ -614,6 +629,7 @@ label {
 
 .routine-day-exercise {
     display: flex;
+    justify-content: space-between;
     align-items: center;
     gap: 1rem;
     margin: 1rem;

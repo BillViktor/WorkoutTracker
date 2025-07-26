@@ -39,7 +39,8 @@ namespace WorkoutTracker.Business.Services.RoutineService
                 parameters.PageCount,
                 cancellationToken,
                 whereFilter: filter,
-                orderBy: x => x.Name);
+                orderBy: x => x.Name,
+                includes: query => query.Include(x => x.Days));
 
             return new EntityResult<RoutineDto>
             {
@@ -48,6 +49,7 @@ namespace WorkoutTracker.Business.Services.RoutineService
                 {
                     Id = x.Id,
                     Name = x.Name,
+                    DayCount = x.Days.Count,
                     Description = x.Description,
                 }).ToList()
             };
@@ -79,6 +81,7 @@ namespace WorkoutTracker.Business.Services.RoutineService
                         Id = exercise.Id,
                         Sets = exercise.Sets,
                         Reps = exercise.Reps,
+                        RestTimeSeconds = exercise.RestTimeSeconds,
                         SortOrder = exercise.SortOrder,
                         ExerciseId = exercise.ExerciseId,
                         ExerciseName = exercise.Exercise.Name,

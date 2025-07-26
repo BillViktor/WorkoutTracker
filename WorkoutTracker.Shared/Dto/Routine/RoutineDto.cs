@@ -10,6 +10,7 @@ namespace WorkoutTracker.Shared.Dto.Routine
         public long Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public int DayCount { get; set; }
         public List<RoutineDayDto> Days { get; set; } = new List<RoutineDayDto>();
     }
 }

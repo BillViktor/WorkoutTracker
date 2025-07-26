@@ -31,7 +31,7 @@ namespace WorkoutTracker.API.Controllers
         {
             return Ok(new ResultModel<RoutineDayExerciseDto>
             {
-                ResultObject = await routineDayExerciseService.AddRoutineDay(routine, cancellationToken)
+                ResultObject = await routineDayExerciseService.AddRoutineDayExercise(routine, cancellationToken)
             });
         }
 
@@ -47,7 +47,7 @@ namespace WorkoutTracker.API.Controllers
         {
             return Ok(new ResultModel<RoutineDayExerciseDto>
             {
-                ResultObject = await routineDayExerciseService.UpdateRoutineDay(id, routine, cancellationToken)
+                ResultObject = await routineDayExerciseService.UpdateRoutineDayExercise(id, routine, cancellationToken)
             });
         }
 

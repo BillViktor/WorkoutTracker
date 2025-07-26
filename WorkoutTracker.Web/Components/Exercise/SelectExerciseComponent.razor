@@ -1,0 +1,28 @@
+﻿@using Microsoft.AspNetCore.Http
+@using WorkoutTracker.Shared.Dto.Exercise
+@using WorkoutTracker.Web.Models
+@using WorkoutTracker.Web.ViewModels.Base
+@if (IsVisible)
+{
+    <div class="backdrop">
+        <div style="height: 90vh; width: 76rem" class="dialog">
+            <div class="row justify-content-between align-content-center">
+                <h3>Select Exercise</h3>
+
+                <div>
+                    <button @onclick="async () => await OnSelect.InvokeAsync(null)" class="button-warning">Cancel</button>
+                </div>
+            </div>
+
+            <ExerciseComponent ExerciseSelected="async (x) => await OnSelect.InvokeAsync(x)" />
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public bool IsVisible { get; set; } = false;
+
+    [Parameter]
+    public EventCallback<ExerciseDto> OnSelect { get; set; }
+}

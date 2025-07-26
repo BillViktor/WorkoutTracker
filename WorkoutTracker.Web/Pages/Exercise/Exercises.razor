@@ -26,44 +26,7 @@
 </div>
 
 
-<div class="row gap-1">
-    <input @bind="ExerciseViewModel.ExerciseParameters.ExerciseName" @bind:event="oninput" @bind:after="SearchChanged" id="searchInput" placeholder="Search exercises" type="text">
-
-    <div>
-        <select @bind="ExerciseViewModel.ExerciseParameters.PrimaryMuscle" @bind:after="SearchChanged">
-            <option value="">All Muscles</option>
-            @foreach (var muscle in MuscleViewModel.Muscles ?? new List<MuscleDto>())
-            {
-                <option value="@muscle.Name">@muscle.Name</option>
-            }
-        </select>
-    </div>
-</div>
-
-<p class="m-0">
-    @($"{ExerciseViewModel.Entities?.Count ?? 0} exercises found.")
-</p>
-
-<div class="card-grid">
-    @foreach (var exercise in ExerciseViewModel.Entities?.List ?? new List<ExerciseDto>())
-    {
-        <div class="exercise-card">
-            <a href="@($"exercises/{exercise.Id}")">
-                <img src="@exercise.ImageUrl" alt="@exercise.Name" onerror="this.onerror=null; this.src='images/no_image.jpg';" />
-                <div class="card-info">
-                    <h4>@exercise.Name</h4>
-                    <h5>@exercise.PrimaryMuscle</h5>
-                    <p>@exercise.Description</p>
-                </div>
-            </a>
-        </div>
-    }
-</div>
-
-@if(ExerciseViewModel.Entities?.List != null) 
-{
-    <PaginationComponent Page="ExerciseViewModel.ExerciseParameters.Page" PageCount="ExerciseViewModel.ExerciseParameters.PageCount" TotalCount="ExerciseViewModel.Entities.Count" PageChanged="OnPageChanged" />
-}
+<ExerciseComponent @ref="exerciseComponent" MuscleName="@muscleName" ExerciseSelected="OnExerciseSelected" />
 
 <AddExerciseComponent IsVisible="showCreateExerciseComponent" Exercise="newExercise" Muscles="MuscleViewModel.Muscles" OnConfirm="OnCreate" />
 
@@ -80,22 +43,14 @@
     [Inject]
     NavigationManager NavigationManager { get; set; }
 
+    private ExerciseComponent exerciseComponent;
+
+    private string? muscleName = null;
+
     private bool showCreateExerciseComponent = false;
     private AddExerciseClientDto newExercise;
 
-    protected override async Task OnInitializedAsync()
-    {
-        ExerciseViewModel.ExerciseParameters = new ExerciseParameters();
-
-        MuscleViewModel.PropertyChanged += ViewModelPropertyChanged;
-        ExerciseViewModel.PropertyChanged += ViewModelPropertyChanged;
-
-        await MuscleViewModel.GetMuscles();
-
-        GetQueryString();
-
-        await SearchChanged();
-    }
+    protected override void OnInitialized() => GetQueryString();
 
     public void Dispose() 
     {
@@ -112,27 +67,10 @@
 
         if (queryDict.TryGetValue("muscle", out var value))
         {
-            if (MuscleViewModel.Muscles?.Any(x => string.Equals(x.Name, value.ToString(), StringComparison.OrdinalIgnoreCase)) == true)
-            {
-                ExerciseViewModel.ExerciseParameters.PrimaryMuscle = value.ToString();
-            }
+            muscleName = value.ToString();
+            Console.WriteLine($"Muscle Name from Query: {muscleName}");
         }
     }
-
-    private async Task SearchChanged() 
-    {
-        //Reset the page
-        ExerciseViewModel.ExerciseParameters.Page = 0;
-        await ExerciseViewModel.GetEntities();
-    }
-
-    private async Task OnPageChanged(int page)
-    {
-        ExerciseViewModel.ExerciseParameters.Page = page;
-        await ExerciseViewModel.GetEntities();
-        await JS.InvokeVoidAsync("scrollTo", 0, 0);
-    }
-
     private void ShowCreateExercise() 
     {
         showCreateExerciseComponent = true;
@@ -148,7 +86,7 @@
             //Update the list if successfully added
             if (result != null)
             {
-                await ExerciseViewModel.GetEntities();
+                await exerciseComponent.Refresh();
                 showCreateExerciseComponent = false;
             }
         }
@@ -156,5 +94,12 @@
         {
             showCreateExerciseComponent = false;
         }
+
+        StateHasChanged();
+    }
+
+    private void OnExerciseSelected(ExerciseDto exercise) 
+    {
+        NavigationManager.NavigateTo($"exercises/{exercise.Id}");
     }
 }

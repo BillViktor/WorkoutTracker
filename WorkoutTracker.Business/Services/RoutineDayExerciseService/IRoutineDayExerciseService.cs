@@ -4,8 +4,8 @@ namespace WorkoutTracker.Business.Services.RoutineDayExerciseService
 {
     public interface IRoutineDayExerciseService
     {
-        Task<RoutineDayExerciseDto> AddRoutineDay(AddRoutineDayExerciseDto exercise, CancellationToken cancellationToken);
+        Task<RoutineDayExerciseDto> AddRoutineDayExercise(AddRoutineDayExerciseDto exercise, CancellationToken cancellationToken);
         Task DeleteRoutineDayExercise(long id, CancellationToken cancellationToken);
-        Task<RoutineDayExerciseDto> UpdateRoutineDay(long id, UpdateRoutineDayExerciseDto exercise, CancellationToken cancellationToken);
+        Task<RoutineDayExerciseDto> UpdateRoutineDayExercise(long id, UpdateRoutineDayExerciseDto exercise, CancellationToken cancellationToken);
     }
 }
